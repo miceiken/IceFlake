@@ -58,7 +58,7 @@ namespace IceFlake.Client.Objects
 
         public bool CreatedByMe
         {
-            get { return CreatedBy == Core.ObjectManager.LocalPlayer.Guid; }
+            get { return CreatedBy == Manager.ObjectManager.LocalPlayer.Guid; }
         }
     }
 }

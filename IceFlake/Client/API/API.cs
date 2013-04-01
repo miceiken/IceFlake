@@ -1,4 +1,4 @@
-﻿namespace Core.Client.API
+﻿namespace IceFlake.Client.API
 {
     public static class API
     {

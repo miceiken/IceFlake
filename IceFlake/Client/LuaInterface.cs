@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Globalization;
 using System.Runtime.InteropServices;
-using Core.Client.Patchables;
+using IceFlake.Client.Patchables;
 
-namespace Core.Client
+namespace IceFlake.Client
 {
     internal static class LuaInterface
     {
@@ -67,7 +67,7 @@ namespace Core.Client
 
         public static IntPtr LuaState
         {
-            get { return WoWCore.Memory.Read<IntPtr>((IntPtr) Pointers.LuaInterface.LuaState, true); }
+            get { return Manager.Memory.Read<IntPtr>((IntPtr)Pointers.LuaInterface.LuaState); }
         }
 
         public static void Pop(IntPtr state, int n)
@@ -77,24 +77,22 @@ namespace Core.Client
 
         public static void Initialize()
         {
-            GetTop = WoWCore.Memory.RegisterDelegate<LuaGetTopDelegate>((IntPtr) Pointers.LuaInterface.LuaGetTop, true);
-            SetTop = WoWCore.Memory.RegisterDelegate<LuaSetTopDelegate>((IntPtr) Pointers.LuaInterface.LuaSetTop, true);
-            Type = WoWCore.Memory.RegisterDelegate<LuaTypeDelegate>((IntPtr) Pointers.LuaInterface.LuaType, true);
+            GetTop = Manager.Memory.RegisterDelegate<LuaGetTopDelegate>((IntPtr)Pointers.LuaInterface.LuaGetTop);
+            SetTop = Manager.Memory.RegisterDelegate<LuaSetTopDelegate>((IntPtr)Pointers.LuaInterface.LuaSetTop);
+            Type = Manager.Memory.RegisterDelegate<LuaTypeDelegate>((IntPtr)Pointers.LuaInterface.LuaType);
             ToLString =
-                WoWCore.Memory.RegisterDelegate<LuaToLStringDelegate>((IntPtr) Pointers.LuaInterface.LuaToLString, true);
+                Manager.Memory.RegisterDelegate<LuaToLStringDelegate>((IntPtr)Pointers.LuaInterface.LuaToLString);
             ToBoolean =
-                WoWCore.Memory.RegisterDelegate<LuaToBooleanDelegate>((IntPtr) Pointers.LuaInterface.LuaToBoolean, true);
-            ToNumber = WoWCore.Memory.RegisterDelegate<LuaToNumberDelegate>((IntPtr) Pointers.LuaInterface.LuaToNumber,
-                                                                            true);
-            PCall = WoWCore.Memory.RegisterDelegate<LuaPCallDelegate>((IntPtr) Pointers.LuaInterface.LuaPCall, true);
+                Manager.Memory.RegisterDelegate<LuaToBooleanDelegate>((IntPtr)Pointers.LuaInterface.LuaToBoolean);
+            ToNumber = Manager.Memory.RegisterDelegate<LuaToNumberDelegate>((IntPtr)Pointers.LuaInterface.LuaToNumber);
+            PCall = Manager.Memory.RegisterDelegate<LuaPCallDelegate>((IntPtr)Pointers.LuaInterface.LuaPCall);
             LoadBuffer =
-                WoWCore.Memory.RegisterDelegate<LuaLoadBufferDelegate>((IntPtr) Pointers.LuaInterface.LuaLoadBuffer,
-                                                                       true);
+                Manager.Memory.RegisterDelegate<LuaLoadBufferDelegate>((IntPtr)Pointers.LuaInterface.LuaLoadBuffer);
         }
 
         public static string StackObjectToString(IntPtr state, int index)
         {
-            var ltype = (LuaConstant) Type(state, index);
+            var ltype = (LuaConstant)Type(state, index);
 
             switch (ltype)
             {
@@ -108,7 +106,7 @@ namespace Core.Client
                     return ToNumber(state, index).ToString(CultureInfo.InvariantCulture);
 
                 case LuaConstant.TypeString:
-                    return WoWCore.Memory.ReadString(ToLString(state, index, 0));
+                    return Manager.Memory.ReadString(ToLString(state, index, 0));
 
                 default:
                     return "<unknown lua type>";

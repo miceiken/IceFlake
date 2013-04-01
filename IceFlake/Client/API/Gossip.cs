@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Core.Client.Patchables;
+using IceFlake.Client.Patchables;
 
-namespace Core.Client.API
+namespace IceFlake.Client.API
 {
     public class Gossip : Frame
     {
@@ -24,14 +24,14 @@ namespace Core.Client.API
                 List<string> ret = WoWScript.Execute("GetGossipOptions()");
                 if (ret.Count > 0)
                 {
-                    for (int i = 0; i < ret.Count/2; i++)
+                    for (int i = 0; i < ret.Count / 2; i++)
                     {
-                        int idx = i*2;
+                        int idx = i * 2;
                         var opt = new GossipOption
                                       {
                                           Index = i + 1,
                                           Title = ret[idx],
-                                          Gossip = (GossipType) Enum.Parse(typeof (GossipType), ret[idx + 1], true)
+                                          Gossip = (GossipType)Enum.Parse(typeof(GossipType), ret[idx + 1], true)
                                       };
                         options.Add(opt);
                     }
@@ -53,9 +53,9 @@ namespace Core.Client.API
                 List<string> ret = WoWScript.Execute("GetGossipAvailableQuests()");
                 if (ret.Count > 0)
                 {
-                    for (int i = 0; i < ret.Count/5; i++)
+                    for (int i = 0; i < ret.Count / 5; i++)
                     {
-                        int idx = i*5;
+                        int idx = i * 5;
                         var opt = new GossipAvailableQuest
                                       {
                                           Index = i + 1,
@@ -85,9 +85,9 @@ namespace Core.Client.API
                 List<string> ret = WoWScript.Execute("GetGossipActiveQuests()");
                 if (ret.Count > 0)
                 {
-                    for (int i = 0; i < ret.Count/4; i++)
+                    for (int i = 0; i < ret.Count / 4; i++)
                     {
-                        int idx = i*4;
+                        int idx = i * 4;
                         var opt = new GossipActiveQuest
                                       {
                                           Index = i + 1,

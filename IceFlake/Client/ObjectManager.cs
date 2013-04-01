@@ -34,13 +34,13 @@ namespace IceFlake.Client
             _callback = Callback;
 
             _enumVisibleObjects =
-                Core.Memory.RegisterDelegate<EnumVisibleObjectsDelegate>(
+                Manager.Memory.RegisterDelegate<EnumVisibleObjectsDelegate>(
                     (IntPtr) Pointers.ObjectManager.EnumVisibleObjects);
             _getObjectByGuid =
-                Core.Memory.RegisterDelegate<GetObjectByGuidDelegate>(
+                Manager.Memory.RegisterDelegate<GetObjectByGuidDelegate>(
                     (IntPtr) Pointers.ObjectManager.GetObjectByGuid);
             _getLocalPlayer =
-                Core.Memory.RegisterDelegate<GetLocalPlayerDelegate>(
+                Manager.Memory.RegisterDelegate<GetLocalPlayerDelegate>(
                     (IntPtr) Pointers.ObjectManager.GetLocalPlayerGuid);
             _ourCallback = Marshal.GetFunctionPointerForDelegate(_callback);
         }

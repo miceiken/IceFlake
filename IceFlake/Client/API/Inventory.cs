@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Core.Client.API
+namespace IceFlake.Client.API
 {
     public class Item
     {

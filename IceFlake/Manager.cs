@@ -10,7 +10,7 @@ using System.Reflection;
 
 namespace IceFlake
 {
-    internal static class Core
+    internal static class Manager
     {
         internal static void Initialize()
         {

@@ -38,7 +38,7 @@ namespace IceFlake.Client.Patchables
 
         public bool IsAvailable
         {
-            get { return RequiredLevel <= Core.LocalPlayer.Level; }
+            get { return RequiredLevel <= Manager.LocalPlayer.Level; }
         }
     }
 
@@ -304,7 +304,7 @@ namespace IceFlake.Client.Patchables
 
         public string AreaName
         {
-            get { return Core.Memory.ReadString(m_AreaName_lang); }
+            get { return Manager.Memory.ReadString(m_AreaName_lang); }
         }
     }
 
@@ -371,7 +371,7 @@ namespace IceFlake.Client.Patchables
 
         public string Name
         {
-            get { return _Name != IntPtr.Zero ? Core.Memory.ReadString(_Name) : string.Empty; }
+            get { return _Name != IntPtr.Zero ? Manager.Memory.ReadString(_Name) : string.Empty; }
         }
     }
 
@@ -450,7 +450,7 @@ namespace IceFlake.Client.Patchables
 
         public string Name
         {
-            get { return _Name != IntPtr.Zero ? Core.Memory.ReadString(_Name) : string.Empty; }
+            get { return _Name != IntPtr.Zero ? Manager.Memory.ReadString(_Name) : string.Empty; }
         }
 
         //public uint Armor
@@ -748,22 +748,22 @@ namespace IceFlake.Client.Patchables
         // read area name using our static memory reading helper class
         public string m_Directory
         {
-            get { return Core.Memory.ReadString(_m_Directory); }
+            get { return Manager.Memory.ReadString(_m_Directory); }
         }
 
         public string m_MapName_lang
         {
-            get { return Core.Memory.ReadString(_m_MapName_lang); }
+            get { return Manager.Memory.ReadString(_m_MapName_lang); }
         }
 
         public string m_MapDescription0_lang
         {
-            get { return Core.Memory.ReadString(_m_MapDescription0_lang); }
+            get { return Manager.Memory.ReadString(_m_MapDescription0_lang); }
         }
 
         public string m_MapDescription1_lang
         {
-            get { return Core.Memory.ReadString(_m_MapDescription1_lang); }
+            get { return Manager.Memory.ReadString(_m_MapDescription1_lang); }
         }
     };
 

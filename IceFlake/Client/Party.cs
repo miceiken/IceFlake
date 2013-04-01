@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Core.Client.Objects;
-using Core.Client.Patchables;
+using IceFlake.Client.Objects;
+using IceFlake.Client.Patchables;
 
-namespace Core.Client
+namespace IceFlake.Client
 {
     public static class Party
     {
@@ -21,29 +21,27 @@ namespace Core.Client
             }
         }
 
-        public static List<WoWPlayer> Members
+        public static IEnumerable<WoWPlayer> Members
         {
             get
             {
-                var ret = new List<WoWPlayer>();
                 for (int i = 0; i < 4; i++)
                 {
-                    var unit = GetPartyMember(i) as WoWPlayer;
+                    var unit = GetPartyMember(i);
                     if (unit != null && unit.IsValid)
-                        ret.Add(unit);
+                        yield return unit;
                 }
-                return ret;
             }
         }
 
-        public static WoWObject GetPartyMember(int index)
+        public static WoWPlayer GetPartyMember(int index)
         {
-            return WoWCore.ObjectManager.GetObjectByGuid(GetPartyMemberGuid(index));
+            return Manager.ObjectManager.GetObjectByGuid(GetPartyMemberGuid(index)) as WoWPlayer;
         }
 
         public static ulong GetPartyMemberGuid(int index)
         {
-            return WoWCore.Memory.Read<ulong>(new IntPtr(Pointers.Party.PartyArray + (index*8)), true);
+            return Manager.Memory.Read<ulong>(new IntPtr(Pointers.Party.PartyArray + (index * 8)), true);
         }
     }
 }

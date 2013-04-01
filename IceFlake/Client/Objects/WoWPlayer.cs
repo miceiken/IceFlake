@@ -81,7 +81,7 @@ namespace IceFlake.Client.Objects
             get
             {
                 return
-                    Core.ObjectManager.Objects.Where(x => x.IsValid && x.IsUnit).OfType<WoWUnit>().Where(
+                    Manager.ObjectManager.Objects.Where(x => x.IsValid && x.IsUnit).OfType<WoWUnit>().Where(
                         x => x.SummonedBy == Guid).Select(x => x.Guid).FirstOrDefault();
             }
         }
@@ -101,7 +101,7 @@ namespace IceFlake.Client.Objects
             get
             {
                 return
-                    Core.ObjectManager.Objects.Where(x => x.IsValid && x.IsUnit).OfType<WoWUnit>().FirstOrDefault(x => x.SummonedBy == Guid);
+                    Manager.ObjectManager.Objects.Where(x => x.IsValid && x.IsUnit).OfType<WoWUnit>().FirstOrDefault(x => x.SummonedBy == Guid);
             }
         }
     }

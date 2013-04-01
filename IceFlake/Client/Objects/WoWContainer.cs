@@ -25,8 +25,8 @@ namespace IceFlake.Client.Objects
         {
             if (GetBagAtIndex == null)
                 GetBagAtIndex =
-                    Core.Memory.RegisterDelegate<GetBagAtIndexDelegate>((IntPtr) Pointers.Container.GetBagAtIndex);
-            return Core.ObjectManager.GetObjectByGuid(GetBagAtIndex(slot)) as WoWContainer;
+                    Manager.Memory.RegisterDelegate<GetBagAtIndexDelegate>((IntPtr)Pointers.Container.GetBagAtIndex);
+            return Manager.ObjectManager.GetObjectByGuid(GetBagAtIndex(slot)) as WoWContainer;
         }
 
         #region Nested type: GetBagAtIndexDelegate
@@ -46,7 +46,7 @@ namespace IceFlake.Client.Objects
 
         public WoWItem GetItem(int index)
         {
-            return Core.ObjectManager.GetObjectByGuid(GetItemGuid(index)) as WoWItem;
+            return Manager.ObjectManager.GetObjectByGuid(GetItemGuid(index)) as WoWItem;
         }
 
         public List<WoWItem> Items

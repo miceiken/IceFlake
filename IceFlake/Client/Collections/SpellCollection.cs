@@ -21,9 +21,9 @@ namespace IceFlake.Client.Collections
 
         public SpellCollection()
         {
-            _castSpell = Core.Memory.RegisterDelegate<CastSpellDelegate>((IntPtr)Pointers.Spell.CastSpell);
+            _castSpell = Manager.Memory.RegisterDelegate<CastSpellDelegate>((IntPtr)Pointers.Spell.CastSpell);
             _getSpellCooldown =
-                Core.Memory.RegisterDelegate<GetSpellCooldownDelegate>((IntPtr)Pointers.Spell.GetSpellCooldown);
+                Manager.Memory.RegisterDelegate<GetSpellCooldownDelegate>((IntPtr)Pointers.Spell.GetSpellCooldown);
 
             KnownSpells = new List<WoWSpell>();
             Update = true;
@@ -60,16 +60,16 @@ namespace IceFlake.Client.Collections
         [EndSceneHandler]
         public void Direct3D_EndScene()
         {
-            if (!Core.ObjectManager.IsInGame)
+            if (!Manager.ObjectManager.IsInGame)
                 return;
 
             if (!Update)
                 return;
 
             var knownspells = new List<WoWSpell>();
-            for (var i = 0; i < Core.Memory.Read<int>((IntPtr)Pointers.Spell.SpellCount); i++)
+            for (var i = 0; i < Manager.Memory.Read<int>((IntPtr)Pointers.Spell.SpellCount); i++)
             {
-                var spellId = Core.Memory.Read<uint>((IntPtr)(Pointers.Spell.SpellBook + (i * 4)));
+                var spellId = Manager.Memory.Read<uint>((IntPtr)(Pointers.Spell.SpellBook + (i * 4)));
                 knownspells.Add(new WoWSpell(spellId));
             }            
 

@@ -52,7 +52,7 @@ namespace IceFlake.Client.Objects
             {
                 if (_isClickMoving == null)
                     _isClickMoving =
-                        Core.Memory.RegisterDelegate<IsClickMovingDelegate>(
+                        Manager.Memory.RegisterDelegate<IsClickMovingDelegate>(
                             (IntPtr)Pointers.LocalPlayer.IsClickMoving);
 
                 return _isClickMoving(Pointer);
@@ -61,7 +61,7 @@ namespace IceFlake.Client.Objects
 
         public Location Corpse
         {
-            get { return Core.Memory.Read<Location>((IntPtr)Pointers.LocalPlayer.CorpsePosition); }
+            get { return Manager.Memory.Read<Location>((IntPtr)Pointers.LocalPlayer.CorpsePosition); }
         }
 
         //public int UnusedTalentPoints
@@ -71,7 +71,7 @@ namespace IceFlake.Client.Objects
 
         public int Combopoints
         {
-            get { return Core.Memory.Read<int>((IntPtr)Pointers.LocalPlayer.ComboPoints); }
+            get { return Manager.Memory.Read<int>((IntPtr)Pointers.LocalPlayer.ComboPoints); }
         }
 
         public IEnumerable<QuestLogEntry> Quests
@@ -88,7 +88,7 @@ namespace IceFlake.Client.Objects
         {
             get
             {
-                return Core.ObjectManager.Objects
+                return Manager.ObjectManager.Objects
                     .Where(obj => obj.IsValid && obj.IsUnit)
                     .OfType<WoWUnit>()
                     .Where(unit => unit.IsTotem && unit.CreatedBy == Guid);
@@ -102,7 +102,7 @@ namespace IceFlake.Client.Objects
         {
             get
             {
-                return Core.ObjectManager.Objects
+                return Manager.ObjectManager.Objects
                     .Where(obj => obj.IsValid && obj.IsItem)
                     .OfType<WoWItem>()
                     .Where(item => item.OwnerGuid == this.Guid);
@@ -165,7 +165,7 @@ namespace IceFlake.Client.Objects
         public WoWItem GetBackpackItem(int slot)
         {
             var guid = GetDescriptor<ulong>((int)WoWPlayerFields.PLAYER_FIELD_PACK_SLOT_1 + (slot * 8));
-            return Core.ObjectManager.GetObjectByGuid(guid) as WoWItem;
+            return Manager.ObjectManager.GetObjectByGuid(guid) as WoWItem;
         }
 
         public WoWItem GetEquippedItem(EquipSlot slot)
@@ -176,7 +176,7 @@ namespace IceFlake.Client.Objects
         public WoWItem GetEquippedItem(int slot)
         {
             var guid = GetDescriptor<ulong>((int)WoWPlayerFields.PLAYER_FIELD_INV_SLOT_HEAD + (slot * 8));
-            return Core.ObjectManager.GetObjectByGuid(guid) as WoWItem;
+            return Manager.ObjectManager.GetObjectByGuid(guid) as WoWItem;
         }
 
         //public bool CanUseItem(WoWItem item, out GameError error)
@@ -343,7 +343,7 @@ namespace IceFlake.Client.Objects
         {
             if (ClickToMoveFunction == null)
                 ClickToMoveFunction =
-                    Core.Memory.RegisterDelegate<ClickToMoveDelegate>((IntPtr)Pointers.LocalPlayer.ClickToMove);
+                    Manager.Memory.RegisterDelegate<ClickToMoveDelegate>((IntPtr)Pointers.LocalPlayer.ClickToMove);
 
             Helper.ResetHardwareAction();
             ClickToMoveFunction(Pointer, (int)type, ref guid, ref target, 0.1f);
@@ -352,7 +352,7 @@ namespace IceFlake.Client.Objects
         public void StopCTM()
         {
             if (_stopCTM == null)
-                _stopCTM = Core.Memory.RegisterDelegate<StopCTMDelegate>((IntPtr)Pointers.LocalPlayer.StopCTM);
+                _stopCTM = Manager.Memory.RegisterDelegate<StopCTMDelegate>((IntPtr)Pointers.LocalPlayer.StopCTM);
 
             _stopCTM(Pointer);
         }
@@ -367,7 +367,7 @@ namespace IceFlake.Client.Objects
         public void SetFacing(float angle)
         {
             if (_setFacing == null)
-                _setFacing = Core.Memory.RegisterDelegate<SetFacingDelegate>(
+                _setFacing = Manager.Memory.RegisterDelegate<SetFacingDelegate>(
                     (IntPtr)Pointers.LocalPlayer.SetFacing);
 
             const float pi2 = (float)(Math.PI * 2);

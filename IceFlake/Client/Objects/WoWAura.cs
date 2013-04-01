@@ -28,7 +28,7 @@ namespace IceFlake.Client.Objects
 
         public WoWUnit Caster
         {
-            get { return Core.ObjectManager.GetObjectByGuid(CasterGuid) as WoWUnit; }
+            get { return Manager.ObjectManager.GetObjectByGuid(CasterGuid) as WoWUnit; }
         }
 
         public ulong CasterGuid
@@ -38,7 +38,7 @@ namespace IceFlake.Client.Objects
 
         public bool IsMine
         {
-            get { return CasterGuid == Core.LocalPlayer.Guid; }
+            get { return CasterGuid == Manager.LocalPlayer.Guid; }
         }
 
         public AuraFlags Flags
@@ -73,13 +73,17 @@ namespace IceFlake.Client.Objects
         internal void Validate(IntPtr pointer)
         {
             Pointer = pointer;
-            Entry = Core.Memory.Read<AuraRec>(Pointer);
+            Entry = Manager.Memory.Read<AuraRec>(Pointer);
             ID = Entry.AuraId;
-            var SpellRow = new DBC<SpellRec>((IntPtr) ClientDB.Spell);
-            if (SpellRow.HasRow(Entry.AuraId))
-                Name = SpellRow[Entry.AuraId].Name;
-            else
-                Name = "unknown";
+            try
+            {
+                var spellRow = Manager.DBC[ClientDB.Spell].GetLocalizedRow((int)Entry.AuraId).GetStruct<SpellRec>();
+                Name = spellRow.SpellName;
+            }
+            catch
+            {
+                Name = "UNKNOWN";
+            }
         }
 
         internal void Invalidate()

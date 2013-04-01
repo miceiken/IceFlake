@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using Core.Client.Patchables;
+using IceFlake.Client.Patchables;
 
-namespace Core.Client
+namespace IceFlake.Client
 {
     public static class World
     {
@@ -22,23 +22,23 @@ namespace Core.Client
 
         public static uint CurrentMapId
         {
-            get { return WoWCore.Memory.Read<uint>((IntPtr) Pointers.World.CurrentMapId, true); }
+            get { return Manager.Memory.Read<uint>((IntPtr)Pointers.World.CurrentMapId); }
         }
 
         public static string CurrentMap
         {
-            get { return new DBC<MapRec>((IntPtr) ClientDB.Map)[CurrentMapId].m_MapName_lang; }
+            get { return Manager.DBC[ClientDB.Map].GetLocalizedRow((int)CurrentMapId).GetStruct<MapRec>().m_MapName_lang; }
         }
 
         public static uint CurrentZoneId
         {
-            get { return WoWCore.Memory.Read<uint>((IntPtr) Pointers.World.ZoneID, true); }
+            get { return Manager.Memory.Read<uint>((IntPtr)Pointers.World.ZoneID); }
         }
 
         public static TracelineResult Traceline(Location start, Location end, uint flags)
         {
             if (_traceline == null)
-                _traceline = WoWCore.Memory.RegisterDelegate<TracelineDelegate>((IntPtr) Pointers.World.Traceline, true);
+                _traceline = Manager.Memory.RegisterDelegate<TracelineDelegate>((IntPtr)Pointers.World.Traceline);
 
             float dist = 1.0f;
             Location result;

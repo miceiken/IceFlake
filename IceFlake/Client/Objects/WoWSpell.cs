@@ -11,7 +11,7 @@ namespace IceFlake.Client.Objects
             Id = id;
             try
             {
-                SpellRecord = Core.DBC[ClientDB.Spell].GetLocalizedRow((int)id).GetStruct<SpellRec>();
+                SpellRecord = Manager.DBC[ClientDB.Spell].GetLocalizedRow((int)id).GetStruct<SpellRec>();
             }
             catch
             {
@@ -36,7 +36,7 @@ namespace IceFlake.Client.Objects
 
         public void Cast()
         {
-            Cast(Core.LocalPlayer);
+            Cast(Manager.LocalPlayer);
         }
 
         public void Cast(WoWUnit target)

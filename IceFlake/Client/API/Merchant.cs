@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Core.Client.Patchables;
+using IceFlake.Client.Patchables;
 
-namespace Core.Client.API
+namespace IceFlake.Client.API
 {
     public class Merchant : Frame
     {

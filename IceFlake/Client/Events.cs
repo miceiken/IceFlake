@@ -11,9 +11,9 @@ namespace IceFlake.Client
     {
         public Events()
         {
-            var eventVictim = Core.Memory.RegisterDelegate<LuaFunctionDelegate>(
-                (IntPtr) Pointers.Events.EventVictim, true);
-            _eventDetour = Core.Memory.Detours.CreateAndApply(eventVictim, new LuaFunctionDelegate(HandleVictimCall),
+            var eventVictim = Manager.Memory.RegisterDelegate<LuaFunctionDelegate>(
+                (IntPtr)Pointers.Events.EventVictim);
+            _eventDetour = Manager.Memory.Detours.CreateAndApply(eventVictim, new LuaFunctionDelegate(HandleVictimCall),
                                                                  "EventVictim");
         }
 
@@ -43,7 +43,7 @@ namespace IceFlake.Client
             if (_eventHandler.ContainsKey(name))
                 _eventHandler[name].Add(handler);
             else
-                _eventHandler.Add(name, new List<EventHandler> {handler});
+                _eventHandler.Add(name, new List<EventHandler> { handler });
         }
 
         public void Remove(string name, EventHandler handler)
@@ -77,7 +77,7 @@ namespace IceFlake.Client
             else
             {
                 // legal call
-                return (int) _eventDetour.CallOriginal(luaState);
+                return (int)_eventDetour.CallOriginal(luaState);
             }
 
             return 0;

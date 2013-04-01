@@ -40,7 +40,7 @@ namespace IceFlake.Client.Objects
                 IntPtr pointer = _getObjectName(Pointer);
                 if (pointer == IntPtr.Zero)
                     return "UNKNOWN";
-                return Core.Memory.ReadString(pointer);
+                return Manager.Memory.ReadString(pointer);
             }
         }
 
@@ -91,7 +91,7 @@ namespace IceFlake.Client.Objects
         {
             get
             {
-                WoWLocalPlayer local = Core.ObjectManager.LocalPlayer;
+                WoWLocalPlayer local = Manager.ObjectManager.LocalPlayer;
                 if (local == null || !local.IsValid)
                     return float.NaN;
                 return (float)local.Location.DistanceTo(Location);
@@ -135,17 +135,17 @@ namespace IceFlake.Client.Objects
 
         protected T RegisterVirtualFunction<T>(uint offset) where T : class
         {
-            IntPtr pointer = Core.Memory.GetObjectVtableFunction(Pointer, offset / 4);
+            IntPtr pointer = Manager.Memory.GetObjectVtableFunction(Pointer, offset / 4);
             if (pointer == IntPtr.Zero)
                 return null;
-            return Core.Memory.RegisterDelegate<T>(pointer);
+            return Manager.Memory.RegisterDelegate<T>(pointer);
         }
 
         public void Select()
         {
             if (_selectObject == null)
                 _selectObject =
-                    Core.Memory.RegisterDelegate<SelectObjectDelegate>((IntPtr)Pointers.Object.SelectObject);
+                    Manager.Memory.RegisterDelegate<SelectObjectDelegate>((IntPtr)Pointers.Object.SelectObject);
 
             _selectObject(Guid);
         }
@@ -158,7 +158,7 @@ namespace IceFlake.Client.Objects
 
         public void Face()
         {
-            Core.LocalPlayer.LookAt(Location);
+            Manager.LocalPlayer.LookAt(Location);
         }
 
         //protected unsafe T GetDescriptor<T>(int offset)
@@ -194,9 +194,9 @@ namespace IceFlake.Client.Objects
 
         protected T GetDescriptor<T>(int idx) where T : struct
         {
-            var descriptorArray = Core.Memory.Read<uint>(new IntPtr(Pointer.ToInt64() + 0x8));
+            var descriptorArray = Manager.Memory.Read<uint>(new IntPtr(Pointer.ToInt64() + 0x8));
             //return Core.Memory.Read<T>(new IntPtr(descriptorArray + idx));
-            return Core.Memory.Read<T>(new IntPtr(descriptorArray + (idx * 4)));
+            return Manager.Memory.Read<T>(new IntPtr(descriptorArray + (idx * 4)));
         }
 
         protected bool HasFlag(Enum idx, Enum flag)

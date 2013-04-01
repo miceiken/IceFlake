@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Core.Client.Objects;
+using IceFlake.Client.Objects;
 
-namespace Core.Client.API
+namespace IceFlake.Client.API
 {
     public class TradeSkill : Frame
     {

@@ -1187,6 +1187,14 @@ namespace IceFlake.Client.Patchables
 
     #region Player related
 
+    public enum InstanceDifficulty : int
+    {
+        Normal10 = 0,
+        Normal25 = 1,
+        Heroic10 = 2,
+        Heroic25 = 3,
+    }
+
     public enum MountType
     {
         Unknown = -1,

@@ -34,8 +34,8 @@ namespace IceFlake.Client.Objects
             {
                 if (_unitReaction == null)
                     _unitReaction =
-                        Core.Memory.RegisterDelegate<UnitReactionDelegate>((IntPtr)Pointers.Unit.UnitReaction);
-                return (UnitReaction)_unitReaction(Pointer, Core.LocalPlayer.Pointer);
+                        Manager.Memory.RegisterDelegate<UnitReactionDelegate>((IntPtr)Pointers.Unit.UnitReaction);
+                return (UnitReaction)_unitReaction(Pointer, Manager.LocalPlayer.Pointer);
             }
         }
 
@@ -61,7 +61,7 @@ namespace IceFlake.Client.Objects
 
         public WoWObject Target
         {
-            get { return Core.ObjectManager.GetObjectByGuid(TargetGuid); }
+            get { return Manager.ObjectManager.GetObjectByGuid(TargetGuid); }
         }
 
         public bool IsDead
@@ -311,12 +311,12 @@ namespace IceFlake.Client.Objects
 
         public uint ChanneledCastingId
         {
-            get { return Core.Memory.Read<uint>(new IntPtr(Pointer.ToInt64() + Pointers.Unit.ChanneledCastingId)); }
+            get { return Manager.Memory.Read<uint>(new IntPtr(Pointer.ToInt64() + Pointers.Unit.ChanneledCastingId)); }
         }
 
         public uint CastingId
         {
-            get { return Core.Memory.Read<uint>(new IntPtr(Pointer.ToInt64() + Pointers.Unit.CastingId)); }
+            get { return Manager.Memory.Read<uint>(new IntPtr(Pointer.ToInt64() + Pointers.Unit.CastingId)); }
         }
 
         public bool IsCasting
@@ -330,7 +330,7 @@ namespace IceFlake.Client.Objects
             {
                 if (_getAuraCount == null)
                     _getAuraCount =
-                        Core.Memory.RegisterDelegate<GetAuraCountDelegate>((IntPtr)Pointers.Unit.GetAuraCount);
+                        Manager.Memory.RegisterDelegate<GetAuraCountDelegate>((IntPtr)Pointers.Unit.GetAuraCount);
                 return _getAuraCount(Pointer);
             }
         }
@@ -350,7 +350,7 @@ namespace IceFlake.Client.Objects
             {
                 if (_creatureType == null)
                     _creatureType =
-                        Core.Memory.RegisterDelegate<CreatureTypeDelegate>((IntPtr)Pointers.Unit.GetCreatureType);
+                        Manager.Memory.RegisterDelegate<CreatureTypeDelegate>((IntPtr)Pointers.Unit.GetCreatureType);
                 return (CreatureType)_creatureType(Pointer);
             }
         }
@@ -361,7 +361,7 @@ namespace IceFlake.Client.Objects
             {
                 if (_getShapeshiftFormId == null)
                     _getShapeshiftFormId =
-                        Core.Memory.RegisterDelegate<GetShapeshiftFormIdDelegate>(
+                        Manager.Memory.RegisterDelegate<GetShapeshiftFormIdDelegate>(
                             (IntPtr)Pointers.Unit.ShapeshiftFormId);
                 return (ShapeshiftForm)_getShapeshiftFormId(Pointer);
             }
@@ -383,13 +383,13 @@ namespace IceFlake.Client.Objects
             {
                 if (_unitThreatInfo == null)
                     _unitThreatInfo =
-                        Core.Memory.RegisterDelegate<UnitThreatInfoDelegate>((IntPtr)Pointers.Unit.CalculateThreat);
+                        Manager.Memory.RegisterDelegate<UnitThreatInfoDelegate>((IntPtr)Pointers.Unit.CalculateThreat);
 
                 var threatStatus = new IntPtr();
                 var threatPct = new IntPtr();
                 var threatRawPct = new IntPtr();
                 int threatValue = 0;
-                var storageField = Core.Memory.Read<IntPtr>(Core.LocalPlayer.Pointer + 0x08);
+                var storageField = Manager.Memory.Read<IntPtr>(Manager.LocalPlayer.Pointer + 0x08);
                 _unitThreatInfo(Pointer, storageField, ref threatStatus, ref threatPct, ref threatRawPct,
                                 ref threatValue);
 
@@ -400,14 +400,14 @@ namespace IceFlake.Client.Objects
         public bool HasAura(int spellId)
         {
             if (_hasAura == null)
-                _hasAura = Core.Memory.RegisterDelegate<HasAuraDelegate>((IntPtr)Pointers.Unit.HasAuraBySpellId);
+                _hasAura = Manager.Memory.RegisterDelegate<HasAuraDelegate>((IntPtr)Pointers.Unit.HasAuraBySpellId);
             return _hasAura(Pointer, spellId);
         }
 
         public IntPtr GetAuraPointer(int index)
         {
             if (_getAura == null)
-                _getAura = Core.Memory.RegisterDelegate<GetAuraDelegate>((IntPtr)Pointers.Unit.GetAura);
+                _getAura = Manager.Memory.RegisterDelegate<GetAuraDelegate>((IntPtr)Pointers.Unit.GetAura);
             return _getAura(Pointer, index);
         }
 

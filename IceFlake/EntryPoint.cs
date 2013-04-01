@@ -13,7 +13,7 @@ namespace IceFlake
         {
             FileLogger.Instance = new FileLogger();
             Log.WriteLine("Initializing IceFlake");
-            Core.Initialize();
+            Manager.Initialize();
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

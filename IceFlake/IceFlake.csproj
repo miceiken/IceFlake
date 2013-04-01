@@ -51,10 +51,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Client\API\API.cs" />
+    <Compile Include="Client\API\Auction.cs" />
+    <Compile Include="Client\API\Companion.cs" />
+    <Compile Include="Client\API\Frame.cs" />
+    <Compile Include="Client\API\Gossip.cs" />
+    <Compile Include="Client\API\Inventory.cs" />
+    <Compile Include="Client\API\Login.cs" />
+    <Compile Include="Client\API\Merchant.cs" />
+    <Compile Include="Client\API\Profession.cs" />
+    <Compile Include="Client\API\QuestGossip.cs" />
+    <Compile Include="Client\API\Talent.cs" />
+    <Compile Include="Client\API\Taxi.cs" />
+    <Compile Include="Client\API\TradeSkill.cs" />
+    <Compile Include="Client\API\Trainer.cs" />
+    <Compile Include="Client\ClientServices.cs" />
+    <Compile Include="Client\Collections\AuraCollection.cs" />
     <Compile Include="Client\Collections\SpellCollection.cs" />
+    <Compile Include="Client\Events.cs" />
     <Compile Include="Client\Helper.cs" />
     <Compile Include="Client\Location.cs" />
+    <Compile Include="Client\LuaInterface.cs" />
     <Compile Include="Client\ObjectManager.cs" />
+    <Compile Include="Client\Objects\WoWAura.cs" />
     <Compile Include="Client\Objects\WoWContainer.cs" />
     <Compile Include="Client\Objects\WoWCorpse.cs" />
     <Compile Include="Client\Objects\WoWDynamicObject.cs" />
@@ -65,13 +84,17 @@
     <Compile Include="Client\Objects\WoWPlayer.cs" />
     <Compile Include="Client\Objects\WoWSpell.cs" />
     <Compile Include="Client\Objects\WoWUnit.cs" />
+    <Compile Include="Client\Party.cs" />
     <Compile Include="Client\Patchables\ClientDB.cs" />
     <Compile Include="Client\Patchables\Constants.cs" />
     <Compile Include="Client\Patchables\Descriptors.cs" />
     <Compile Include="Client\Patchables\Pointers.cs" />
     <Compile Include="Client\Patchables\Structures.cs" />
+    <Compile Include="Client\Raid.cs" />
+    <Compile Include="Client\World.cs" />
     <Compile Include="Client\WoWDB.cs" />
-    <Compile Include="Core.cs" />
+    <Compile Include="Client\WoWScript.cs" />
+    <Compile Include="Manager.cs" />
     <Compile Include="DirectX\Direct3D.cs" />
     <Compile Include="DirectX\EndSceneHandler.cs" />
     <Compile Include="FileLogger.cs" />
@@ -115,9 +138,7 @@
       <Name>GreyMagic</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Client\API\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

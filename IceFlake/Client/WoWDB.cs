@@ -14,11 +14,11 @@ namespace IceFlake.Client
         public WoWDB()
         {
             for (var tableBase = (IntPtr)Pointers.DBC.RegisterBase;
-                 Core.Memory.Read<byte>(tableBase) != 0xC3;
+                 Manager.Memory.Read<byte>(tableBase) != 0xC3;
                  tableBase += 0x11)
             {
-                var index = Core.Memory.Read<uint>(tableBase + 1);
-                var tablePtr = new IntPtr(Core.Memory.Read<int>(tableBase + 0xB) + 0x18);
+                var index = Manager.Memory.Read<uint>(tableBase + 1);
+                var tablePtr = new IntPtr(Manager.Memory.Read<int>(tableBase + 0xB) + 0x18);
                 Tables.Add((ClientDB)index, new DbTable(tablePtr));
             }
         }
@@ -36,7 +36,7 @@ namespace IceFlake.Client
             public DbTable(IntPtr address)
             {
                 Address = address;
-                var h = Core.Memory.Read<DbHeader>(Address);
+                var h = Manager.Memory.Read<DbHeader>(Address);
                 MaxIndex = h.MaxIndex;
                 MinIndex = h.MinIndex;
             }
@@ -53,7 +53,7 @@ namespace IceFlake.Client
             {
                 if (_getLocalizedRow == null)
                 {
-                    _getLocalizedRow = Core.Memory.RegisterDelegate<ClientDb_GetLocalizedRow>((IntPtr)Pointers.DBC.GetLocalizedRow);
+                    _getLocalizedRow = Manager.Memory.RegisterDelegate<ClientDb_GetLocalizedRow>((IntPtr)Pointers.DBC.GetLocalizedRow);
                 }
                 IntPtr rowPtr = Marshal.AllocHGlobal(4 * 4 * 256);
                 int tmp = _getLocalizedRow(new IntPtr(Address.ToInt32() - 0x18), index, rowPtr);
@@ -69,7 +69,7 @@ namespace IceFlake.Client
             {
                 if (_getRow == null)
                 {
-                    _getRow = Core.Memory.RegisterDelegate<ClientDb_GetRow>((IntPtr)Pointers.DBC.GetRow);
+                    _getRow = Manager.Memory.RegisterDelegate<ClientDb_GetRow>((IntPtr)Pointers.DBC.GetRow);
                 }
                 var ret = new IntPtr(_getRow(new IntPtr(Address.ToInt32()), index));
                 return ret == IntPtr.Zero ? null : new Row(ret, false);
@@ -143,11 +143,11 @@ namespace IceFlake.Client
                         if (typeof(T) == typeof(string))
                         {
                             // Sometimes.... generics ****ing suck
-                            object s = Marshal.PtrToStringAnsi(Core.Memory.Read<IntPtr>(new IntPtr((uint)_rowPtr + (index * 4))));
+                            object s = Marshal.PtrToStringAnsi(Manager.Memory.Read<IntPtr>(new IntPtr((uint)_rowPtr + (index * 4))));
                             return (T)s;
                         }
 
-                        return Core.Memory.Read<T>(new IntPtr((uint)_rowPtr + (index * 4)));
+                        return Manager.Memory.Read<T>(new IntPtr((uint)_rowPtr + (index * 4)));
                     }
                     catch
                     {

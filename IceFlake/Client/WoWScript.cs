@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Core.Client
+namespace IceFlake.Client
 {
     public static class WoWScript
     {

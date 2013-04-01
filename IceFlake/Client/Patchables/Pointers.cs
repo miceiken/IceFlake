@@ -6,8 +6,8 @@
 
         internal class CVar
         {
-            internal static uint LookupRegistered = 0x6CA80; //@
-            internal static uint Set = 0x6BF50; //@
+            internal static uint LookupRegistered = 0x6CA80; // UPDATE
+            internal static uint Set = 0x6BF50; // UPDATE
         }
 
         #endregion
@@ -16,7 +16,7 @@
 
         internal class Container
         {
-            internal static uint EquippedBagGUID = 0xCDBF40; //@
+            internal static uint EquippedBagGUID = 0xCDBF40; // UPDATE
             internal static uint GetBagAtIndex = 0x005D6F20;
             internal static uint LootWindowOffset = 0x00BFA8D8;
         }
@@ -29,9 +29,9 @@
         {
             internal static uint WorldFrame = 0x00B7436C;
             internal static uint ActiveCamera = 0x7E20;
-            internal static uint AspectRatio = 0xAD743C;
-            internal static uint GetFarClip = 0x6EBC50; //@
-            internal static uint RenderBackground = 0x2532E0;
+            internal static uint AspectRatio = 0xAD743C; // UPDATE
+            internal static uint GetFarClip = 0x6EBC50; // UPDATE
+            internal static uint RenderBackground = 0x2532E0; // UPDATE
         }
 
         #endregion
@@ -40,7 +40,7 @@
 
         internal class Events
         {
-            internal static uint EventVictim = 0x563DD0; //@
+            internal static uint EventVictim = 0x563DD0; // UPDATE
         }
 
         #endregion
@@ -49,13 +49,12 @@
 
         internal class Item
         {
-            internal static uint UseItem = 0x47CD10; //@  
-            internal static uint GetItemSparseRecPtr = 0x47B700; //@ 0x47CDC0;
+            internal static uint UseItem = 0x47CD10; // UPDATE
+            internal static uint GetItemSparseRecPtr = 0x47B700; // UPDATE
 
-            //New
-            internal static uint GetClass = 0x47B250;
-            internal static uint GetSubclass = 0x47B290;
-            internal static uint InventoryType = 0x47B2D0;
+            internal static uint GetClass = 0x47B250; // UPDATE
+            internal static uint GetSubclass = 0x47B290; // UPDATE
+            internal static uint InventoryType = 0x47B2D0; // UPDATE
         }
 
         #endregion
@@ -67,11 +66,12 @@
             internal static uint ClickToMove = 0x00727400;
             internal static uint SetFacing = 0x004F42A0;
             internal static uint IsClickMoving = 0x00721F90;
-            internal static uint StopCTM = 0x0072B3A0; 
-            internal static uint GetRuneReadyBySlot = 0x629940; //@
+            internal static uint StopCTM = 0x0072B3A0;
+            internal static uint GetRuneReadyBySlot = 0x629940; // UPDATE
             internal static uint CorpsePosition = 0x0051F430;
             internal static uint ComboPoints = 0x00BD084D;
 
+            // UPDATE 
             internal static uint CurrentSpeed = 0x850;
             internal static uint SwimSpeed = 0x810;
             internal static uint RunSpeed = 0x808;
@@ -140,10 +140,9 @@
         // 3.3.5a: 12340
         internal class ObjectManager
         {
-            internal static uint
-                EnumVisibleObjects = 0x004D4B30,
-                GetObjectByGuid = 0x004D4DB0,
-                GetLocalPlayerGuid = 0x004D3790;
+            internal static uint EnumVisibleObjects = 0x004D4B30;
+            internal static uint GetObjectByGuid = 0x004D4DB0;
+            internal static uint GetLocalPlayerGuid = 0x004D3790;
         }
 
         #endregion
@@ -152,13 +151,13 @@
 
         internal class Other
         {
-            internal static uint PerformanceCounter = 0x0086AE20; //?
+            internal static uint PerformanceCounter = 0x0086AE20; // UNCONFIRMED
             internal static uint LastHardwareAction = 0x00B499A4;
             internal static uint IsBobbing = 0xBC;
-            internal static uint GameState = 0xC6BBDE; //@
-            internal static uint WardenBase = 0x00BBD344; //@
-            internal static uint IsLoading = 0xCC6FF0; //@
-            internal static uint RealmName = 0xDC9766; //@
+            internal static uint GameState = 0x00B6A9E0;
+            internal static uint WardenBase = 0x00BBD344; // UPDATE
+            internal static uint IsLoading = 0xCC6FF0; // UPDATE
+            internal static uint RealmName = 0xDC9766; // UPDATE
             // return ( InstanceDifficulty* )0x00C4EC2C;
             internal static uint InstanceDifficulty = 0x00C4EC2C;
         }
@@ -170,7 +169,7 @@
         // 3.3.5a: 12340
         internal class Party
         {
-            internal static uint PartyArray = 0x00BD1948; // 0x00C4FCC8?
+            internal static uint PartyArray = 0x00BD1948; // UNCONFIRMED: 0x00C4FCC8?
         }
 
         #endregion
@@ -197,7 +196,9 @@
             internal static uint SpellBook = 0x00BE5D88;
             internal static uint CastSpell = 0x0080DA40;
             internal static uint GetSpellCooldown = 0x00807980;
-            internal static uint GetSpellEffectRec = 0x953B0; // @
+            internal static uint GetSpellEffectRec = 0x953B0; // UPDATE
+
+            internal static uint FirstActionBarSpellId = 0xC1E358;
         }
 
         #endregion
@@ -226,8 +227,8 @@
         internal class World
         {
             internal static uint Traceline = 0x007A3B70;
-            internal static uint CurrentMapId = 0xC6BCFC; //@
-            internal static uint ContinentID = 0xA724AC; //@
+            internal static uint CurrentMapId = 0xC6BCFC; // UPDATE
+            internal static uint ContinentID = 0xA724AC; // UPDATE
             internal static uint ZoneID = 0x00BD080C;
         }
 

@@ -63,12 +63,12 @@ namespace IceFlake.DirectX
                                                CreateFlags.HardwareVertexProcessing,
                                                new PresentParameters {BackBufferWidth = 1, BackBufferHeight = 1}))
                 {
-                    endScenePointer = Core.Memory.GetObjectVtableFunction(tmpDevice.ComPointer, VMT_ENDSCENE);
+                    endScenePointer = Manager.Memory.GetObjectVtableFunction(tmpDevice.ComPointer, VMT_ENDSCENE);
                 }
             }
 
-            _endSceneDelegate = Core.Memory.RegisterDelegate<Direct3D9EndScene>(endScenePointer);
-            _endSceneHook = Core.Memory.Detours.CreateAndApply(_endSceneDelegate, new Direct3D9EndScene(EndSceneHook),
+            _endSceneDelegate = Manager.Memory.RegisterDelegate<Direct3D9EndScene>(endScenePointer);
+            _endSceneHook = Manager.Memory.Detours.CreateAndApply(_endSceneDelegate, new Direct3D9EndScene(EndSceneHook),
                                                                   "D9EndScene");
 
             Log.WriteLine("EndScene detoured at 0x{0:X}", endScenePointer);

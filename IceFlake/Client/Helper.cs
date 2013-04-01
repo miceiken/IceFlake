@@ -15,7 +15,7 @@ namespace IceFlake.Client
             {
                 if (_performanceCounter == null)
                     _performanceCounter =
-                        Core.Memory.RegisterDelegate<PerformanceCounterDelegate>(
+                        Manager.Memory.RegisterDelegate<PerformanceCounterDelegate>(
                             (IntPtr)Pointers.Other.PerformanceCounter);
 
                 return _performanceCounter();
@@ -30,7 +30,7 @@ namespace IceFlake.Client
 
         public static void ResetHardwareAction()
         {
-            Core.Memory.Write(Core.Memory.GetAbsolute((IntPtr)Pointers.Other.LastHardwareAction),
+            Manager.Memory.Write(Manager.Memory.GetAbsolute((IntPtr)Pointers.Other.LastHardwareAction),
                                  PerformanceCount);
         }
 

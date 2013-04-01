@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Core.Client.API
+namespace IceFlake.Client.API
 {
     public class Trainer : Frame
     {

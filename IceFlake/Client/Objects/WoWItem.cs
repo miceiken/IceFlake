@@ -78,15 +78,15 @@ namespace IceFlake.Client.Objects
 
         public void Use()
         {
-            Use(Core.LocalPlayer);
+            Use(Manager.LocalPlayer);
         }
 
         public void Use(WoWObject target)
         {
             if (_useItem == null)
-                _useItem = Core.Memory.RegisterDelegate<UseItemDelegate>((IntPtr)Pointers.Item.UseItem);
+                _useItem = Manager.Memory.RegisterDelegate<UseItemDelegate>((IntPtr)Pointers.Item.UseItem);
             var guid = target.Guid;
-            _useItem(Core.LocalPlayer.Pointer, ref guid, 0);
+            _useItem(Manager.LocalPlayer.Pointer, ref guid, 0);
         }
 
         public bool IsSoulbound
@@ -115,7 +115,7 @@ namespace IceFlake.Client.Objects
             // Backpack
             for (var i = 0; i < 16; i++)
             {
-                var item = Core.LocalPlayer.GetBackpackItem(i);
+                var item = Manager.LocalPlayer.GetBackpackItem(i);
                 if (item == null) continue;
                 Log.WriteLine("B0S{0}={1}", i, item.Name);
                 if (item.Guid == this.Guid)
