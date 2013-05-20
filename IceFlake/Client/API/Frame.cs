@@ -28,5 +28,10 @@
         {
             WoWScript.ExecuteNoResults(frameName + ":Hide()");
         }
+
+        //public static explicit operator Frame(string frameName)
+        //{
+        //    return new Frame(frameName);
+        //}
     }
 }

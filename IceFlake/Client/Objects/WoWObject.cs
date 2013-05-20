@@ -210,6 +210,11 @@ namespace IceFlake.Client.Objects
             return "[\"" + Name + "\", Distance = " + (int)Distance + ", Type = " + Type + "]";
         }
 
+        public static implicit operator IntPtr(WoWObject obj)
+        {
+            return obj.Pointer;
+        }
+
         #region Nested type: GetObjectFacingDelegate
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]

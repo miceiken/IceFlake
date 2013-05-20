@@ -27,7 +27,8 @@ namespace IceFlake.Client
 
         public static string CurrentMap
         {
-            get { return Manager.DBC[ClientDB.Map].GetLocalizedRow((int)CurrentMapId).GetStruct<MapRec>().m_MapName_lang; }
+            //get { return Manager.DBC[ClientDB.Map].GetLocalizedRow((int)CurrentMapId).GetStruct<MapRec>().m_MapName_lang; }
+            get { return Manager.Memory.ReadString((IntPtr)Pointers.World.InternalMapName); }
         }
 
         public static uint CurrentZoneId

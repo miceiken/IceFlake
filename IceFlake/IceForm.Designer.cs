@@ -30,6 +30,7 @@
         {
             this.rbLogBox = new System.Windows.Forms.RichTextBox();
             this.btnDump = new System.Windows.Forms.Button();
+            this.btnGeneratePath = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // rbLogBox
@@ -53,11 +54,22 @@
             this.btnDump.UseVisualStyleBackColor = true;
             this.btnDump.Click += new System.EventHandler(this.btnDump_Click);
             // 
+            // btnGeneratePath
+            // 
+            this.btnGeneratePath.Location = new System.Drawing.Point(0, 0);
+            this.btnGeneratePath.Name = "btnGeneratePath";
+            this.btnGeneratePath.Size = new System.Drawing.Size(75, 23);
+            this.btnGeneratePath.TabIndex = 2;
+            this.btnGeneratePath.Text = "Path";
+            this.btnGeneratePath.UseVisualStyleBackColor = true;
+            this.btnGeneratePath.Click += new System.EventHandler(this.btnGeneratePath_Click);
+            // 
             // IceForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(306, 330);
+            this.Controls.Add(this.btnGeneratePath);
             this.Controls.Add(this.btnDump);
             this.Controls.Add(this.rbLogBox);
             this.MaximizeBox = false;
@@ -74,6 +86,7 @@
 
         private System.Windows.Forms.RichTextBox rbLogBox;
         private System.Windows.Forms.Button btnDump;
+        private System.Windows.Forms.Button btnGeneratePath;
     }
 }
 

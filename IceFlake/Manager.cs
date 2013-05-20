@@ -23,19 +23,22 @@ namespace IceFlake
 
         internal static void Start(object sender, EventArgs e)
         {
+            //Debugger.Break();
             Stopwatch sw = Stopwatch.StartNew();
 
             ObjectManager = new ObjectManager();
-            AssemblyAnalyzer.RegisterTarget(ObjectManager);
+            AssemblyAnalyzer.RegisterTarget(ObjectManager);            
 
             DBC = new WoWDB();
 
-            //LuaInterface.Initialize();
+            Movement = new Movement();
 
-            //Events = new Events();
-            //AssemblyAnalyzer.RegisterTarget(Events);
+            LuaInterface.Initialize();
 
-            //Helper.Initialize();
+            Events = new Events();
+            AssemblyAnalyzer.RegisterTarget(Events);
+
+            Helper.Initialize();
 
             Spellbook = new SpellCollection();
             AssemblyAnalyzer.RegisterTarget(Spellbook);
@@ -44,6 +47,7 @@ namespace IceFlake
 
             sw.Stop();
             Log.WriteLine("Initialization took {0} ms", sw.ElapsedMilliseconds);
+            
         }
 
         internal static void Stop(object sender, EventArgs e)
@@ -63,6 +67,10 @@ namespace IceFlake
 
         internal static WoWDB DBC { get; private set; }
 
+        internal static Movement Movement { get; private set; }        
+
         internal static SpellCollection Spellbook { get; private set; }
+
+        internal static Events Events { get; private set; }
     }
 }

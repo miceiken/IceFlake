@@ -101,10 +101,10 @@
             internal static uint LuaPCall = 0x0084EC50;
             internal static uint LuaGetTop = 0x0084DBD0;
             internal static uint LuaSetTop = 0x0084DBF0;
-            internal static uint LuaType = 0x11D170; //@
+            internal static uint LuaType = 0x0084DEB0;
             internal static uint LuaToNumber = 0x0084E030;
             internal static uint LuaToLString = 0x0084E0E0;
-            internal static uint LuaToBoolean = 0x0044E2C0;
+            internal static uint LuaToBoolean = 0x0084E0B0;
         };
 
         #endregion
@@ -227,9 +227,11 @@
         internal class World
         {
             internal static uint Traceline = 0x007A3B70;
-            internal static uint CurrentMapId = 0xC6BCFC; // UPDATE
-            internal static uint ContinentID = 0xA724AC; // UPDATE
+            internal static uint CurrentMapId = 0x00AB63BC;
+            internal static uint InternalMapName = 0x00CE06D0;
             internal static uint ZoneID = 0x00BD080C;
+            internal static uint ZoneText = 0x00BD0780;
+            internal static uint SubZoneText = 0x00BD0784;            
         }
 
         #endregion
