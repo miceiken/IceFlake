@@ -291,51 +291,51 @@ namespace IceFlake.Client.Objects
 
         #region Movement
 
-        //public void Ascend()
-        //{
-        //    WoWScript.ExecuteNoResults("JumpOrAscendStart()");
-        //}
+        public void Ascend()
+        {
+            WoWScript.ExecuteNoResults("JumpOrAscendStart()");
+        }
 
-        //public void Jump()
-        //{
-        //    WoWScript.ExecuteNoResults("JumpOrAscendStart()");
-        //}
+        public void Jump()
+        {
+            WoWScript.ExecuteNoResults("JumpOrAscendStart()");
+        }
 
-        //public void Descend()
-        //{
-        //    WoWScript.ExecuteNoResults("SitStandOrDescendStart()");
-        //}
+        public void Descend()
+        {
+            WoWScript.ExecuteNoResults("SitStandOrDescendStart()");
+        }
 
-        //public void MoveBackward()
-        //{
-        //    WoWScript.ExecuteNoResults("MoveBackwardStart()");
-        //}
+        public void MoveBackward()
+        {
+            WoWScript.ExecuteNoResults("MoveBackwardStart()");
+        }
 
-        //public void MoveForward()
-        //{
-        //    WoWScript.ExecuteNoResults("MoveForwardStart()");
-        //}
+        public void MoveForward()
+        {
+            WoWScript.ExecuteNoResults("MoveForwardStart()");
+        }
 
-        //public void StopMoving()
-        //{
-        //    WoWScript.ExecuteNoResults(
-        //        "AscendStop() DescendStop() MoveBackwardStop() MoveForwardStop() StrafeLeftStop() StrafeRightStop()");
-        //}
+        public void StopMoving()
+        {
+            WoWScript.ExecuteNoResults(
+                "AscendStop() DescendStop() MoveBackwardStop() MoveForwardStop() StrafeLeftStop() StrafeRightStop()");
+        }
 
-        //public void StrafeLeft()
-        //{
-        //    WoWScript.ExecuteNoResults("StrafeLeftStart()");
-        //}
+        public void StrafeLeft()
+        {
+            WoWScript.ExecuteNoResults("StrafeLeftStart()");
+        }
 
-        //public void StrafeRight()
-        //{
-        //    WoWScript.ExecuteNoResults("StrafeRightStart()");
-        //}
+        public void StrafeRight()
+        {
+            WoWScript.ExecuteNoResults("StrafeRightStart()");
+        }
 
-        //public void Dismount()
-        //{
-        //    WoWScript.ExecuteNoResults("Dismount()");
-        //}
+        public void Dismount()
+        {
+            WoWScript.ExecuteNoResults("Dismount()");
+        }
 
         #endregion
 
@@ -378,10 +378,10 @@ namespace IceFlake.Client.Objects
             _setFacing(Pointer, Helper.PerformanceCount, angle);
         }
 
-        //public void StartAttack()
-        //{
-        //    WoWScript.Execute("StartAttack()");
-        //}
+        public void StartAttack()
+        {
+            WoWScript.Execute("StartAttack()");
+        }
 
         #region Nested type: IsClickMovingDelegate
 

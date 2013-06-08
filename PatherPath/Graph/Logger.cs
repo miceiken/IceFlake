@@ -14,7 +14,7 @@ namespace PatherPath
         }
         public static void Debug(string message)
         {
-            if (Handle == null) Handle = File.AppendText("pathlog.txt");
+            if (Handle == null) Handle = File.AppendText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "pathlog.txt"));
             Handle.WriteLine(message);
         }
     }

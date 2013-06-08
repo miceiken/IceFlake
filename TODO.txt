@@ -1,0 +1,38 @@
+What needs to be done:
+=======================
+
+Refactoring a lot of the logic. The EndScene handling can be improved by great lengths, but this goes beyond my capacity.
+The code needs to be more consistent in style and design. Do we go for OOP or more of the static classes?
+
+************
+
+Most of the code here was taken from a project meant for later versions of WoW.
+Many changes have been applied since 3.3.5a and a bunch of stuff needs to be backported.
+
+- Inventory (see WoWLocalPlayer.cs and WoWItem.cs)
+	Basicly, all the WDB stuff (i.e. ItemRec and ItemRecSparse)
+
+- Drawing in-game
+	Mostly just finding and updating the pointers
+
+- Implement direct packet interception?
+	If it should be needed (see ClientServices.cs)
+
+- Make a proper Movement helper
+	To be able to properly support PPather
+
+- Refactor the DBC reader?
+
+- Implement & Improve World functions
+	Referring to World.cs
+
+- Add a plugin/scripting system
+	Backup plan: Use old one
+
+- Double check and verify the structures and constants we have
+
+************
+
+PPather needs a proper implementation and optimization.
+The project shut down in WotLK so it shouldn't be that much of a hassle.
+However, now it needs to be able to handled being injected and locked MPQ files.

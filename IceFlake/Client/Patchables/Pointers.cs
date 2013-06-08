@@ -40,7 +40,7 @@
 
         internal class Events
         {
-            internal static uint EventVictim = 0x563DD0; // UPDATE
+            internal static uint EventVictim = 0x004DDBD0;
         }
 
         #endregion
@@ -49,12 +49,12 @@
 
         internal class Item
         {
-            internal static uint UseItem = 0x47CD10; // UPDATE
+            internal static uint UseItem = 0x00708C20; // unconfirmed, UPDATE
             internal static uint GetItemSparseRecPtr = 0x47B700; // UPDATE
 
             internal static uint GetClass = 0x47B250; // UPDATE
             internal static uint GetSubclass = 0x47B290; // UPDATE
-            internal static uint InventoryType = 0x47B2D0; // UPDATE
+            internal static uint InventoryType = 0x00707280;
         }
 
         #endregion
@@ -155,9 +155,8 @@
             internal static uint LastHardwareAction = 0x00B499A4;
             internal static uint IsBobbing = 0xBC;
             internal static uint GameState = 0x00B6A9E0;
-            internal static uint WardenBase = 0x00BBD344; // UPDATE
-            internal static uint IsLoading = 0xCC6FF0; // UPDATE
-            internal static uint RealmName = 0xDC9766; // UPDATE
+            internal static uint IsLoading = 0x00B6AA38;
+            internal static uint RealmName = 0x00C79B9E;
             // return ( InstanceDifficulty* )0x00C4EC2C;
             internal static uint InstanceDifficulty = 0x00C4EC2C;
         }

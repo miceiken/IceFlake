@@ -24,8 +24,8 @@ namespace IceFlake.Client
 
         public static void Initialize()
         {
-            //Manager.Events.Register("PLAYER_REGEN_DISABLED", SetInCombat);
-            //Manager.Events.Register("PLAYER_REGEN_ENABLED", UnsetInCombat);
+            Manager.Events.Register("PLAYER_REGEN_DISABLED", SetInCombat);
+            Manager.Events.Register("PLAYER_REGEN_ENABLED", UnsetInCombat);
         }
 
         public static void ResetHardwareAction()

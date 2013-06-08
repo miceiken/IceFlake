@@ -38,6 +38,10 @@ namespace WowTriangles
         ModelManager modelmanager;
         WMOManager wmomanager;
 
+        private string BaseDir
+        {
+            get { return AppDomain.CurrentDomain.BaseDirectory; }
+        }
 
         Dictionary<String, int> zoneToMapId = new Dictionary<string, int>();
         Dictionary<int, String> mapIdToFile = new Dictionary<int, string>();
@@ -88,7 +92,7 @@ namespace WowTriangles
             wmomanager = new WMOManager(archive, modelmanager, 30);
 
 
-            var afp = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Libs", "AreaTable.dbc");
+            var afp = Path.Combine(BaseDir, "Libs", "AreaTable.dbc");
             archive.ExtractFile("DBFilesClient\\AreaTable.dbc", afp);
             DBC areas = new DBC();
             DBCFile af = new DBCFile(afp, areas);
@@ -185,7 +189,7 @@ namespace WowTriangles
                 }
             }
 
-            var mfp = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Libs", "Map.dbc");
+            var mfp = Path.Combine(BaseDir, "Libs", "Map.dbc");
             archive.ExtractFile("DBFilesClient\\Map.dbc", mfp);
             DBC maps = new DBC();
             DBCFile mf = new DBCFile(mfp, maps);

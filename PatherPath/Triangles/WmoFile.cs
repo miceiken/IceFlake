@@ -183,17 +183,19 @@ namespace Wmo
     {
         StormDll.ArchiveSet set;
         ModelManager modelmanager;
+        private string baseDir;
 
         public WMOManager(StormDll.ArchiveSet set, ModelManager modelmanager, int maxItems)
             : base(maxItems)
         {
+            this.baseDir = AppDomain.CurrentDomain.BaseDirectory;
             this.set = set;
             this.modelmanager = modelmanager;
         }
 
         public override WMO Load(String path)
         {
-            string localPath = "Libs\\wmo.tmp";
+            string localPath = Path.Combine(baseDir, "Libs", "wmo.tmp");
             set.ExtractFile(path, localPath);
             WMO w = new WMO();
             w.fileName = path;
@@ -398,7 +400,7 @@ namespace Wmo
 
 
             //Console.WriteLine("Load model " + path);
-            string localPath = "Libs\\model.tmp";
+            string localPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Libs", "model.tmp");
             if (set.ExtractFile(file, localPath))
             {
                 Model w = new Model();
@@ -759,7 +761,7 @@ namespace Wmo
                       WDT wdt, WMOManager wmomanager, ModelManager modelmanager)
         {
             string wdtfile = "World\\Maps\\" + name + "\\" + name + ".wdt";
-            if (!archive.ExtractFile(wdtfile, "Libs\\wdt.tmp"))
+            if (!archive.ExtractFile(wdtfile, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Libs", "wdt.tmp")))
                 return;
 
             loaded = true;
@@ -769,7 +771,7 @@ namespace Wmo
             this.modelmanager = modelmanager;
             this.archive = archive;
 
-            stream = System.IO.File.OpenRead("Libs\\wdt.tmp");
+            stream = System.IO.File.OpenRead(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Libs", "wdt.tmp"));
             file = new System.IO.BinaryReader(stream);
 
             while (file.BaseStream.Position != file.BaseStream.Length)
@@ -819,11 +821,11 @@ namespace Wmo
                 MapTile t = new MapTile();
 
                 string filename = "World\\Maps\\" + name + "\\" + name + "_" + x + "_" + y + ".adt";
-                if (archive.ExtractFile(filename, "Libs\\adt.tmp"))
+                if (archive.ExtractFile(filename, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Libs", "adt.tmp")))
                 {
                     PatherPath.Logger.Debug("Reading adt: " + filename);
                     //PPather.mover.Stop();
-                    MapTileFile f = new MapTileFile("Libs\\adt.tmp", t, wmomanager, modelmanager);
+                    MapTileFile f = new MapTileFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Libs", "adt.tmp"), t, wmomanager, modelmanager);
                     if (t.models.Count != 0 || t.wmos.Count != 0)
                     {
                         //Console.WriteLine(name + " " + x + " " + z + " models: " + t.models.Count + " wmos: " + t.wmos.Count);

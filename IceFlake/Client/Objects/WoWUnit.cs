@@ -74,14 +74,29 @@ namespace IceFlake.Client.Objects
             get { return BitConverter.GetBytes(GetDescriptor<uint>(WoWUnitFields.UNIT_FIELD_POWER1)); }
         }
 
+        private byte[] UnitBytes0
+        {
+            get { return BitConverter.GetBytes(GetDescriptor<uint>(WoWUnitFields.UNIT_FIELD_BYTES_0)); }
+        }
+
+        private byte[] UnitBytes1
+        {
+            get { return BitConverter.GetBytes(GetDescriptor<uint>(WoWUnitFields.UNIT_FIELD_BYTES_1)); }
+        }
+
+        private byte[] UnitBytes2
+        {
+            get { return BitConverter.GetBytes(GetDescriptor<uint>(WoWUnitFields.UNIT_FIELD_BYTES_2)); }
+        }
+
         public WoWRace Race
         {
-            get { return (WoWRace)DisplayPower[0]; }
+            get { return (WoWRace)UnitBytes0[0]; }
         }
 
         public WoWClass Class
         {
-            get { return (WoWClass)DisplayPower[1]; }
+            get { return (WoWClass)UnitBytes0[1]; }
         }
 
         public bool IsLootable

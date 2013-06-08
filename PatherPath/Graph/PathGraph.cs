@@ -20,6 +20,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Par = System.Threading.Tasks.Parallel;
 using WowTriangles;
+using System.IO;
+
 namespace PatherPath.Graph
 {
     public class PathGraph
@@ -38,7 +40,7 @@ namespace PatherPath.Graph
         */
 
         public const float CHUNK_BASE = 100000.0f; // Always keep positive
-        public string BaseDir = "Maps";
+        public string BaseDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Maps");
         public readonly string Continent;
         private SparseMatrix2D<GraphChunk> chunks;
         public ChunkedTriangleCollection triangleWorld;
@@ -648,6 +650,7 @@ namespace PatherPath.Graph
 
         public List<Location> CreatePath(Location fromLoc, Location toLoc, float howClose)
         {
+            Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
             Logger.Log("Creating Path from " + fromLoc.ToString() + " to " + toLoc.ToString());
 
             //GSpellTimer t = new GSpellTimer(0);
