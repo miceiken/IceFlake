@@ -71,8 +71,8 @@ namespace IceFlake.Client.Objects
             get
             {
                 for (var i = 0; i < 12; i++)
-                    if (GetDescriptor<uint>((int)WoWItemFields.ITEM_FIELD_ENCHANTMENT_1_1 + (i * 12)) > 0)
-                        yield return GetDescriptor<ItemEnchantment>((int)WoWItemFields.ITEM_FIELD_ENCHANTMENT_1_1 + (i * 12));
+                    if (GetAbsoluteDescriptor<uint>((int)WoWItemFields.ITEM_FIELD_ENCHANTMENT_1_1 * 0x4 + (i * 12)) > 0)
+                        yield return GetAbsoluteDescriptor<ItemEnchantment>((int)WoWItemFields.ITEM_FIELD_ENCHANTMENT_1_1 * 0x4 + (i * 12));
             }
         }
 
@@ -116,8 +116,8 @@ namespace IceFlake.Client.Objects
             for (var i = 0; i < 16; i++)
             {
                 var item = Manager.LocalPlayer.GetBackpackItem(i);
-                if (item == null) continue;
-                Log.WriteLine("B0S{0}={1}", i, item.Name);
+                if (item == null || !item.IsValid) continue;
+                //Log.WriteLine("B0S{0}={1}", i, item.Name);
                 if (item.Guid == this.Guid)
                 {
                     container = 0;
@@ -130,12 +130,13 @@ namespace IceFlake.Client.Objects
             for (var i = (int)BagSlot.Bag1; i < (int)BagSlot.Bank7; i++)
             {
                 var bag = WoWContainer.GetBagByIndex(i);
-                if (bag == null) continue;
+                if (bag == null || !bag.IsValid) continue;
                 for (var x = 0; x < bag.Slots; x++)
                 {
-                    if (bag.GetItemGuid(x) == 0ul) continue;
-                    Log.WriteLine("B{0}S{1}={2}", i, x, bag.GetItem(x).Name);
-                    if (bag.GetItemGuid(x) == this.Guid)
+                    var guid = bag.GetItemGuid(x);
+                    if (guid == 0ul) continue;
+                    //Log.WriteLine("B{0}S{1}={2}", i, x, bag.GetItem(x).Name);
+                    if (guid == this.Guid)
                     {
                         container = i + 1;
                         slot = x + 1;

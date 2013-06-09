@@ -194,9 +194,13 @@ namespace IceFlake.Client.Objects
 
         protected T GetDescriptor<T>(int idx) where T : struct
         {
+            return GetAbsoluteDescriptor<T>(idx * 0x4);
+        }
+
+        protected T GetAbsoluteDescriptor<T>(int offset) where T : struct
+        {
             var descriptorArray = Manager.Memory.Read<uint>(new IntPtr(Pointer.ToInt64() + 0x8));
-            //return Core.Memory.Read<T>(new IntPtr(descriptorArray + idx));
-            return Manager.Memory.Read<T>(new IntPtr(descriptorArray + (idx * 4)));
+            return Manager.Memory.Read<T>(new IntPtr(descriptorArray + offset));
         }
 
         protected bool HasFlag(Enum idx, Enum flag)

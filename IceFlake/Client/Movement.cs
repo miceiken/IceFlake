@@ -12,14 +12,30 @@ namespace IceFlake.Client
     {
         public Movement()
         {
-            Pather = new Pather(World.CurrentMap);
+            PatherInstance = new Pather(World.CurrentMap);
         }
 
-        private Pather Pather;
+        private Pather PatherInstance
+        {
+            get;
+            set;
+        }
+
+        private DateTime SleepTime
+        {
+            get;
+            set;
+        }
+
+        public Location CurrentLocation
+        {
+            get;
+            private set;
+        }
 
         public bool PathTo(Location pos)
         {
-            var path = Pather.Search(Manager.LocalPlayer.Location, pos);
+            var path = PatherInstance.Search(Manager.LocalPlayer.Location, pos);
             if (path == null)
             {
                 Log.WriteLine("Could not path to {0}", pos);
@@ -37,8 +53,6 @@ namespace IceFlake.Client
                 generatedPath.Enqueue(spot);
         }
 
-        private DateTime SleepTime;
-        private Location currentLocation;
         [EndSceneHandler]
         public void Direct3D_EndScene()
         {
@@ -54,10 +68,10 @@ namespace IceFlake.Client
             if (SleepTime >= DateTime.Now)
                 return;
 
-            while (generatedPath.Count > 0 && (currentLocation == default(Location) || Manager.LocalPlayer.Location.DistanceTo(currentLocation) < 3f))
-                currentLocation = generatedPath.Dequeue();
+            while (generatedPath.Count > 0 && (CurrentLocation == default(Location) || Manager.LocalPlayer.Location.DistanceTo(CurrentLocation) < 3f))
+                CurrentLocation = generatedPath.Dequeue();
 
-            MoveTo(currentLocation, 3f);
+            MoveTo(CurrentLocation, 3f);
 
             SleepTime = DateTime.Now + TimeSpan.FromMilliseconds(100);
         }

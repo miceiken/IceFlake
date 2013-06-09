@@ -40,7 +40,7 @@ namespace IceFlake.Client.Objects
             {
                 Log.WriteLine("LocalPlayer:");
                 Log.WriteLine("\tLevel {0} {1} {2}", Level, Race, Class);
-                Log.WriteLine("\tHealth: {0}/{1} ({2}%)", Health, MaxHealth, HealthPercentage);
+                Log.WriteLine("\tHealth: {0}/{1} ({2}%)", Health, MaxHealth, (int)HealthPercentage);
                 Log.WriteLine("\t{0}: {1}/{2} ({3}%)", "Mana", Power, MaxPower, PowerPercentage);
                 Log.WriteLine("\tPosition: {0}", Location);
             }
@@ -121,7 +121,7 @@ namespace IceFlake.Client.Objects
 
         public IEnumerable<WoWItem> EquippedItems
         {
-            get { return Enumerable.Range((int)EquipSlot.Start, (int)EquipSlot.End).Select(eq => GetEquippedItem(eq)).Where(item => item != null && item.IsValid); }
+            get { return Enumerable.Range((int)EquipSlot.Start, (int)EquipSlot.End + 1).Select(eq => GetEquippedItem(eq)).Where(item => item != null && item.IsValid); }
         }
 
         #endregion
@@ -133,7 +133,7 @@ namespace IceFlake.Client.Objects
             get
             {
                 return
-                    Enumerable.Range((int)BagSlot.Bag1, (int)BagSlot.Bag4).Select(bs => WoWContainer.GetBagByIndex(bs))
+                    Enumerable.Range((int)BagSlot.Bag1, (int)BagSlot.Bag4 + 1).Select(bs => WoWContainer.GetBagByIndex(bs))
                         .Where(container => container.IsValid);
             }
         }
@@ -143,7 +143,7 @@ namespace IceFlake.Client.Objects
             get
             {
                 return
-                    Enumerable.Range((int)BagSlot.Bank1, (int)BagSlot.Bank7).Select(
+                    Enumerable.Range((int)BagSlot.Bank1, (int)BagSlot.Bank7 + 1).Select(
                         bs => WoWContainer.GetBagByIndex(bs)).Where(container => container != null && container.IsValid);
             }
         }
@@ -153,7 +153,7 @@ namespace IceFlake.Client.Objects
             get
             {
                 return
-                    Enumerable.Range((int)BagSlot.Bag1, (int)BagSlot.Bank7).Select(
+                    Enumerable.Range((int)BagSlot.Bag1, (int)BagSlot.Bank7 + 1).Select(
                         bs => WoWContainer.GetBagByIndex(bs)).Where(container => container != null && container.IsValid);
             }
         }
@@ -164,7 +164,7 @@ namespace IceFlake.Client.Objects
 
         public WoWItem GetBackpackItem(int slot)
         {
-            var guid = GetDescriptor<ulong>((int)WoWPlayerFields.PLAYER_FIELD_PACK_SLOT_1 + (slot * 8));
+            var guid = GetAbsoluteDescriptor<ulong>((int)WoWPlayerFields.PLAYER_FIELD_PACK_SLOT_1 * 4 + (slot * 8));
             return Manager.ObjectManager.GetObjectByGuid(guid) as WoWItem;
         }
 
@@ -175,7 +175,7 @@ namespace IceFlake.Client.Objects
 
         public WoWItem GetEquippedItem(int slot)
         {
-            var guid = GetDescriptor<ulong>((int)WoWPlayerFields.PLAYER_FIELD_INV_SLOT_HEAD + (slot * 8));
+            var guid = GetAbsoluteDescriptor<ulong>((int)WoWPlayerFields.PLAYER_FIELD_INV_SLOT_HEAD * 4 + (slot * 8));
             return Manager.ObjectManager.GetObjectByGuid(guid) as WoWItem;
         }
 

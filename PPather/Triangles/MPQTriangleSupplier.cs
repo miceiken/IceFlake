@@ -25,10 +25,9 @@ namespace WowTriangles
         WMOManager wmomanager;
 
 
-        Dictionary<String, int> zoneToMapId = new Dictionary<string, int>();
-        Dictionary<int, String> mapIdToFile = new Dictionary<int, string>();
-
-        Dictionary<int, String> areaIdToName = new Dictionary<int, string>();
+        Dictionary<String, int> zoneToMapId;
+        Dictionary<int, String> mapIdToFile;
+        Dictionary<int, String> areaIdToName;
 
         public override void Close()
         {
@@ -67,6 +66,10 @@ namespace WowTriangles
             string regGameDir = archive.SetGameDirFromReg();
             //string gameDir = @"C:\WoW 335\Data\";
             //archive.SetGameDir(gameDir);
+
+            zoneToMapId = new Dictionary<string, int>();
+            mapIdToFile = new Dictionary<int, string>();
+            areaIdToName = new Dictionary<int, string>();
 
             PathGraph.Log("Game dir is " + regGameDir);
             archive.AddArchives(archiveNames);
@@ -113,12 +116,13 @@ namespace WowTriangles
                 }
                 else
                     TotalName = Name + ":" + ParentName;
-                try
+
+                if (!zoneToMapId.ContainsKey(Name) && !zoneToMapId.ContainsKey(TotalName))
                 {
                     zoneToMapId.Add(TotalName, WorldID);
                     //PathGraph.Log(TotalName + " => " + WorldID);
                 }
-                catch
+                else
                 {
                     int id;
                     zoneToMapId.TryGetValue(TotalName, out id);

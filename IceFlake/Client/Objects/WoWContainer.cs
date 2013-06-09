@@ -41,7 +41,7 @@ namespace IceFlake.Client.Objects
             if (index > 35 || index > Slots || index < 0)
                 return 0;
 
-            return GetDescriptor<ulong>((int)WoWContainerFields.CONTAINER_FIELD_SLOT_1 + (index * 8));
+            return GetAbsoluteDescriptor<ulong>((int)WoWContainerFields.CONTAINER_FIELD_SLOT_1 * 0x4 + (index * 8));
         }
 
         public WoWItem GetItem(int index)
