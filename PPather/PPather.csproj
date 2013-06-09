@@ -1,28 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{73C61620-7266-48AB-9B5B-C0BA2078DAB3}</ProjectGuid>
+    <ProjectGuid>{EC734271-9B29-4455-B191-41D25DAA6ABC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PatherPath</RootNamespace>
-    <AssemblyName>PatherPath</AssemblyName>
+    <RootNamespace>PPather</RootNamespace>
+    <AssemblyName>PPather</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation />
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Build\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -35,52 +29,30 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data.DataSetExtensions">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Graph\GraphChunk.cs" />
+    <Compile Include="Graph\ILocationHeuristics.cs" />
     <Compile Include="Graph\Location.cs" />
-    <Compile Include="Graph\Logger.cs" />
+    <Compile Include="Graph\Path.cs" />
     <Compile Include="Graph\PathGraph.cs" />
-    <Compile Include="Graph\SearchProgress.cs" />
     <Compile Include="Graph\Spot.cs" />
     <Compile Include="Graph\SpotData.cs" />
-    <Compile Include="Graph\SpotPaths.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Triangles\ChunkedTriangleCollection.cs" />
     <Compile Include="Triangles\MPQTriangleSupplier.cs" />
-    <Compile Include="Triangles\SimpleLinkedList.cs" />
     <Compile Include="Triangles\StormDll.cs" />
-    <Compile Include="Triangles\TriangleCollection.cs" />
-    <Compile Include="Triangles\TriangleMatrix.cs" />
-    <Compile Include="Triangles\TriangleOctree.cs" />
-    <Compile Include="Triangles\TriangleQuadtree.cs" />
-    <Compile Include="Triangles\TriangleSupplier.cs" />
+    <Compile Include="Triangles\Triangles.cs" />
     <Compile Include="Triangles\Utils.cs" />
     <Compile Include="Triangles\WmoFile.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Libs\ccode.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Libs\StormLib.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

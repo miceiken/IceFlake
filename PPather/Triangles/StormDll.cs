@@ -1,28 +1,16 @@
 /*
-  This file is part of ppather.
-
-    PPather is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    PPather is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with ppather.  If not, see <http://www.gnu.org/licenses/>.
-
-    Copyright Pontus Borg 2008
-  
+ *  Part of PPather
+ *  Copyright Pontus Borg 2008
+ * 
  */
+
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
-
+using PathGraph = PatherPath.Graph.PathGraph;
+using IOPath = System.IO.Path;
 
 namespace StormDll
 {
@@ -57,47 +45,47 @@ int   WINAPI SFileAddListFile(HANDLE hMpq, const char * szListFile);
 
           
          */
-        [DllImport("Libs\\StormLib.dll")]
+        [DllImport("PPather\\StormLib.dll")]
         public static extern uint SFileGetLocale();
 
-        [DllImport("Libs\\StormLib.dll")]
+        [DllImport("PPather\\StormLib.dll")]
         public static extern bool SFileOpenArchive([MarshalAs(UnmanagedType.LPStr)]string szMpqName,
                               uint dwPriority, uint dwFlags,
                               void** phMpq);
 
-        [DllImport("Libs\\StormLib.dll")]
+        [DllImport("PPather\\StormLib.dll")]
         public static extern bool SFileCloseArchive(void* hMpq);
 
 
-        [DllImport("Libs\\StormLib.dll")]
+        [DllImport("PPather\\StormLib.dll")]
         public static extern bool SFileOpenFileEx(void* hMpq,
                                 [MarshalAs(UnmanagedType.LPStr)] string szFileName,
                                 uint dwSearchScope,
                                 void** phFile);
 
-        [DllImport("Libs\\StormLib.dll")]
+        [DllImport("PPather\\StormLib.dll")]
         public static extern bool SFileCloseFile(void* hFile);
 
-        [DllImport("Libs\\StormLib.dll")]
+        [DllImport("PPather\\StormLib.dll")]
         public static extern uint SFileGetFilePos(void* hFile, uint* pdwFilePosHigh);
 
-        [DllImport("Libs\\StormLib.dll")]
+        [DllImport("PPather\\StormLib.dll")]
         public static extern uint SFileGetFileSize(void* hFile, uint* pdwFileSizeHigh);
 
-        [DllImport("Libs\\StormLib.dll")]
+        [DllImport("PPather\\StormLib.dll")]
         public static extern uint SFileSetFilePointer(void* hFile,
                     int lFilePos, int* pdwFilePosHigh, uint dwMethod);
 
-        [DllImport("Libs\\StormLib.dll")]
+        [DllImport("PPather\\StormLib.dll")]
         public static extern bool SFileReadFile(void* hFile, void* lpBuffer, uint dwToRead,
                            uint* pdwRead, void* lpOverlapped);
 
-        [DllImport("Libs\\StormLib.dll")]
+        [DllImport("PPather\\StormLib.dll")]
         public static extern bool SFileExtractFile(void* hMpq,
                     [MarshalAs(UnmanagedType.LPStr)] string szToExtract,
                     [MarshalAs(UnmanagedType.LPStr)] string szExtracted);
 
-        [DllImport("Libs\\StormLib.dll")]
+        [DllImport("PPather\\StormLib.dll")]
         public static extern bool SFileHasFile(void* hMpq,
                     [MarshalAs(UnmanagedType.LPStr)] string szFileName);
 
@@ -141,7 +129,7 @@ int   WINAPI SFileAddListFile(HANDLE hMpq, const char * szListFile);
             if (a.IsOpen())
             {
                 archives.Add(a);
-                System.Console.WriteLine("Add archive " + file);
+                PathGraph.Log("Add archive " + file);
                 return true;
             }
             return false;
@@ -172,12 +160,9 @@ int   WINAPI SFileAddListFile(HANDLE hMpq, const char * szListFile);
             {
                 if (a.HasFile(from))
                 {
-                    PatherPath.Logger.Debug("Extract " + from);
+                    //PathGraph.Log("Extract " + from);
                     bool ok = a.ExtractFile(from, to);
-                    if (!ok)
-                    {
-                        PatherPath.Logger.Debug("  result: " + ok);
-                    }
+                    //PathGraph.Log("  result: " + ok);
                     return ok;
                 }
             }

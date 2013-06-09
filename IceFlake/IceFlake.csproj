@@ -140,9 +140,9 @@
       <Project>{29bee34e-8d6a-47bf-96fa-aba46f6e9b66}</Project>
       <Name>GreyMagic</Name>
     </ProjectReference>
-    <ProjectReference Include="..\PatherPath\PatherPath.csproj">
-      <Project>{73c61620-7266-48ab-9b5b-c0ba2078dab3}</Project>
-      <Name>PatherPath</Name>
+    <ProjectReference Include="..\PPather\PPather.csproj">
+      <Project>{ec734271-9b29-4455-b191-41d25daa6abc}</Project>
+      <Name>PPather</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

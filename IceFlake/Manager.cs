@@ -32,6 +32,7 @@ namespace IceFlake
             DBC = new WoWDB();
 
             Movement = new Movement();
+            AssemblyAnalyzer.RegisterTarget(Movement);
 
             LuaInterface.Initialize();
 

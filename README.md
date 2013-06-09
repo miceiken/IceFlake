@@ -15,7 +15,7 @@ This is a small project aimed to provide a simple memory editing framework for t
 * WoW 3.3.5a
 * [SlimDX](http://slimdx.org/)
 * An injector
-* Programming Knowledge
+* Programming knowledge
 
 ## Usage
 Check out the source, open the solution, add the missing references, compile and you should be good to go.

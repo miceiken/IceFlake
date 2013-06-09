@@ -68,37 +68,38 @@ namespace IceFlake
             {
                 var plrname = WoWScript.Execute<string>("UnitName(\"player\")");
                 Log.WriteLine(plrname);
-                //Log.WriteLine("SpellBook:");
-                //foreach (var spell in Manager.Spellbook)
-                //    Log.WriteLine("#{0}: {1}", spell.Id, spell.Name);
 
-                //Log.WriteLine("All Items:");
-                //foreach (var item in Manager.LocalPlayer.Items)
-                //{
-                //    int x, y;
-                //    item.GetSlotIndexes(out x, out y);
-                //    Log.WriteLine("\t({0},{1}) {2}", x, y, item.Name);
-                //}
+                Log.WriteLine("SpellBook:");
+                foreach (var spell in Manager.Spellbook)
+                    Log.WriteLine("#{0}: {1}", spell.Id, spell.Name);
 
-                //Log.WriteLine("Backpack Items");
-                //foreach (var item in Manager.LocalPlayer.BackpackItems)
-                //    Log.WriteLine("\t{0}", item.Name);
+                Log.WriteLine("All Items:");
+                foreach (var item in Manager.LocalPlayer.Items)
+                {
+                    int x, y;
+                    item.GetSlotIndexes(out x, out y);
+                    Log.WriteLine("\t({0},{1}) {2}", x, y, item.Name);
+                }
 
-                //Log.WriteLine("Inventory Items");
-                //foreach (var item in Manager.LocalPlayer.InventoryItems)
-                //    Log.WriteLine("\t{0}", item.Name);
+                Log.WriteLine("Backpack Items");
+                foreach (var item in Manager.LocalPlayer.BackpackItems)
+                    Log.WriteLine("\t{0}", item.Name);
 
-                //Log.WriteLine("Equipped Items:");
-                //foreach (var item in Manager.LocalPlayer.EquippedItems)
-                //    Log.WriteLine("\t{0}", item.Name);
+                Log.WriteLine("Inventory Items");
+                foreach (var item in Manager.LocalPlayer.InventoryItems)
+                    Log.WriteLine("\t{0}", item.Name);
 
-                //Log.WriteLine("Equipped Items:");
-                //for (var i = (int)EquipSlot.Head; i < (int)EquipSlot.Tabard; i++)
-                //{
-                //    var item = Manager.LocalPlayer.GetEquippedItem(i);
-                //    if (item == null || !item.IsValid) continue;
-                //    Log.WriteLine("{0}: {1}", (EquipSlot)i, item.Name);
-                //}
+                Log.WriteLine("Equipped Items:");
+                foreach (var item in Manager.LocalPlayer.EquippedItems)
+                    Log.WriteLine("\t{0}", item.Name);
+
+                Log.WriteLine("Equipped Items:");
+                for (var i = (int)EquipSlot.Head; i < (int)EquipSlot.Tabard; i++)
+                {
+                    var item = Manager.LocalPlayer.GetEquippedItem(i);
+                    if (item == null || !item.IsValid) continue;
+                    Log.WriteLine("{0}: {1}", (EquipSlot)i, item.Name);
+                }
             }
             catch { }
         }

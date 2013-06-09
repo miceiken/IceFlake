@@ -1,27 +1,13 @@
 /*
-  This file is part of ppather.
-
-    PPather is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    PPather is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with ppather.  If not, see <http://www.gnu.org/licenses/>.
-
-    Copyright Pontus Borg 2008
-  
+ *  Part of PPather
+ *  Copyright Pontus Borg 2008
+ * 
  */
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.IO;
 using Wmo;
+using PathGraph = PatherPath.Graph.PathGraph;
 
 namespace WowTriangles
 {
@@ -38,10 +24,6 @@ namespace WowTriangles
         ModelManager modelmanager;
         WMOManager wmomanager;
 
-        private string BaseDir
-        {
-            get { return AppDomain.CurrentDomain.BaseDirectory; }
-        }
 
         Dictionary<String, int> zoneToMapId = new Dictionary<string, int>();
         Dictionary<int, String> mapIdToFile = new Dictionary<int, string>();
@@ -80,22 +62,21 @@ namespace WowTriangles
                     "enGB\\backup-enGB.MPQ"};
 
             //StormDll.ArchiveSet archive = null;
-
+            System.IO.Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
             archive = new StormDll.ArchiveSet();
             string regGameDir = archive.SetGameDirFromReg();
-            string gameDir = @"C:\WoW 335\Data"; 
-            archive.SetGameDir(gameDir);
+            //string gameDir = @"C:\WoW 335\Data\";
+            //archive.SetGameDir(gameDir);
 
-            Console.WriteLine("Game dir is " + regGameDir);
+            PathGraph.Log("Game dir is " + regGameDir);
             archive.AddArchives(archiveNames);
             modelmanager = new ModelManager(archive, 80);
             wmomanager = new WMOManager(archive, modelmanager, 30);
 
 
-            var afp = Path.Combine(BaseDir, "Libs", "AreaTable.dbc");
-            archive.ExtractFile("DBFilesClient\\AreaTable.dbc", afp);
+            archive.ExtractFile("DBFilesClient\\AreaTable.dbc", "PPather\\AreaTable.dbc");
             DBC areas = new DBC();
-            DBCFile af = new DBCFile(afp, areas);
+            DBCFile af = new DBCFile("PPather\\AreaTable.dbc", areas);
             for (int i = 0; i < areas.recordCount; i++)
             {
                 int AreaID = (int)areas.GetUint(i, 0);
@@ -108,7 +89,7 @@ namespace WowTriangles
 
                 if (WorldID != 0 && WorldID != 1 && WorldID != 530)
                 {
-                    ////   Console.WriteLine(String.Format("{0,4} {1,3} {2,3} {3}", AreaID, WorldID, Parent, Name));
+                    ////   PathGraph.Log(String.Format("{0,4} {1,3} {2,3} {3}", AreaID, WorldID, Parent, Name));
                 }
                 //0 	 uint 	 AreaID
                 //1 	uint 	Continent (refers to a WorldID)
@@ -132,16 +113,16 @@ namespace WowTriangles
                 }
                 else
                     TotalName = Name + ":" + ParentName;
-                if (!zoneToMapId.ContainsKey(TotalName))
+                try
                 {
                     zoneToMapId.Add(TotalName, WorldID);
-                    //Console.WriteLine(TotalName + " => " + WorldID);
+                    //PathGraph.Log(TotalName + " => " + WorldID);
                 }
-                else
+                catch
                 {
                     int id;
                     zoneToMapId.TryGetValue(TotalName, out id);
-                    ////  Console.WriteLine("Duplicate: " + TotalName + " " + WorldID +" " + id);
+                    ////  PathGraph.Log("Duplicate: " + TotalName + " " + WorldID +" " + id);
                 }
                 //0 	 uint 	 AreaID
                 //1 	uint 	Continent (refers to a WorldID)
@@ -149,7 +130,7 @@ namespace WowTriangles
             }
         }
 
-        public bool SetContinent(string continent)
+        public void SetContinent(string continent)
         {
             continentFile = continent;
 
@@ -158,17 +139,14 @@ namespace WowTriangles
 
             wdtf = new WDTFile(archive, continentFile, wdt, wmomanager, modelmanager);
             if (!wdtf.loaded)
-            {
                 wdt = null; // bad
-                return false;
-            }
             else
             {
 
-                // Console.WriteLine("  global Objects " + wdt.gwmois.Count + " Models " + wdt.gwmois.Count);
+                // PathGraph.Log("  global Objects " + wdt.gwmois.Count + " Models " + wdt.gwmois.Count);
                 //global_triangles.color = new float[3] { 0.8f, 0.8f, 1.0f };
             }
-            return true;
+
         }
 
 
@@ -189,22 +167,21 @@ namespace WowTriangles
                 }
             }
 
-            var mfp = Path.Combine(BaseDir, "Libs", "Map.dbc");
-            archive.ExtractFile("DBFilesClient\\Map.dbc", mfp);
+            archive.ExtractFile("DBFilesClient\\Map.dbc", "PPather\\Map.dbc");
             DBC maps = new DBC();
-            DBCFile mf = new DBCFile(mfp, maps);
+            DBCFile mf = new DBCFile("PPather\\Map.dbc", maps);
 
 
             for (int i = 0; i < maps.recordCount; i++)
             {
                 int mapID = maps.GetInt(i, 0);
-                // Console.WriteLine("   ID:" + maps.GetInt(i, 0));                
-                // Console.WriteLine(" File: " + maps.GetString(i, 1));
-                // Console.WriteLine(" Name: " + maps.GetString(i, 4)); // the file!!!
+                // PathGraph.Log("   ID:" + maps.GetInt(i, 0));                
+                // PathGraph.Log(" File: " + maps.GetString(i, 1));
+                // PathGraph.Log(" Name: " + maps.GetString(i, 4)); // the file!!!
 
                 if (mapID == continentID) // file == continentFile)
                 {
-                    //  Console.WriteLine(String.Format("{0,4} {1}", mapID, maps.GetString(i, 1)));
+                    //  PathGraph.Log(String.Format("{0,4} {1}", mapID, maps.GetString(i, 1)));
                     string file = maps.GetString(i, 1);
                     SetContinent(file);
                     return continentFile;
@@ -266,14 +243,14 @@ namespace WowTriangles
                         String fn = wi.wmo.fileName;
                         int last = fn.LastIndexOf('\\');
                         fn = fn.Substring(last + 1);
-                        // Console.WriteLine("    wmo: " + fn + " at " + wi.pos);
+                        // PathGraph.Log("    wmo: " + fn + " at " + wi.pos);
                         if (fn != null)
                         {
 
                             WMO old = instances.Get((int)wi.pos.x, (int)wi.pos.y, (int)wi.pos.z);
                             if (old == wi.wmo)
                             {
-                                //Console.WriteLine("Already got " + fn);
+                                //PathGraph.Log("Already got " + fn);
                             }
                             else
                             {
@@ -292,17 +269,17 @@ namespace WowTriangles
                         String fn = mi.model.fileName;
                         int last = fn.LastIndexOf('\\');
                         // fn = fn.Substring(last + 1);
-                        //Console.WriteLine("    wmi: " + fn + " at " + mi.pos);
+                        //PathGraph.Log("    wmi: " + fn + " at " + mi.pos);
                         AddTriangles(triangles, mi);
 
-                        //Console.WriteLine("    model: " + fn);
+                        //PathGraph.Log("    model: " + fn);
                     }
                 }
 
 
 
-                Console.WriteLine("wee");
-                /*Console.WriteLine(
+                PathGraph.Log("wee");
+                /*PathGraph.Log(
                     String.Format(" Triangles - Map: {0,6} Objects: {1,6} Models: {2,6}",
                                   map_triangles.GetNumberOfTriangles(),
                                   obj_triangles.GetNumberOfTriangles(),
@@ -310,7 +287,7 @@ namespace WowTriangles
                 */
 
             }
-            Console.WriteLine(" done");
+            PathGraph.Log(" done");
             wdt.maptiles[chunk_x, chunk_y] = null; // clear it atain
             //myChunk.triangles.ClearVertexMatrix(); // not needed anymore
             //return myChunk;
@@ -335,14 +312,14 @@ namespace WowTriangles
             }
             if (chunk_y == 64 || chunk_x == 64)
             {
-                Console.WriteLine(x + " " + y + " is at " + chunk_x + " " + chunk_y);
+                PathGraph.Log(x + " " + y + " is at " + chunk_x + " " + chunk_y);
                 //GetChunkCoord(x, y, out chunk_x, out chunk_y); 
             }
         }
 
         public override void GetTriangles(TriangleCollection to, float min_x, float min_y, float max_x, float max_y)
         {
-            //Console.WriteLine("TotalMemory " + System.GC.GetTotalMemory(false)/(1024*1024) + " MB");
+            //PathGraph.Log("TotalMemory " + System.GC.GetTotalMemory(false)/(1024*1024) + " MB");
             foreach (WMOInstance wi in wdt.gwmois)
             {
                 AddTriangles(to, wi);
@@ -360,6 +337,8 @@ namespace WowTriangles
                     //to.AddAllTrianglesFrom(d.triangles); 
                 }
             }
+
+
         }
 
         void AddTriangles(TriangleCollection s, MapChunk c)
@@ -448,7 +427,7 @@ namespace WowTriangles
             float dir_y = wi.dir.y - 90;
             float dir_z = -wi.dir.x;
 
-            Console.WriteLine("modeli: " + dir_x + " " + dir_y + " " + dir_z);
+            PathGraph.Log("modeli: " + dir_x + " " + dir_y + " " + dir_z);
             WMO wmo = wi.wmo;
 
             foreach (WMOGroup g in wmo.groups)
@@ -478,7 +457,7 @@ namespace WowTriangles
 
                     vertices[i] = s.AddVertex(finalx, finaly, finalz);
                 }
-                // Console.WriteLine("nTriangles: " + g.nTriangles); 
+                // PathGraph.Log("nTriangles: " + g.nTriangles); 
                 for (int i = 0; i < g.nTriangles; i++)
                 {
                     //if ((g.materials[i] & 0x1000) != 0)
@@ -508,7 +487,7 @@ namespace WowTriangles
                     ModelInstance mi = wmo.doodadInstances[d];
                     if (mi != null)
                     {
-                        //Console.WriteLine("I got model " + mi.model.fileName + " at " + mi.pos);
+                        //PathGraph.Log("I got model " + mi.model.fileName + " at " + mi.pos);
                         //AddTrianglesGroupDoodads(s, mi, wi.dir, wi.pos, 0.0f); // DOes not work :(
                     }
                 }
@@ -612,7 +591,7 @@ namespace WowTriangles
             float dz = mi.pos.z;
 
             float dir_x = mi.dir.z;
-            float dir_y = mi.dir.y - 90; // -90 is correct!
+            float dir_y = mi.dir.y - 90;
             float dir_z = -mi.dir.x;
 
             Model m = mi.model;

@@ -1,28 +1,17 @@
 /*
-  This file is part of ppather.
-
-    PPather is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    PPather is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with ppather.  If not, see <http://www.gnu.org/licenses/>.
-
-    Copyright Pontus Borg 2008
-  
+ *  Part of PPather
+ *  Copyright Pontus Borg 2008
+ * 
  */
+
 using System;
 //using System.Collections;
-using System.Linq;
 using System.Collections.Generic;
+using System.Text;
 using System.Runtime.InteropServices;
-using PatherPath.Graph;
+
+using PathGraph = PatherPath.Graph.PathGraph;
+
 namespace WowTriangles
 {
 
@@ -99,7 +88,7 @@ namespace WowTriangles
     unsafe class ccode
     {
         // int triBoxOverlap(float boxcenter[3],float boxhalfsize[3],float triverts[3][3]);
-        [DllImport("Libs\\ccode.dll")]
+        [DllImport("PPather\\ccode.dll")]
         public static extern int triBoxOverlap(
             float* boxcenter,
             float* boxhalfsize,
@@ -352,7 +341,7 @@ namespace WowTriangles
             }
             catch (Exception e)
             {
-                Console.WriteLine("WTF " + e);
+                PathGraph.Log("WTF " + e);
             }
             if (i == 1) return true;
             return false;
@@ -830,40 +819,377 @@ namespace WowTriangles
 
     }
 
-    public class PriorityQueue<V>
+
+
+
+    /// <summary>
+    /// Default implementation of ISet.
+    /// </summary>
+    public class Set<T> : ICollection<T>
     {
-        private SortedDictionary<double, V> list = new SortedDictionary<double, V>();
-        public void Enqueue(double priority, V value)
+        // Use an ISuperMap to implement.
+
+        private SuperHash<T> dictionary = new SuperHash<T>(); // bool?!?!?
+
+        public Set()
         {
-            lock (list)
+        }
+
+        public bool IsReadOnly { get { return false; } }
+
+        public void CopyTo(T[] a, int off)
+        {
+            foreach (T e in this)
             {
-                list[priority] = value;
+                a[off++] = e;
             }
         }
-        public V Dequeue()
+
+        public Set(ICollection<T> objects)
         {
-            var pair = list.First();
-            var v = pair.Value;
-            list.Remove(pair.Key);
-            return v;
+            AddRange(objects);
         }
+
+        #region ISet Members
+
+        public void Add(T anObject)
+        {
+            dictionary.Add(anObject);
+        }
+
+        public void AddRange(ICollection<T> objects)
+        {
+            foreach (T obj in objects) Add(obj);
+        }
+
+        public void Clear()
+        {
+            this.dictionary.Clear(0);
+        }
+
+        public bool Contains(T anObject)
+        {
+            return this.dictionary.Contains(anObject);
+        }
+
+        public bool Remove(T anObject)
+        {
+            return this.dictionary.Remove(anObject);
+        }
+
+        #endregion
+
+        #region ICollection Members
+
+
+
         public int Count
         {
             get
             {
-                return list.Count;
+                return this.dictionary.Count;
             }
         }
+
+
+        #endregion
+
+        #region IEnumerable Members
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            return dictionary.GetAll().GetEnumerator();
+        }
+
+
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+
+        #endregion
     }
-    public class SuperMap<TKey, Spot>
+    /// <summary>
+    /// Represents an item stored in a priority queue.
+    /// </summary>
+    /// <typeparam name="TValue">The type of object in the queue.</typeparam>
+    /// <typeparam name="TPriority">The type of the priority field.</typeparam>
+
+
+
+    struct PriorityQueueItem<TValue, TPriority>
     {
-        public class Entry
+        private TValue value;
+        private TPriority priority;
+
+        public PriorityQueueItem(TValue val, TPriority pri)
+        {
+            this.value = val;
+            this.priority = pri;
+        }
+
+        /// <summary>
+        /// Gets the value of this PriorityQueueItem.
+        /// </summary>
+        public TValue Value
+        {
+            get { return value; }
+        }
+
+        /// <summary>
+        /// Gets the priority associated with this PriorityQueueItem.
+        /// </summary>
+        public TPriority Priority
+        {
+            get { return priority; }
+        }
+    }
+    /// <summary>
+    /// Represents a binary heap priority queue.
+    /// </summary>
+    /// <typeparam name="TValue">The type of object in the queue.</typeparam>
+    /// <typeparam name="TPriority">The type of the priority field.</typeparam>
+
+    public class PriorityQueue<TValue, TPriority>
+    {
+
+
+        private PriorityQueueItem<TValue, TPriority>[] items;
+
+        private const Int32 DefaultCapacity = 16;
+        private Int32 capacity;
+        private Int32 numItems;
+
+        private Comparison<TPriority> compareFunc;
+
+
+        public PriorityQueue()
+            : this(DefaultCapacity, Comparer<TPriority>.Default)
+        {
+        }
+
+
+        public PriorityQueue(Int32 initialCapacity)
+            : this(initialCapacity, Comparer<TPriority>.Default)
+        {
+        }
+
+
+        public PriorityQueue(IComparer<TPriority> comparer)
+            : this(DefaultCapacity, comparer)
+        {
+        }
+
+
+        public PriorityQueue(int initialCapacity, IComparer<TPriority> comparer)
+        {
+            Init(initialCapacity, new Comparison<TPriority>(comparer.Compare));
+        }
+
+
+        public PriorityQueue(Comparison<TPriority> comparison)
+            : this(DefaultCapacity, comparison)
+        {
+        }
+
+
+        public PriorityQueue(int initialCapacity, Comparison<TPriority> comparison)
+        {
+            Init(initialCapacity, comparison);
+        }
+
+        // Initializes the queue
+        private void Init(int initialCapacity, Comparison<TPriority> comparison)
+        {
+            numItems = 0;
+            compareFunc = comparison;
+            SetCapacity(initialCapacity);
+        }
+
+
+        public int Count
+        {
+            get { return numItems; }
+        }
+
+
+        public int Capacity
+        {
+            get { return items.Length; }
+            set { SetCapacity(value); }
+        }
+
+        // Set the queue's capacity.
+        private void SetCapacity(int newCapacity)
+        {
+            int newCap = newCapacity;
+            if (newCap < DefaultCapacity)
+                newCap = DefaultCapacity;
+
+            // throw exception if newCapacity < numItems
+            if (newCap < numItems)
+                throw new ArgumentOutOfRangeException("newCapacity", "New capacity is less than Count");
+
+            this.capacity = newCap;
+            if (items == null)
+            {
+                // Initial allocation.
+                items = new PriorityQueueItem<TValue, TPriority>[newCap];
+                return;
+            }
+
+            // Resize the array.
+            Array.Resize(ref items, newCap);
+        }
+
+
+        public void Enqueue(TValue value, TPriority priority)
+        {
+            if (numItems == capacity)
+            {
+                // need to increase capacity
+                // grow by 50 percent
+                SetCapacity((3 * Capacity) / 2);
+            }
+
+            // Create the new item
+            PriorityQueueItem<TValue, TPriority> newItem =
+                new PriorityQueueItem<TValue, TPriority>(value, priority);
+            int i = numItems;
+            ++numItems;
+
+            // and insert it into the heap.
+            while ((i > 0) && (compareFunc(items[i / 2].Priority, newItem.Priority) < 0))
+            {
+                items[i] = items[i / 2];
+                i /= 2;
+            }
+            items[i] = newItem;
+        }
+
+        // Remove a node at a particular position in the queue.
+        private PriorityQueueItem<TValue, TPriority> RemoveAt(Int32 index)
+        {
+            // remove an item from the heap
+            PriorityQueueItem<TValue, TPriority> o = items[index];
+            PriorityQueueItem<TValue, TPriority> tmp = items[numItems - 1];
+            items[--numItems] = default(PriorityQueueItem<TValue, TPriority>);
+            if (numItems > 0)
+            {
+                int i = index;
+                int j = i + 1;
+                while (i < Count / 2)
+                {
+                    if ((j < Count - 1) && (compareFunc(items[j].Priority, items[j + 1].Priority) < 0))
+                    {
+                        j++;
+                    }
+                    if (compareFunc(items[j].Priority, tmp.Priority) <= 0)
+                    {
+                        break;
+                    }
+                    items[i] = items[j];
+                    i = j;
+                    j *= 2;
+                }
+                items[i] = tmp;
+            }
+            return o;
+        }
+
+
+        public TValue Dequeue(out TPriority prio)
+        {
+            if (Count == 0)
+                throw new InvalidOperationException("The queue is empty");
+            PriorityQueueItem<TValue, TPriority> item = RemoveAt(0);
+            prio = item.Priority;
+            return item.Value;
+        }
+
+
+        public void Remove(TValue item, IEqualityComparer<TValue> comparer)
+        {
+            // need to find the PriorityQueueItem that has the Data value of o
+            for (int index = 0; index < numItems; ++index)
+            {
+                if (comparer.Equals(item, items[index].Value))
+                {
+                    RemoveAt(index);
+                    return;
+                }
+            }
+            //throw new ApplicationException("The specified itemm is not in the queue.");
+        }
+
+
+        public void Remove(TValue item)
+        {
+            Remove(item, EqualityComparer<TValue>.Default);
+        }
+
+
+        /// <returns>The object at the beginning of the queue.</returns>
+        PriorityQueueItem<TValue, TPriority> Peek()
+        {
+            if (Count == 0)
+                throw new InvalidOperationException("The queue is empty");
+            return items[0];
+        }
+
+        /// <summary>
+        /// Removes all objects from the queue.
+        /// </summary>
+        public void Clear()
+        {
+            numItems = 0;
+            TrimExcess();
+        }
+
+        /// <summary>
+        /// Sets the capacity to the actual number of elements in the Queue,
+        /// if that number is less than 90 percent of current capacity. 
+        /// </summary>
+        public void TrimExcess()
+        {
+            if (numItems < (0.9 * capacity))
+                SetCapacity(numItems);
+        }
+
+        /// <summary>
+        /// Determines whether an element is in the queue.
+        /// </summary>
+        /// <param name="o">The object to locate in the queue.</param>
+        /// <returns>True if item found in the queue.  False otherwise.</returns>
+        public bool Contains(TValue item)
+        {
+            EqualityComparer<TValue> comparer = EqualityComparer<TValue>.Default;
+            // need to find the PriorityQueueItem that has the Data value of o
+            for (int index = 0; index < numItems; ++index)
+            {
+                if (comparer.Equals(item, items[index].Value))
+                {
+
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+
+
+    public class SuperMap<TKey, TValue>
+    {
+        class Entry
         {
             public TKey key;
-            public Spot value;
+            public TValue value;
             public Entry next;
 
-            public Entry(TKey k, Spot v)
+            public Entry(TKey k, TValue v)
             {
                 key = k;
                 value = v;
@@ -925,7 +1251,7 @@ namespace WowTriangles
             array[key] = e;
         }
 
-        private bool HasValue(Entry[] array, TKey k, Spot val)
+        private bool HasValue(Entry[] array, TKey k, TValue val)
         {
             uint key = GetEntryIn(array, k);
             Entry rover = array[key];
@@ -941,7 +1267,7 @@ namespace WowTriangles
         private void AddToArray(Entry[] array, Entry e)
         {
             uint key = GetEntryIn(array, e.key);
-            Spot val = e.value;
+            TValue val = e.value;
             // check for existance
             Entry rover = array[key];
             while (rover != null)
@@ -999,7 +1325,7 @@ namespace WowTriangles
         }
 
 
-        public void Add(TKey k, Spot v)
+        public void Add(TKey k, TValue v)
         {
             AddToArray(array, new Entry(k, v));
             elements++;
@@ -1017,7 +1343,7 @@ namespace WowTriangles
             array = new Entry[sizes[size_table_entry]];
         }
 
-        public bool ContainsValue(Spot val)
+        public bool ContainsValue(TValue val)
         {
             throw new Exception("ContainsValue not implemented");
 
@@ -1032,7 +1358,7 @@ namespace WowTriangles
             {
                 if (rover.next == rover)
                 {
-                    Console.WriteLine("lsdfjlskfjkl>");
+                    PathGraph.Log("lsdfjlskfjkl>");
                 }
                 if (rover.key.Equals(k))
                     return true;
@@ -1042,7 +1368,7 @@ namespace WowTriangles
         }
 
 
-        public bool TryGetValue(TKey k, out Spot v)
+        public bool TryGetValue(TKey k, out TValue v)
         {
             uint key = GetEntryIn(array, k);
             Entry rover = array[key];
@@ -1050,7 +1376,7 @@ namespace WowTriangles
             {
                 if (rover.next == rover)
                 {
-                    Console.WriteLine("ksjdflksdjf");
+                    PathGraph.Log("ksjdflksdjf");
                 }
                 if (rover.key.Equals(k))
                 {
@@ -1059,7 +1385,7 @@ namespace WowTriangles
                 }
                 rover = rover.next;
             }
-            v = default(Spot);
+            v = default(TValue);
             return false;
         }
 
@@ -1084,9 +1410,9 @@ namespace WowTriangles
             return false;
         }
 
-        public ICollection<Spot> GetAllValues()
+        public ICollection<TValue> GetAllValues()
         {
-            List<Spot> list = new List<Spot>();
+            List<TValue> list = new List<TValue>();
             for (int i = 0; i < array.Length; i++)
             {
                 Entry rover = array[i];
@@ -1122,4 +1448,233 @@ namespace WowTriangles
             }
         }
     }
+
+    public class SuperHash<T>
+    {
+        class Entry
+        {
+            public T value;
+            public Entry next;
+
+            public Entry(T v)
+            {
+                value = v;
+            }
+
+        }
+
+        // table of good has size tables
+        static uint[] sizes = {
+           89, 
+           179, 
+           359, 
+           719, 
+           1439, 
+           2879, 
+           5759, 
+           11519, 
+           23039, 
+           46079, 
+           92159, 
+           184319, 
+           368639, 
+           737279, 
+           1474559, 
+           2949119, 
+           5898239, 
+           11796479, 
+           23592959, 
+           47185919, 
+           94371839, 
+           188743679, 
+           377487359, 
+           754974719, 
+           1509949439
+         };
+
+
+        int elements = 0; // elements in hash
+        int size_table_entry = 0;
+        Entry[] array;
+
+        public SuperHash()
+        {
+            Clear(16);
+        }
+        public SuperHash(int initialCapacity)
+        {
+            Clear(initialCapacity);
+        }
+
+        private uint GetEntryIn(Entry[] array, T key)
+        {
+            return (uint)key.GetHashCode() % (uint)array.Length;
+        }
+        private void AddToArrayNoCheck(Entry[] array, Entry e)
+        {
+            uint key = GetEntryIn(array, e.value);
+            e.next = array[key];
+            array[key] = e;
+        }
+
+        private bool HasValue(Entry[] array, T k)
+        {
+            uint key = GetEntryIn(array, k);
+            Entry rover = array[key];
+            while (rover != null)
+            {
+                if (rover.value.Equals(k))
+                    return true;
+                rover = rover.next;
+            }
+            return false;
+        }
+
+        private void AddToArray(Entry[] array, Entry e)
+        {
+            uint key = GetEntryIn(array, e.value);
+            T val = e.value;
+            // check for existance
+            Entry rover = array[key];
+            while (rover != null)
+            {
+                if (rover.value.Equals(e.value))
+                    return;
+
+                rover = rover.next;
+            }
+            e.next = array[key];
+            array[key] = e;
+        }
+
+        private void MakeLarger()
+        {
+            size_table_entry++;
+            uint new_size = sizes[size_table_entry];
+            Entry[] new_array = new Entry[sizes[size_table_entry]];
+
+            // add all old stuff to the new one
+
+            for (int i = 0; i < array.Length; i++)
+            {
+                Entry rover = array[i];
+                while (rover != null)
+                {
+                    Entry next = rover.next;
+                    AddToArrayNoCheck(new_array, rover);
+                    rover = next;
+                }
+            }
+            array = new_array;
+        }
+
+        private void MakeSmaller()
+        {
+            if (size_table_entry == 0) return;
+            size_table_entry--;
+            uint new_size = sizes[size_table_entry];
+            Entry[] new_array = new Entry[sizes[size_table_entry]];
+
+            // add all old stuff to the new one
+
+            for (int i = 0; i < array.Length; i++)
+            {
+                Entry rover = array[i];
+                while (rover != null)
+                {
+                    Entry next = rover.next;
+                    AddToArrayNoCheck(new_array, rover);
+                    rover = next;
+                }
+            }
+            array = new_array;
+        }
+
+
+        public void Add(T k)
+        {
+            AddToArray(array, new Entry(k));
+            elements++;
+            if (elements > array.Length * 2)
+            {
+                MakeLarger();
+            }
+        }
+
+        public void Clear(int initialCapacity)
+        {
+            elements = 0;
+            size_table_entry = 0;
+            for (size_table_entry = 0; sizes[size_table_entry] < initialCapacity; size_table_entry++) ;
+            array = new Entry[sizes[size_table_entry]];
+        }
+
+
+        public bool Contains(T k)
+        {
+
+            uint key = GetEntryIn(array, k);
+            Entry rover = array[key];
+            while (rover != null)
+            {
+                if (rover.next == rover)
+                {
+                    PathGraph.Log("lsdfjlskfjkl>");
+                }
+                if (rover.value.Equals(k))
+                    return true;
+                rover = rover.next;
+            }
+            return false;
+        }
+
+
+
+
+        public bool Remove(T k)
+        {
+            uint key = GetEntryIn(array, k);
+            Entry rover = array[key];
+            Entry prev = null;
+            while (rover != null)
+            {
+                if (rover.value.Equals(k))
+                {
+                    if (prev == null)
+                        array[key] = rover.next;
+                    else
+                        prev.next = rover.next;
+                    elements--;
+                    return true;
+                }
+                rover = rover.next;
+            }
+            return false;
+        }
+
+        public ICollection<T> GetAll()
+        {
+            List<T> list = new List<T>();
+            for (int i = 0; i < array.Length; i++)
+            {
+                Entry rover = array[i];
+                while (rover != null)
+                {
+                    list.Add(rover.value);
+                    rover = rover.next;
+                }
+            }
+            return list;
+        }
+
+        public int Count
+        {
+            get
+            {
+                return elements;
+            }
+        }
+    }
+
+
 }

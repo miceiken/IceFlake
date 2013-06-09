@@ -1,30 +1,29 @@
 /*
-  This file is part of ppather.
-
-    PPather is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    PPather is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with ppather.  If not, see <http://www.gnu.org/licenses/>.
-
-    Copyright Pontus Borg 2008
-  
+ *  Part of PPather
+ *  Copyright Pontus Borg 2008
+ * 
  */
 
 using System;
-using System.IO;
 using System.Collections.Generic;
 using System.Text;
 using StormDll;
+using PathGraph = PatherPath.Graph.PathGraph;
+
 namespace Wmo
 {
+    class Dbg
+    {
+        public static void Log(string s)
+        {
+            // Console.Write(s);
+        }
+        public static void LogLine(string s)
+        {
+            // PathGraph.Log(s);
+        }
+    }
+
     unsafe class ChunkReader
     {
         public static float TILESIZE = 533.33333f;
@@ -129,8 +128,12 @@ namespace Wmo
         public static uint MCSH = ToBin("MCSH");
         public static uint MCAL = ToBin("MCAL");
         public static uint MCLQ = ToBin("MCLQ");
-        public static uint MH2O = ToBin("MH2O");
         public static uint MCSE = ToBin("MCSE");
+
+
+
+
+
 
     }
 
@@ -183,19 +186,18 @@ namespace Wmo
     {
         StormDll.ArchiveSet set;
         ModelManager modelmanager;
-        private string baseDir;
 
         public WMOManager(StormDll.ArchiveSet set, ModelManager modelmanager, int maxItems)
             : base(maxItems)
         {
-            this.baseDir = AppDomain.CurrentDomain.BaseDirectory;
             this.set = set;
             this.modelmanager = modelmanager;
         }
 
         public override WMO Load(String path)
         {
-            string localPath = Path.Combine(baseDir, "Libs", "wmo.tmp");
+            string localPath = "PPather\\wmo.tmp";
+            Dbg.Log(" wmo");
             set.ExtractFile(path, localPath);
             WMO w = new WMO();
             w.fileName = path;
@@ -206,6 +208,7 @@ namespace Wmo
             {
                 string part = path.Substring(0, path.Length - 4);
                 string gf = String.Format("{0}_{1,3:000}.wmo", part, i);
+                Dbg.Log(" wmog");
                 set.ExtractFile(gf, localPath);
                 new WmoGroupFile(w.groups[i], localPath);
             }
@@ -335,7 +338,7 @@ namespace Wmo
             }
             if (toEvict != null)
             {
-                //                Console.WriteLine("Drop item : " + toEvict);
+                //                PathGraph.Log("Drop item : " + toEvict);
                 items.Remove(toEvict);
                 items_LRU.Remove(toEvict);
             }
@@ -386,21 +389,11 @@ namespace Wmo
         public override Model Load(String path)
         {
             // change .mdx to .m2
-            //string file=path.Substring(0, path.Length-4)+".m2";
+            string file = path.Substring(0, path.Length - 4) + ".m2";
 
-            string file = path;
-            if (Path.GetExtension(path).Equals(".mdx"))
-            {
-                file = Path.ChangeExtension(path, ".m2");
-            }
-            else if (Path.GetExtension(path).Equals(".mdl"))
-            {
-                file = Path.ChangeExtension(path, ".m2");
-            }
-
-
-            //Console.WriteLine("Load model " + path);
-            string localPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Libs", "model.tmp");
+            //PathGraph.Log("Load model " + path);
+            string localPath = "PPather\\model.tmp";
+            Dbg.Log(" m");
             if (set.ExtractFile(file, localPath))
             {
                 Model w = new Model();
@@ -464,7 +457,7 @@ namespace Wmo
     public class Model
     {
         public string fileName = "";
-        // 4 bytes Magic
+        // 4 bytes header
         // 4 bytes version
         //uint model_name_length; // (including \0); 
         //uint model_name_offset; 
@@ -480,15 +473,15 @@ namespace Wmo
 
     public class ModelFile
     {
-        System.IO.Stream model_stream = null;
+        System.IO.Stream stream = null;
         System.IO.BinaryReader file = null;
         private Model model;
 
         public ModelFile(string path, Model m)
         {
             this.model = m;
-            model_stream = System.IO.File.OpenRead(path);
-            file = new System.IO.BinaryReader(model_stream);
+            stream = System.IO.File.OpenRead(path);
+            file = new System.IO.BinaryReader(stream);
             try
             {
                 ReadHeader();
@@ -498,55 +491,53 @@ namespace Wmo
 
             }
             file.Close();
-            model_stream.Close();
+            stream.Close();
         }
 
         private void ReadHeader()
         {
-            // UPDATED FOR WOTLK 17.10.2008 by toblakai
-            // SOURCE: http://www.madx.dk/wowdev/wiki/index.php?title=M2/WotLK
-
-            char[] Magic = file.ReadChars(4);
-            //PPather.Debug("M2 MAGIC: {0}",new string(Magic));
+            uint header = file.ReadUInt32(); // (including \0); 
+            if (header != 0x3032444d)
+            {
+                PathGraph.Log("Bad header in m2 file: " + header);
+                return;
+            }
             uint version = file.ReadUInt32(); // (including \0); 
-            // check that we have the new known WOTLK Magic 0x80100000
-            //PPather.Debug("M2 HEADER VERSION: 0x{0:x8}",
-            //    (uint) (version >> 24) | ((version << 8) & 0x00FF0000) | ((version >> 8) & 0x0000FF00) | (version << 24));
             uint model_name_length = file.ReadUInt32(); // (including \0); 
             uint model_name_offset = file.ReadUInt32();
-            uint GlobalModelFlags = file.ReadUInt32(); // ? always 0, 1 or 3 (mostly 0); 
+            uint Modeltype = file.ReadUInt32(); // ? always 0, 1 or 3 (mostly 0); 
             uint nGlobalSequences = file.ReadUInt32(); //  - number of global sequences; 
             uint ofsGlobalSequences = file.ReadUInt32(); //  - offset to global sequences; 
             uint nAnimations = file.ReadUInt32(); //  - number of animation sequences; 
             uint ofsAnimations = file.ReadUInt32(); //  - offset to animation sequences; 
-            uint nAnimationLookup = file.ReadUInt32();
-            uint ofsAnimationLookup = file.ReadUInt32(); // Mapping of global IDs to the entries in the Animation sequences block.
-            // NOT IN WOTLK uint nD=file.ReadUInt32(); //  - always 201 or 203 depending on WoW client version; 
-            // NOT IN WOTLK uint ofsD=file.ReadUInt32();
+            uint nC = file.ReadUInt32(); // ; 
+            uint ofsC = file.ReadUInt32(); // ; 
+            uint nD = file.ReadUInt32(); //  - always 201 or 203 depending on WoW client version; 
+            uint ofsD = file.ReadUInt32();
             uint nBones = file.ReadUInt32(); //  - number of bones; 
             uint ofsBones = file.ReadUInt32(); //  - offset to bones; 
-            uint nKeyBoneLookup = file.ReadUInt32(); //  - bone lookup table; 
-            uint ofsKeyBoneLookup = file.ReadUInt32();
+            uint nF = file.ReadUInt32(); //  - bone lookup table; 
+            uint ofsF = file.ReadUInt32();
             uint nVertices = file.ReadUInt32(); //  - number of vertices; 
             uint ofsVertices = file.ReadUInt32(); //  - offset to vertices; 
             uint nViews = file.ReadUInt32(); //  - number of views (LOD versions?) 4 for every model; 
-            // NOT IN WOTLK (now in .skins) uint ofsViews=file.ReadUInt32(); //  - offset to views; 
+            uint ofsViews = file.ReadUInt32(); //  - offset to views; 
             uint nColors = file.ReadUInt32(); //  - number of color definitions; 
             uint ofsColors = file.ReadUInt32(); //  - offset to color definitions; 
             uint nTextures = file.ReadUInt32(); //  - number of textures; 
             uint ofsTextures = file.ReadUInt32(); //  - offset to texture definitions; 
             uint nTransparency = file.ReadUInt32(); //  - number of transparency definitions; 
             uint ofsTransparency = file.ReadUInt32(); //  - offset to transparency definitions; 
-            // NOT IN WOTLK uint nTexAnims = file.ReadUInt32(); //  - number of texture animations; 
-            // NOT IN WOTLK uint ofsTexAnims = file.ReadUInt32(); //  - offset to texture animations; 
-            uint nUnknown = file.ReadUInt32(); //  - always 0; 
-            uint ofsUnknown = file.ReadUInt32();
+            uint nI = file.ReadUInt32(); //  - always 0; 
+            uint ofsI = file.ReadUInt32();
+            uint nTexAnims = file.ReadUInt32(); //  - number of texture animations; 
+            uint ofsTexAnims = file.ReadUInt32(); //  - offset to texture animations; 
             uint nTexReplace = file.ReadUInt32();
             uint ofsTexReplace = file.ReadUInt32();
             uint nRenderFlags = file.ReadUInt32(); //  - number of blending mode definitions; 
             uint ofsRenderFlags = file.ReadUInt32(); //  - offset to blending mode definitions; 
-            uint nBoneLookupTable = file.ReadUInt32(); //  - bone lookup table; 
-            uint ofsBoneLookupTable = file.ReadUInt32();
+            uint nY = file.ReadUInt32(); //  - bone lookup table; 
+            uint ofsY = file.ReadUInt32();
             uint nTexLookup = file.ReadUInt32(); //  - number of texture lookup table entries; 
             uint ofsTexLookup = file.ReadUInt32(); //  - offset to texture lookup table; 
             uint nTexUnits = file.ReadUInt32(); //  - texture unit definitions?; 
@@ -555,9 +546,8 @@ namespace Wmo
             uint ofsTransLookup = file.ReadUInt32(); //  - offset to transparency lookup table; 
             uint nTexAnimLookup = file.ReadUInt32(); //  - number of texture animation lookup table entries; 
             uint ofsTexAnimLookup = file.ReadUInt32(); //  - offset to texture animation lookup table; 
-            float[] theFloats = new float[14]; // Noone knows. Meeh, they are here. 
             for (int i = 0; i < 14; i++)
-                theFloats[i] = file.ReadSingle();
+                file.ReadSingle();
 
             uint nBoundingTriangles = file.ReadUInt32();
             uint ofsBoundingTriangles = file.ReadUInt32();
@@ -583,7 +573,7 @@ namespace Wmo
             uint ofsParticleEmitters = file.ReadUInt32(); //  - offset to particle emitters; 
 
             //model.views = new ModelView[nViews];
-            model.view = null;//ReadViews(nViews, ofsViews);
+            model.view = null;// ReadViews(nViews, ofsViews);
             //model.nVertices = nVertices;
             model.vertices = ReadVertices(nVertices, ofsVertices);
 
@@ -761,7 +751,8 @@ namespace Wmo
                       WDT wdt, WMOManager wmomanager, ModelManager modelmanager)
         {
             string wdtfile = "World\\Maps\\" + name + "\\" + name + ".wdt";
-            if (!archive.ExtractFile(wdtfile, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Libs", "wdt.tmp")))
+            Dbg.Log(" wdt");
+            if (!archive.ExtractFile(wdtfile, "PPather\\wdt.tmp"))
                 return;
 
             loaded = true;
@@ -771,40 +762,49 @@ namespace Wmo
             this.modelmanager = modelmanager;
             this.archive = archive;
 
-            stream = System.IO.File.OpenRead(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Libs", "wdt.tmp"));
+            stream = System.IO.File.OpenRead("PPather\\wdt.tmp");
             file = new System.IO.BinaryReader(stream);
 
-            while (file.BaseStream.Position != file.BaseStream.Length)
+            bool done = false;
+            do
             {
-                uint type = file.ReadUInt32();
-                uint size = file.ReadUInt32();
-                long curpos = file.BaseStream.Position;
+                try
+                {
 
-                if (type == ChunkReader.MVER)
-                {
+                    uint type = file.ReadUInt32();
+                    uint size = file.ReadUInt32();
+                    long curpos = file.BaseStream.Position;
+
+                    if (type == ChunkReader.MVER)
+                    {
+                    }
+                    else if (type == ChunkReader.MPHD)
+                    {
+                    }
+                    else if (type == ChunkReader.MODF)
+                    {
+                        HandleMODF(size);
+                    }
+                    else if (type == ChunkReader.MWMO)
+                    {
+                        HandleMWMO(size);
+                    }
+                    else if (type == ChunkReader.MAIN)
+                    {
+                        HandleMAIN(size);
+                    }
+                    else
+                    {
+                        PathGraph.Log("WDT Unknown " + type);
+                        //done = true; 
+                    }
+                    file.BaseStream.Seek(curpos + size, System.IO.SeekOrigin.Begin);
                 }
-                else if (type == ChunkReader.MPHD)
+                catch (System.IO.EndOfStreamException)
                 {
+                    done = true;
                 }
-                else if (type == ChunkReader.MODF)
-                {
-                    HandleMODF(size);
-                }
-                else if (type == ChunkReader.MWMO)
-                {
-                    HandleMWMO(size);
-                }
-                else if (type == ChunkReader.MAIN)
-                {
-                    HandleMAIN(size);
-                }
-                else
-                {
-                    System.Console.WriteLine("WDT Unknown " + type);
-                    //done = true; 
-                }
-                file.BaseStream.Seek(curpos + size, System.IO.SeekOrigin.Begin);
-            }
+            } while (!done);
 
             file.Close();
             stream.Close();
@@ -816,24 +816,31 @@ namespace Wmo
 
         public void LoadMapTile(int x, int y)
         {
+
             if (wdt.maps[x, y])
             {
+
                 MapTile t = new MapTile();
 
+
                 string filename = "World\\Maps\\" + name + "\\" + name + "_" + x + "_" + y + ".adt";
-                if (archive.ExtractFile(filename, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Libs", "adt.tmp")))
+                Dbg.Log(" adt");
+                if (archive.ExtractFile(filename, "PPather\\adt.tmp"))
                 {
-                    PatherPath.Logger.Debug("Reading adt: " + filename);
-                    //PPather.mover.Stop();
-                    MapTileFile f = new MapTileFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Libs", "adt.tmp"), t, wmomanager, modelmanager);
+
+                    MapTileFile f = new MapTileFile("PPather\\adt.tmp", t, wmomanager, modelmanager);
                     if (t.models.Count != 0 || t.wmos.Count != 0)
                     {
-                        //Console.WriteLine(name + " " + x + " " + z + " models: " + t.models.Count + " wmos: " + t.wmos.Count);
+                        //PathGraph.Log(name + " " + x + " " + z + " models: " + t.models.Count + " wmos: " + t.wmos.Count);
                         // Weee
                     }
                     wdt.maptiles[x, y] = t;
                 }
             }
+
+
+
+
         }
 
         private void HandleMWMO(uint size)
@@ -902,23 +909,32 @@ namespace Wmo
             stream = System.IO.File.OpenRead(name);
             file = new System.IO.BinaryReader(stream);
 
-            while (file.BaseStream.Position != file.BaseStream.Length)
+            bool done = false;
+            do
             {
-                uint type = file.ReadUInt32();
-                //uint size = file.ReadUInt32();
-                //long curpos = file.BaseStream.Position;
+                try
+                {
 
-                if (type == ChunkReader.CBDW)
-                {
-                    HandleWDBC();
+                    uint type = file.ReadUInt32();
+                    //uint size = file.ReadUInt32();
+                    //long curpos = file.BaseStream.Position;
+
+                    if (type == ChunkReader.CBDW)
+                    {
+                        HandleWDBC();
+                    }
+                    else
+                    {
+                        PathGraph.Log("DBC Unknown " + type);
+                        //done = true; 
+                    }
+                    //file.BaseStream.Seek(curpos + size, System.IO.SeekOrigin.Begin);
                 }
-                else
+                catch (System.IO.EndOfStreamException)
                 {
-                    System.Console.WriteLine("DBC Unknown " + type);
-                    //done = true; 
+                    done = true;
                 }
-                //file.BaseStream.Seek(curpos + size, System.IO.SeekOrigin.Begin);
-            }
+            } while (!done);
 
             file.Close();
             stream.Close();
@@ -932,10 +948,11 @@ namespace Wmo
             dbc.recordSize = file.ReadUInt32();
             dbc.stringSize = file.ReadUInt32();
 
-            /*if(dbc.fieldCount*4!=dbc.recordSize) {
+            if (dbc.fieldCount * 4 != dbc.recordSize)
+            {
                 // !!!
-                System.Console.WriteLine("WOOT");
-            }*/
+                PathGraph.Log("WOOT");
+            }
             int off = 0;
             uint[] raw = new uint[dbc.fieldCount * dbc.recordCount];
             for (uint i = 0; i < dbc.recordCount; i++)
@@ -1012,6 +1029,8 @@ namespace Wmo
         //Liquid *lq;
     }
 
+
+
     class MapTile
     {
         // public int x, z; // matches maps in WDT
@@ -1027,15 +1046,16 @@ namespace Wmo
 
     }
 
-    class MapTileFile
-    { // adt file
+    class MapTileFile // adt file
+    {
         MapTile tile;
-        LiquidData[] LiquidDataChunk = null; //256 elements
         System.IO.Stream stream = null;
         System.IO.BinaryReader file = null;
-        int[] mcnk_offsets = new int[256], mcnk_sizes = new int[256];
+        int[] mcnk_offsets = new int[256];
+        int[] mcnk_sizes = new int[256];
         WMOManager wmomanager;
         ModelManager modelmanager;
+
 
         public MapTileFile(string name, MapTile tile, WMOManager wmomanager, ModelManager modelmanager)
         {
@@ -1044,38 +1064,59 @@ namespace Wmo
             this.modelmanager = modelmanager;
             stream = System.IO.File.OpenRead(name);
             file = new System.IO.BinaryReader(stream);
-
-            while (file.BaseStream.Position != file.BaseStream.Length)
+            bool done = false;
+            do
             {
-                uint type = file.ReadUInt32();
-                uint size = file.ReadUInt32();
-                long curpos = file.BaseStream.Position;
-
-                if (type == ChunkReader.MVER)
-                    HandleMVER(size);
-                if (type == ChunkReader.MCIN)
-                    HandleMCIN(size);
-                else if (type == ChunkReader.MTEX)
-                    HandleMTEX(size);
-                else if (type == ChunkReader.MMDX)
-                    HandleMMDX(size);
-                else if (type == ChunkReader.MWMO)
-                    HandleMWMO(size);
-                else if (type == ChunkReader.MDDF)
-                    HandleMDDF(size);
-                else if (type == ChunkReader.MODF)
-                    HandleMODF(size);
-                else if (type == ChunkReader.MH2O)
-                    HandleMH2O(size);
-                //else if(type==ChunkReader.MCNK)
-                //HandleMCNK(size);
-                else
+                try
                 {
-                    //System.Console.WriteLine("MapTile Unknown " + type);
-                    //done = true; 
+                    uint type = file.ReadUInt32();
+                    uint size = file.ReadUInt32();
+                    long curpos = file.BaseStream.Position;
+
+                    if (type == ChunkReader.MVER)
+                    {
+                        HandleMVER(size);
+                    }
+                    if (type == ChunkReader.MCIN)
+                    {
+                        HandleMCIN(size);
+                    }
+                    else if (type == ChunkReader.MTEX)
+                    {
+                        HandleMTEX(size);
+                    }
+                    else if (type == ChunkReader.MMDX)
+                    {
+                        HandleMMDX(size);
+                    }
+                    else if (type == ChunkReader.MWMO)
+                    {
+                        HandleMWMO(size);
+                    }
+                    else if (type == ChunkReader.MDDF)
+                    {
+                        HandleMDDF(size);
+                    }
+                    else if (type == ChunkReader.MODF)
+                    {
+                        HandleMODF(size);
+                    }
+                    else if (type == ChunkReader.MCNK)
+                    {
+                        //HandleMCNK(size);
+                    }
+                    else
+                    {
+                        //PathGraph.Log("MapTile Unknown " + type);
+                        //done = true; 
+                    }
+                    file.BaseStream.Seek(curpos + size, System.IO.SeekOrigin.Begin);
                 }
-                file.BaseStream.Seek(curpos + size, System.IO.SeekOrigin.Begin);
-            }
+                catch (System.IO.EndOfStreamException)
+                {
+                    done = true;
+                }
+            } while (!done);
 
             for (int j = 0; j < 16; j++)
             {
@@ -1083,125 +1124,16 @@ namespace Wmo
                 {
                     int off = mcnk_offsets[j * 16 + i];
                     file.BaseStream.Seek(off, System.IO.SeekOrigin.Begin);
-                    //System.Console.WriteLine("Chunk " + i + " " + j + " at off " + off); 
+                    //PathGraph.Log("Chunk " + i + " " + j + " at off " + off); 
                     MapChunk chunk = new MapChunk();
                     ReadMapChunk(chunk);
-
-                    if (LiquidDataChunk != null) //not null means an MH2O chunk was found
-                    {
-                        //set liquid info from the MH2O chunk since the old MCLQ is no more
-                        chunk.haswater = (LiquidDataChunk[j * 16 + i].used & 1) == 1;
-                        if (LiquidDataChunk[j * 16 + i].data1 != null)
-                        {
-                            chunk.water_height1 = LiquidDataChunk[j * 16 + i].data1.heightLevel1;
-                            chunk.water_height2 = LiquidDataChunk[j * 16 + i].data1.heightLevel2;
-                        }
-
-                        //TODO: set height map and flags, very important
-                        chunk.water_height = LiquidDataChunk[j * 16 + i].water_height;
-                        chunk.water_flags = LiquidDataChunk[j * 16 + i].water_flags;
-                    }
                     tile.chunks[j, i] = chunk;
                 }
             }
-
-            //if (ChunkLiquidData != null)
-            //PatherPath.Logger.Debug("ADT HAS MH2O");
-            //else
-            //PatherPath.Logger.Debug("ADT HAS MCLQ");
-
             file.Close();
             stream.Close();
 
         }
-        public class LiquidData
-        {
-            public uint offsetData1 = 0;
-            public int used = 0;
-            public uint offsetData2 = 0;
-
-            public MH2OData1 data1 = null;
-
-            public float[,] water_height = new float[9, 9];
-            public byte[,] water_flags = new byte[8, 8];
-        }
-
-        public class MH2OData1
-        {
-            public UInt16 flags = 0; //0x1 might mean there is a height map @ data2b ??
-            public UInt16 type = 0; //0 = normal/lake, 1 = lava, 2 = ocean
-            public float heightLevel1 = 0;
-            public float heightLevel2 = 0;
-            public byte xOffset = 0;
-            public byte yOffset = 0;
-            public byte Width = 0;
-            public byte Height = 0;
-            public uint offsetData2a = 0;
-            public uint offsetData2b = 0;
-            //public uint Data2bLength = 0;
-        }
-
-        private void HandleMH2O(uint size)
-        {
-            long chunkStart = file.BaseStream.Position;
-            LiquidDataChunk = new LiquidData[256];
-
-            for (int i = 0; i < 256; i++)
-            {
-                LiquidDataChunk[i] = new LiquidData();
-                LiquidDataChunk[i].offsetData1 = file.ReadUInt32();
-                LiquidDataChunk[i].used = file.ReadInt32();
-                LiquidDataChunk[i].offsetData2 = file.ReadUInt32();
-            }
-
-            for (int i = 0; i < 256; i++)
-            {
-                if (LiquidDataChunk[i].offsetData1 != 0)
-                {
-                    file.BaseStream.Seek(chunkStart + LiquidDataChunk[i].offsetData1, System.IO.SeekOrigin.Begin);
-                    LiquidDataChunk[i].data1 = new MH2OData1();
-                    LiquidDataChunk[i].data1.flags = file.ReadUInt16();
-                    LiquidDataChunk[i].data1.type = file.ReadUInt16();
-                    LiquidDataChunk[i].data1.heightLevel1 = file.ReadSingle();
-                    LiquidDataChunk[i].data1.heightLevel2 = file.ReadSingle();
-                    LiquidDataChunk[i].data1.xOffset = file.ReadByte();
-                    LiquidDataChunk[i].data1.yOffset = file.ReadByte();
-                    LiquidDataChunk[i].data1.Width = file.ReadByte();
-                    LiquidDataChunk[i].data1.Height = file.ReadByte();
-                    LiquidDataChunk[i].data1.offsetData2a = file.ReadUInt32();
-                    LiquidDataChunk[i].data1.offsetData2b = file.ReadUInt32();
-                }
-            }
-
-            for (int k = 0; k < 256; k++)
-            {
-                if ((LiquidDataChunk[k].used & 1) == 1 &&
-                    LiquidDataChunk[k].data1 != null && LiquidDataChunk[k].data1.offsetData2b != 0
-                    && (LiquidDataChunk[k].data1.flags & 1) == 1)
-                {
-                    file.BaseStream.Seek(chunkStart + LiquidDataChunk[k].data1.offsetData2b, System.IO.SeekOrigin.Begin);
-
-                    for (int x = LiquidDataChunk[k].data1.xOffset; x <= LiquidDataChunk[k].data1.xOffset + LiquidDataChunk[k].data1.Width; x++)
-                    {
-                        for (int y = LiquidDataChunk[k].data1.yOffset; y <= LiquidDataChunk[k].data1.yOffset + LiquidDataChunk[k].data1.Height; y++)
-                        {
-                            LiquidDataChunk[k].water_height[x, y] = file.ReadSingle();
-
-                            if (float.IsNaN(LiquidDataChunk[k].water_height[x, y]))
-                                throw new Exception("Major inconsistency in MH2O-handler.");
-                        }
-                    }
-
-                    for (int x = LiquidDataChunk[k].data1.xOffset; x < LiquidDataChunk[k].data1.xOffset + LiquidDataChunk[k].data1.Width; x++)
-                    {
-                        for (int y = LiquidDataChunk[k].data1.yOffset; y < LiquidDataChunk[k].data1.yOffset + LiquidDataChunk[k].data1.Height; y++)
-                            LiquidDataChunk[k].water_flags[x, y] = file.ReadByte();
-                    }
-
-                }
-            }
-        }
-
 
         private void HandleMVER(uint size)
         {
@@ -1286,8 +1218,8 @@ namespace Wmo
 
 
         private void ReadMapChunk(MapChunk chunk)
-        { //HAS ANYONE HEARD OF STRUCTS?!
-            // Read away Magic and size
+        {
+            // Read away header and size
             uint crap_head = file.ReadUInt32();
             uint crap_size = file.ReadUInt32();
 
@@ -1341,69 +1273,92 @@ namespace Wmo
             chunk.hasholes = (holes != 0);
             chunk.holes = holes;
 
-            //Console.WriteLine("  " + zpos + " " + xpos + " " + ypos);
-            while (file.BaseStream.Position < file.BaseStream.Length)
+            bool debug = false;
+            //PathGraph.Log("  " + zpos + " " + xpos + " " + ypos);
+            bool done = false;
+            do
             {
-                uint type = file.ReadUInt32();
-                uint size = file.ReadUInt32();
-                long curpos = file.BaseStream.Position;
+                try
+                {
+                    uint type = file.ReadUInt32();
+                    uint size = file.ReadUInt32();
+                    long curpos = file.BaseStream.Position;
 
-                if (type == ChunkReader.MCNR)
-                {
-                    size = 0x1C0; // WTF
-                    HandleChunkMCNR(chunk, size);
-
-                }
-                else if (type == ChunkReader.MCVT)
-                {
-                    HandleChunkMCVT(chunk, size);
-                }
-                else if (type == ChunkReader.MCRF)
-                {
-                    HandleChunkMCRF(chunk, size);
-                }
-                else if (type == ChunkReader.MCLY)
-                {
-                    HandleChunkMCLY(chunk, size);
-                }
-                else if (type == ChunkReader.MCSH)
-                {
-                    HandleChunkMCSH(chunk, size);
-                }
-                else if (type == ChunkReader.MCAL)
-                {
-                    HandleChunkMCAL(chunk, size);
-                    // TODO rumors are that the size of this chunk is wrong sometimes
-                }
-                else if (type == ChunkReader.MCLQ)
-                {
-                    /* Some .adt-files are still using the old MCLQ chunks. Far from all though. 
-                     * And those which use the MH2O chunk does not use these MCLQ chunks */
-                    size = sizeLiquid;
-                    if (sizeLiquid != 8)
+                    if (type == ChunkReader.MCNR)
                     {
-                        chunk.haswater = true;
-                        HandleChunkMCLQ(chunk, size);
-                        //done = true; // size if fucked up, give up
+                        size = 0x1C0; // WTF
+                        if (debug)
+                            PathGraph.Log("MCNR " + size);
+                        HandleChunkMCNR(chunk, size);
+
                     }
+                    else if (type == ChunkReader.MCVT)
+                    {
+                        if (debug)
+                            PathGraph.Log("MCVT " + size);
+                        HandleChunkMCVT(chunk, size);
+                    }
+                    else if (type == ChunkReader.MCRF)
+                    {
+                        if (debug)
+                            PathGraph.Log("MCRF " + size);
+                        HandleChunkMCRF(chunk, size);
+                    }
+                    else if (type == ChunkReader.MCLY)
+                    {
+                        if (debug)
+                            PathGraph.Log("MCLY " + size);
+                        HandleChunkMCLY(chunk, size);
+                    }
+                    else if (type == ChunkReader.MCSH)
+                    {
+                        if (debug)
+                            PathGraph.Log("MCSH " + size);
+                        HandleChunkMCSH(chunk, size);
+                    }
+                    else if (type == ChunkReader.MCAL)
+                    {
+                        if (debug)
+                            PathGraph.Log("MCAL " + size);
+                        HandleChunkMCAL(chunk, size);
+                        // TODO rumors are that the size of this chunk is wrong sometimes
+                    }
+                    else if (type == ChunkReader.MCLQ)
+                    {
+                        size = sizeLiquid;
+                        if (debug)
+                            PathGraph.Log("MCLQ " + size);
+                        if (sizeLiquid != 8)
+                        {
+                            chunk.haswater = true;
+                            HandleChunkMCLQ(chunk, size);
+                            //done = true; // size if fucked up, give up
+                        }
+                    }
+                    else if (type == ChunkReader.MCSE)
+                    {
+                        if (debug)
+                            PathGraph.Log("MCSE " + size);
+                        HandleChunkMCSE(chunk, size);
+                    }
+                    else if (type == ChunkReader.MCNK)
+                    {
+                        //PathGraph.Log("MCNK " + size);
+                        done = true; // found next
+                        //HandleChunkMCSE(chunk, size);
+                    }
+                    else
+                    {
+                        //PathGraph.Log("MapChunk Unknown " + type);
+                        //done = true; 
+                    }
+                    file.BaseStream.Seek(curpos + size, System.IO.SeekOrigin.Begin);
                 }
-                else if (type == ChunkReader.MCSE)
+                catch (System.IO.EndOfStreamException)
                 {
-                    HandleChunkMCSE(chunk, size);
+                    done = true;
                 }
-                else if (type == ChunkReader.MCNK)
-                {
-                    //Console.WriteLine("MCNK " + size);
-                    break; // found next
-                    //HandleChunkMCSE(chunk, size);
-                }
-                else
-                {
-                    //System.Console.WriteLine("MapChunk Unknown " + type);
-                    //done = true; 
-                }
-                file.BaseStream.Seek(curpos + size, System.IO.SeekOrigin.Begin);
-            }
+            } while (!done);
         }
 
         void HandleChunkMCNR(MapChunk chunk, uint size)
@@ -1475,7 +1430,6 @@ namespace Wmo
                     //Int16 unk1 = file.ReadInt16(); // ??
                     //Int16 unk2 = file.ReadInt16(); // ??
                     chunk.water_height[i, j] = file.ReadSingle(); //  word1 + word2; //  file.ReadSingle();
-                    //PPather.Debug("HandleChunkMCLQ: CHUNK.WATIER_HEIGHT[{0}, {1}] = {2}", i, j, chunk.water_height[i, j]);
                 }
             }
 
@@ -1484,7 +1438,6 @@ namespace Wmo
                 for (int j = 0; j < 8; j++)
                 {
                     chunk.water_flags[i, j] = file.ReadByte();
-                    //PPather.Debug("HandleChunkMCLQ: CHUNK.WATIER_FLAGS[{0}, {1}] = {2}", i, j, chunk.water_flags[i, j]);
                 }
 
             }
@@ -1514,48 +1467,56 @@ namespace Wmo
             this.modelmanager = modelmanager;
             stream = System.IO.File.OpenRead(name);
             file = new System.IO.BinaryReader(stream);
-
-            while (file.BaseStream.Position != file.BaseStream.Length)
+            bool done = false;
+            do
             {
-                uint type = file.ReadUInt32();
-                uint size = file.ReadUInt32();
-                long curpos = file.BaseStream.Position;
+                try
+                {
 
-                if (type == ChunkReader.MVER)
-                {
-                    HandleMVER(size);
+                    uint type = file.ReadUInt32();
+                    uint size = file.ReadUInt32();
+                    long curpos = file.BaseStream.Position;
+
+                    if (type == ChunkReader.MVER)
+                    {
+                        HandleMVER(size);
+                    }
+                    if (type == ChunkReader.MOHD)
+                    {
+                        HandleMOHD(size);
+                    }
+                    else if (type == ChunkReader.MOGP)
+                    {
+                        HandleMOGP(size);
+                    }
+                    else if (type == ChunkReader.MOGI)
+                    {
+                        HandleMOGI(size);
+                    }
+                    else if (type == ChunkReader.MODS)
+                    {
+                        HandleMODS(size);
+                    }
+                    else if (type == ChunkReader.MODD)
+                    {
+                        HandleMODD(size);
+                    }
+                    else if (type == ChunkReader.MODN)
+                    {
+                        HandleMODN(size);
+                    }
+                    else
+                    {
+                        //PathGraph.Log("Root Unknown " + type);
+                        //done = true; 
+                    }
+                    file.BaseStream.Seek(curpos + size, System.IO.SeekOrigin.Begin);
                 }
-                if (type == ChunkReader.MOHD)
+                catch (System.IO.EndOfStreamException)
                 {
-                    HandleMOHD(size);
+                    done = true;
                 }
-                else if (type == ChunkReader.MOGP)
-                {
-                    HandleMOGP(size);
-                }
-                else if (type == ChunkReader.MOGI)
-                {
-                    HandleMOGI(size);
-                }
-                else if (type == ChunkReader.MODS)
-                {
-                    HandleMODS(size);
-                }
-                else if (type == ChunkReader.MODD)
-                {
-                    HandleMODD(size);
-                }
-                else if (type == ChunkReader.MODN)
-                {
-                    HandleMODN(size);
-                }
-                else
-                {
-                    //System.Console.WriteLine("Root Unknown " + type);
-                    //done = true; 
-                }
-                file.BaseStream.Seek(curpos + size, System.IO.SeekOrigin.Begin);
-            }
+            } while (!done);
             file.Close();
             stream.Close();
 
@@ -1630,9 +1591,8 @@ namespace Wmo
             wmo.doodadInstances = new ModelInstance[wmo.nDoodads];
             for (int i = 0; i < sets /*wmo.nDoodads*/; i++)
             {
-                byte[] s = file.ReadBytes(4);
-                s[3] = 0;
-                uint nameOffsetInMODN = BitConverter.ToUInt32(s, 0); // 0x00
+
+                uint nameOffsetInMODN = file.ReadUInt32(); // 0x00
                 float posx = file.ReadSingle(); // 0x04
                 float posz = file.ReadSingle(); // 0x08
                 float posy = -file.ReadSingle(); // 0x0c
@@ -1715,67 +1675,77 @@ namespace Wmo
 
             file.BaseStream.Seek(0x58, System.IO.SeekOrigin.Begin);// first chunk
 
-            while (file.BaseStream.Position != file.BaseStream.Length)
+            bool done = false;
+            do
             {
-                uint type = file.ReadUInt32();
-                uint size = file.ReadUInt32();
-                long curpos = file.BaseStream.Position;
-                uint MVER = ChunkReader.ToBin("MVER");
-                if (type == ChunkReader.MVER)
+                try
                 {
-                    HandleMVER(size);
+                    uint type = file.ReadUInt32();
+                    uint size = file.ReadUInt32();
+                    long curpos = file.BaseStream.Position;
+                    uint MVER = ChunkReader.ToBin("MVER");
+                    if (type == ChunkReader.MVER)
+                    {
+                        HandleMVER(size);
+                    }
+                    if (type == ChunkReader.MOPY)
+                    {
+                        HandleMOPY(size);
+                    }
+                    else if (type == ChunkReader.MOVI)
+                    {
+                        HandleMOVI(size);
+                    }
+                    else if (type == ChunkReader.MOVT)
+                    {
+                        HandleMOVT(size);
+                    }
+                    else if (type == ChunkReader.MONR)
+                    {
+                        HandleMONR(size);
+                    }
+                    else if (type == ChunkReader.MOLR)
+                    {
+                        HandleMOLR(size);
+                    }
+                    else if (type == ChunkReader.MODR)
+                    {
+                        HandleMODR(size);
+                    }
+                    else if (type == ChunkReader.MOBA)
+                    {
+                        HandleMOBA(size);
+                    }
+                    else if (type == ChunkReader.MOCV)
+                    {
+                        HandleMOCV(size);
+                    }
+                    else if (type == ChunkReader.MLIQ)
+                    {
+                        HandleMLIQ(size);
+                    }
+                    else if (type == ChunkReader.MOBN)
+                    {
+                        HandleMOBN(size);
+                    }
+                    else if (type == ChunkReader.MOBR)
+                    {
+                        HandleMOBR(size);
+                    }
+
+
+                    else
+                    {
+                        //PathGraph.Log("Group Unknown " + type);
+                        //done = true; 
+                    }
+                    file.BaseStream.Seek(curpos + size, System.IO.SeekOrigin.Begin);
                 }
-                if (type == ChunkReader.MOPY)
+                catch (System.IO.EndOfStreamException)
                 {
-                    HandleMOPY(size);
+                    done = true;
                 }
-                else if (type == ChunkReader.MOVI)
-                {
-                    HandleMOVI(size);
-                }
-                else if (type == ChunkReader.MOVT)
-                {
-                    HandleMOVT(size);
-                }
-                else if (type == ChunkReader.MONR)
-                {
-                    HandleMONR(size);
-                }
-                else if (type == ChunkReader.MOLR)
-                {
-                    HandleMOLR(size);
-                }
-                else if (type == ChunkReader.MODR)
-                {
-                    HandleMODR(size);
-                }
-                else if (type == ChunkReader.MOBA)
-                {
-                    HandleMOBA(size);
-                }
-                else if (type == ChunkReader.MOCV)
-                {
-                    HandleMOCV(size);
-                }
-                else if (type == ChunkReader.MLIQ)
-                {
-                    HandleMLIQ(size);
-                }
-                else if (type == ChunkReader.MOBN)
-                {
-                    HandleMOBN(size);
-                }
-                else if (type == ChunkReader.MOBR)
-                {
-                    HandleMOBR(size);
-                }
-                else
-                {
-                    //System.Console.WriteLine("Group Unknown " + type);
-                    //done = true; 
-                }
-                file.BaseStream.Seek(curpos + size, System.IO.SeekOrigin.Begin);
-            }
+            } while (!done);
 
 
             file.Close();
@@ -1882,15 +1852,15 @@ namespace Wmo
                 bsp.nUnk = file.ReadUInt16();
                 bsp.fDist = file.ReadSingle();
 
-                Console.WriteLine("BSP node type: " + bsp.planetype);
+                PathGraph.Log("BSP node type: " + bsp.planetype);
                 if (bsp.child0 == -1)
                 {
-                    Console.WriteLine("  faces: " + bsp.firstface + " " + bsp.numfaces);
+                    PathGraph.Log("  faces: " + bsp.firstface + " " + bsp.numfaces);
                     
                 }
                 else
                 {
-                    Console.WriteLine("  children: " + bsp.child0 + " " + bsp.child1 + " dist "+ bsp.fDist); 
+                    PathGraph.Log("  children: " + bsp.child0 + " " + bsp.child1 + " dist "+ bsp.fDist); 
                 }
             }*/
         }
@@ -1931,5 +1901,6 @@ namespace Wmo
             uint unknown3 = file.ReadUInt32();
 
         }
+
     }
 }
