@@ -11,23 +11,16 @@ namespace IceFlake.Client.Objects
         private delegate void UseItemDelegate(IntPtr thisObj, ref ulong guid, int unkZero);
         private static UseItemDelegate _useItem;
 
-        // int __thiscall WowClientDB2::ItemRec_C::GetRow(int this, int a2, int a3, int a4, int a5, char a6)
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate IntPtr GetItemRecPointerFromId(IntPtr wowdb2, uint itemid, ref ulong guid, IntPtr callback, IntPtr param, bool unk = false);
-        private static GetItemRecPointerFromId _getItemRecPtrFromId;
-
-        // int __thiscall WowClientDB2::ItemRecSparse_C::GetRow(int this, int a2, int a3, int a4, int a5, char a6)
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate IntPtr GetItemSparseRecPointerFromId(IntPtr wowdb2, uint itemid, ref ulong guid, IntPtr callback, IntPtr param, bool unk = false);
-        private static GetItemSparseRecPointerFromId _getItemSparseRecFromId;
+        private delegate IntPtr GetInfoBlockByIdDelegate(IntPtr instance, uint id, ref ulong guid, int a4 = 0, int a5 = 0, int a6 = 0);
+        private static GetInfoBlockByIdDelegate _getInfoBlockById;
 
         public WoWItem(IntPtr pointer)
             : base(pointer)
         {
             if (IsValid)
             {
-                //ItemInfo = WoWItem.GetItemRecordFromId(this.Entry);
-                //ItemSparseInfo = WoWItem.GetItemSparseRecordFromId(this.Entry);
+                ItemInfo = WoWItem.GetItemRecordFromId(this.Entry, this.Guid);
             }
         }
 
@@ -94,13 +87,7 @@ namespace IceFlake.Client.Objects
             get { return ((uint)this.Flags & 1u) != 0; }
         }
 
-        public ItemRec ItemInfo
-        {
-            get;
-            private set;
-        }
-
-        public ItemSparseRec ItemSparseInfo
+        public ItemInfo ItemInfo
         {
             get;
             private set;
@@ -117,7 +104,6 @@ namespace IceFlake.Client.Objects
             {
                 var item = Manager.LocalPlayer.GetBackpackItem(i);
                 if (item == null || !item.IsValid) continue;
-                //Log.WriteLine("B0S{0}={1}", i, item.Name);
                 if (item.Guid == this.Guid)
                 {
                     container = 0;
@@ -135,7 +121,6 @@ namespace IceFlake.Client.Objects
                 {
                     var guid = bag.GetItemGuid(x);
                     if (guid == 0ul) continue;
-                    //Log.WriteLine("B{0}S{1}={2}", i, x, bag.GetItem(x).Name);
                     if (guid == this.Guid)
                     {
                         container = i + 1;
@@ -147,40 +132,21 @@ namespace IceFlake.Client.Objects
             return false;
         }
 
-        //public static IntPtr GetItemRecordPointerFromId(uint id)
-        //{
-        //    if (_getItemRecPtrFromId == null)
-        //        _getItemRecPtrFromId = Core.Memory.RegisterDelegate<GetItemRecPointerFromId>((IntPtr)Pointers.Item.GetItemRecPtr);
+        public static IntPtr GetItemRecordPointerFromId(uint id, ulong guid = 0ul)
+        {
+            if (_getInfoBlockById == null)
+                _getInfoBlockById = Manager.Memory.RegisterDelegate<GetInfoBlockByIdDelegate>((IntPtr)Pointers.WDB.DBItemCache_GetInfoBlockByID);
 
-        //    ulong guid = 0ul;
-        //    return _getItemRecPtrFromId(Pointers.Item.ItemRecDB, id, ref guid, IntPtr.Zero, IntPtr.Zero);
-        //}
+            return _getInfoBlockById((IntPtr)Pointers.WDB.ItemInfo, id, ref guid);
+        }
 
-        //public static ItemRec GetItemRecordFromId(uint id)
-        //{
-        //    var ptr = GetItemRecordPointerFromId(id);
-        //    if (ptr == IntPtr.Zero)
-        //        return default(ItemRec);
-        //    return Core.Memory.Read<ItemRec>(ptr);
-        //}
-
-        //public static IntPtr GetItemSparseRecordPointerFromId(uint id)
-        //{
-        //    if (_getItemSparseRecFromId == null)
-        //        _getItemSparseRecFromId = Core.Memory.RegisterDelegate<GetItemSparseRecPointerFromId>((IntPtr)Pointers.Item.GetItemSparseRecPtr);
-
-        //    ulong guid = 0ul;
-        //    return _getItemRecPtrFromId(Pointers.Item.ItemSparseRecDB, id, ref guid, IntPtr.Zero, IntPtr.Zero);
-        //}
-
-        //public static ItemSparseRec GetItemSparseRecordFromId(uint id)
-        //{
-        //    var ptr = GetItemSparseRecordPointerFromId(id);
-        //    if (ptr == IntPtr.Zero)
-        //        return default(ItemSparseRec);
-
-        //    return Core.Memory.Read<ItemSparseRec>(ptr);
-        //}
+        public static ItemInfo GetItemRecordFromId(uint id, ulong guid = 0ul)
+        {
+            var ptr = GetItemRecordPointerFromId(id, guid);
+            if (ptr == IntPtr.Zero)
+                return default(ItemInfo);
+            return Manager.Memory.Read<ItemInfo>(ptr);
+        }
 
         public static IEnumerable<EquipSlot> GetInventorySlotsByEquipSlot(InventoryType type)
         {

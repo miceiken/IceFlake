@@ -2,6 +2,7 @@
 using IceFlake.Client;
 using IceFlake.Client.Objects;
 using IceFlake.Client.Collections;
+using IceFlake.Client.Scripts;
 using IceFlake.DirectX;
 using IceFlake.Runtime;
 using System;
@@ -43,6 +44,8 @@ namespace IceFlake
 
             Spellbook = new SpellCollection();
             AssemblyAnalyzer.RegisterTarget(Spellbook);
+
+            ScriptManager.Initialize();
 
             AssemblyAnalyzer.Analyze(Assembly.GetExecutingAssembly());
 

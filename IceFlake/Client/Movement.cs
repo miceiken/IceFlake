@@ -27,6 +27,12 @@ namespace IceFlake.Client
             set;
         }
 
+        public Location Destination
+        {
+            get;
+            private set;
+        }
+
         public Location CurrentLocation
         {
             get;
@@ -35,6 +41,7 @@ namespace IceFlake.Client
 
         public bool PathTo(Location pos)
         {
+            Destination = pos;
             var path = PatherInstance.Search(Manager.LocalPlayer.Location, pos);
             if (path == null)
             {

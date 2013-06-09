@@ -92,6 +92,12 @@
     <Compile Include="Client\Patchables\Pointers.cs" />
     <Compile Include="Client\Patchables\Structures.cs" />
     <Compile Include="Client\Raid.cs" />
+    <Compile Include="Client\Scripts\Script.cs" />
+    <Compile Include="Client\Scripts\ScriptLogReader.cs" />
+    <Compile Include="Client\Scripts\ScriptManager.cs" />
+    <Compile Include="Client\Scripts\ScriptThread.cs" />
+    <Compile Include="Client\Scripts\SleepException.cs" />
+    <Compile Include="Client\Scripts\TerminateException.cs" />
     <Compile Include="Client\World.cs" />
     <Compile Include="Client\WoWDB.cs" />
     <Compile Include="Client\WoWScript.cs" />
@@ -112,6 +118,21 @@
     <Compile Include="Runtime\CallbackManager.cs" />
     <Compile Include="Runtime\Extensions.cs" />
     <Compile Include="Runtime\Pather.cs" />
+    <Compile Include="Scripts\BreadcrumbScript.cs" />
+    <Compile Include="Scripts\Dumpers.cs" />
+    <Compile Include="Scripts\FishingScript.cs" />
+    <Compile Include="Scripts\GuildRecruitScript.cs" />
+    <Compile Include="Scripts\ItemScript.cs" />
+    <Compile Include="Scripts\JCEnch.cs" />
+    <Compile Include="Scripts\LoginScript.cs" />
+    <Compile Include="Scripts\MapTestScript.cs" />
+    <Compile Include="Scripts\MultiboxScript.cs" />
+    <Compile Include="Scripts\PilgrimsBountry.cs" />
+    <Compile Include="Scripts\QuestScript.cs" />
+    <Compile Include="Scripts\TalentScript.cs" />
+    <Compile Include="Scripts\TidyBags.cs" />
+    <Compile Include="Scripts\UITestScript.cs" />
+    <Compile Include="Scripts\VendorScript.cs" />
     <EmbeddedResource Include="IceForm.resx">
       <DependentUpon>IceForm.cs</DependentUpon>
       <SubType>Designer</SubType>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Collections.Generic;
 
 namespace IceFlake.Client.Patchables
 {
@@ -46,7 +47,7 @@ namespace IceFlake.Client.Patchables
 
     #region SpellRec
 
-    [StructLayout(LayoutKind.Sequential, CharSet=CharSet.Unicode)]
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     public struct SpellRec
     {
         public uint Id;
@@ -268,8 +269,10 @@ namespace IceFlake.Client.Patchables
         public uint m_factionGroup; // 3
         public uint m_friendGroup; // 4
         public uint m_enemyGroup; // 5
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public uint[] m_enemies; // 6-9
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public uint[] m_friend; // 10-13
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+        public uint[] m_enemies; // 6-9
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+        public uint[] m_friend; // 10-13
     }
 
     #endregion
@@ -292,7 +295,8 @@ namespace IceFlake.Client.Patchables
         public uint m_ExplorationLevel; // 10
         public IntPtr m_AreaName_lang; // 11
         public uint m_factionGroupMask; // 12
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public uint[] m_liquidTypeID; // 13-16
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+        public uint[] m_liquidTypeID; // 13-16
         public float m_minElevation; // 17
         public float m_ambient_multiplier; // 18
         public uint m_lightid; // 19
@@ -312,36 +316,121 @@ namespace IceFlake.Client.Patchables
 
     #region ItemRec
 
-    [StructLayout(LayoutKind.Sequential)]
-    public struct ItemRec
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+    public struct ItemInfo
     {
-        public int ID;
+        public int Entry;
         public int ClassId;
         public int SubClassId;
-        public int m_sound_override_subclassid;
-        public int MaterialId;
+        public int Unk0;
         public int DisplayInfoId;
-        public int InventoryType;
-        public int SheathType;
+        public ItemQuality Rarity;
+        public ItemFlags TypeFlags;
+        public int BuyPrice;
+        public int Faction;
+        public int SellPrice;
+        public EquipSlot EquipSlot;
+        public int AllowedClasses;
+        public int AllowedRaces;
+        public int ItemLevel;
+        public int RequiredLevel;
+        public int RequiredSkill;
+        public int RequiredSkillLevel;
+        public int RequireSpell;
+        public int RequiredHonorRank;
+        public int RequiredCityRank;
+        public int RequiredReputationFaction;
+        public int RequiredReputationRank;
+        public int UniqueCount;
+        public int MaxStackSize;
+        public int BagSlots;
+        public int NumberOfStats;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 10, ArraySubType = UnmanagedType.I4)]
+        public int[] StatTypes;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 10, ArraySubType = UnmanagedType.I4)]
+        public int[] StatValues;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2, ArraySubType = UnmanagedType.I4)]
+        public int[] Unk1;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2, ArraySubType = UnmanagedType.R4)]
+        public float[] DamageMin;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2, ArraySubType = UnmanagedType.R4)]
+        public float[] DamageMax;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2, ArraySubType = UnmanagedType.I4)]
+        public int[] DamageType;
+        public int ResistPhysical_Armor;
+        public int ResistHoly;
+        public int ResistFire;
+        public int ResistNature;
+        public int ResistFrost;
+        public int ResistShadow;
+        public int ResistArcane;
+        public int WeaponDelay;
+        public int AmmoType;
+        public float RangeModifier;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5, ArraySubType = UnmanagedType.I4)]
+        public int[] SpellId;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5, ArraySubType = UnmanagedType.I4)]
+        public int[] SpellTriggerId;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5, ArraySubType = UnmanagedType.I4)]
+        public int[] SpellCharges;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5, ArraySubType = UnmanagedType.I4)]
+        public int[] SpellCooldown;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5, ArraySubType = UnmanagedType.I4)]
+        public int[] SpellCategory;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5, ArraySubType = UnmanagedType.I4)]
+        public int[] SpellCategoryCooldown;
+        public ItemBondType BondId;
+        [MarshalAs(UnmanagedType.LPStr)]
+        public string Description;
+        public int BookTextId;
+        public int BookPages;
+        public int BookStationaryId;
+        public int BeginQuestId;
+        public int LockPickSkillRequired;
+        public int MaterialId;
+        public int SheathId;
+        public int RandomPropertyId;
+        public int RandomSuffixId;
+        public int BlockValue;
+        public int ItemSetId;
+        public int DurabilityValue;
+        public int ItemAreaId;
+        public int ItemMapId;
+        public int BagFamily;
+        public int totemCategory;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.I4)]
+        public int[] SocketColor;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.I4)]
+        public int[] SocketContent;
+        public int SocketBonus;
+        public int GemProperties;
+        public int DisenchantSkillLevel;
+        public float ArmorDamageModifier;
+        public int ItemExtendedCost;
+        public int ItemLimitId;
+        public int Unk2;
+        [MarshalAs(UnmanagedType.LPStr)]
+        public string Name;
+
 
         public ItemClass Class
         {
-            get { return (ItemClass) ClassId; }
+            get { return (ItemClass)ClassId; }
         }
 
         public ItemArmorClass ArmorClass
         {
-            get { return (ItemArmorClass) SubClassId; }
+            get { return (ItemArmorClass)SubClassId; }
         }
 
         public ItemWeaponClass WeaponClass
         {
-            get { return (ItemWeaponClass) SubClassId; }
+            get { return (ItemWeaponClass)SubClassId; }
         }
 
         public ItemGemClass GemClass
         {
-            get { return (ItemGemClass) SubClassId; }
+            get { return (ItemGemClass)SubClassId; }
         }
 
         public bool IsFoodDrink
@@ -349,108 +438,8 @@ namespace IceFlake.Client.Patchables
             get
             {
                 return Class == ItemClass.Consumable &&
-                       (ItemSubclassConsumable) SubClassId == ItemSubclassConsumable.FoodDrink;
+                       (ItemSubclassConsumable)SubClassId == ItemSubclassConsumable.FoodDrink;
             }
-        }
-    }
-
-    #endregion
-
-    #region ItemSparseRec
-
-    [StructLayout(LayoutKind.Sequential)]
-    public struct SpellItemEnchantmentRec
-    {
-        public uint ID;
-        public uint Charges;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)] public uint[] EffectID;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)] public int[] EffectValueMin;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)] public int[] EffectValueMax;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5)] public int[] EffectArg;
-        private readonly IntPtr _Name;
-
-        public string Name
-        {
-            get { return _Name != IntPtr.Zero ? Manager.Memory.ReadString(_Name) : string.Empty; }
-        }
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    public struct ItemSparseRec
-    {
-        public uint ID;
-        public ItemQuality Quality;
-        public ItemFlags Flags;
-        public ItemFlags2 Flags2;
-        private readonly float unk0;
-        private readonly float unk1;
-        private readonly int unk2;
-        public uint BuyPrice;
-        public uint SellPrice;
-        public InventoryType InventoryType;
-        public uint AllowableClass;
-        public uint AllowableRace;
-        public uint ItemLevel;
-        public uint RequiredLevel;
-        public uint RequiredSkill;
-        public uint RequiredSkillRank;
-        public uint RequiredSpell;
-        public uint RequiredHonorRank;
-        public uint RequiredCityRank;
-        public uint RequiredFaction;
-        public uint RequiredFactionRank;
-        public uint MaxCount;
-        public uint Stackable;
-        public uint ContainerSlots;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 10)] public int[] StatTypes;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 10)] public int[] StatValues;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 10)] public int[] StatUnk1;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 10)] public int[] StatUnk2;
-        public int ScalingStatDistribution;
-        public int DamageType;
-        public int Delay;
-        public float RangedModRange;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5)] public uint[] SpellId;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5)] public int[] SpellTrigger;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5)] public int[] SpellCharges;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5)] public int[] SpellCooldown;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5)] public int[] SpellCategory;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5)] public int[] SpellCategoryCooldown;
-        public ItemBondType Bonding;
-        private readonly IntPtr _Name;
-        private readonly IntPtr _Name2;
-        private readonly IntPtr _Name3;
-        private readonly IntPtr _Name4;
-        private readonly IntPtr _Description;
-        public int PageText;
-        public int LanguageId;
-        public int PageMaterial;
-        public int StartQuest;
-        public int LockId;
-        public int Material;
-        public int Sheath;
-        public uint RandomProperty;
-        public uint RandomSuffix;
-        public int ItemSet;
-        public int Area;
-        public int Map;
-        public int BagFamily;
-        public int TotemCategory;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)] public int[] SocketColor;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)] public int[] SocketContent;
-        public int SocketBonus;
-        public int GemProperties;
-        public float ArmorDamageModifier;
-        public int Duration;
-        public int ItemLimitCategory;
-        public int HolidayId;
-        public float StatScalingFactor;
-        private readonly int unk3;
-        private readonly int unk4;
-
-        public string Name
-        {
-            get { return _Name != IntPtr.Zero ? Manager.Memory.ReadString(_Name) : string.Empty; }
         }
 
         //public uint Armor
@@ -460,37 +449,35 @@ namespace IceFlake.Client.Patchables
         //        if (ID == 0)
         //            return 0;
 
-        //        if (Quality == ItemQuality.Heirloom)
+        //        if (Rarity == ItemQuality.Heirloom)
         //            return 0;
 
-        //        var ItemInfo = WoWItem.GetItemRecordFromId(ID);
-
-        //        if (ItemInfo.Class != ItemClass.Armor)
+        //        if (Class != ItemClass.Armor)
         //            return 0;
 
-        //        if (ItemInfo.Class == ItemClass.Armor && ItemInfo.ArmorClass == ItemArmorClass.Shield)
+        //        if (Class == ItemClass.Armor && ArmorClass == ItemArmorClass.Shield)
         //        {
-        //            var ias = WoWDB.GetTable(ClientDB.ItemArmorShield).GetRow(ItemLevel);
+        //            var ias = Manager.DBC[ClientDB.ItemArmorShield].GetRow(ItemLevel);
         //            if (ias == null)
         //                return 0;
         //            return (uint)(ias.GetField<float>(1 + (uint)Quality) + 0.5f);
         //        }
 
-        //        var iaq = WoWDB.GetTable(ClientDB.ItemArmorQuality).GetRow(ItemLevel);
-        //        var iat = WoWDB.GetTable(ClientDB.ItemArmorTotal).GetRow(ItemLevel);
+        //        var iaq = Manager.DBC[ClientDB.ItemArmorQuality].GetRow(ItemLevel);
+        //        var iat = Manager.DBC[ClientDB.ItemArmorTotal].GetRow(ItemLevel);
         //        if (iaq == null || iat == null)
         //            return 0;
 
-        //        WoWDB.DBTable.DBRow al = null;
+        //        WoWDB.DbTable.Row al = null;
         //        if (InventoryType == InventoryType.Robe)
-        //            al = WoWDB.GetTable(ClientDB.ArmorLocation).GetRow((uint)InventoryType.Chest);
+        //            al = Manager.DBC[ClientDB.ArmorLocation].GetRow((uint)InventoryType.Chest);
         //        else
-        //            al = WoWDB.GetTable(ClientDB.ArmorLocation).GetRow((uint)InventoryType);
+        //            al = Manager.DBC[ClientDB.ArmorLocation].GetRow((uint)InventoryType);
         //        if (al == null)
         //            return 0;
 
         //        float iatMult, alMult;
-        //        switch (ItemInfo.ArmorClass)
+        //        switch (ArmorClass)
         //        {
         //            case ItemArmorClass.Cloth:
         //                iatMult = iat.GetField<float>(2);
@@ -512,7 +499,7 @@ namespace IceFlake.Client.Patchables
         //                return 0;
         //        }
 
-        //        return (uint)(iaq.GetField<float>(1 + (uint)Quality) * iatMult * alMult + 0.5f);
+        //        return (uint)(iaq.GetField<float>(1 + (uint)Rarity) * iatMult * alMult + 0.5f);
         //    }
         //}
 
@@ -523,14 +510,13 @@ namespace IceFlake.Client.Patchables
         //        if (ID == 0)
         //            return 0f;
 
-        //        var ItemInfo = WoWItem.GetItemRecordFromId(ID);
-        //        if (ItemInfo.Class != ItemClass.Weapon)
+        //        if (Class != ItemClass.Weapon)
         //            return 0f;
 
-        //        if (Quality == ItemQuality.Heirloom)
+        //        if (Rarity == ItemQuality.Heirloom)
         //            return 0f;
 
-        //        WoWDB.DBTable table = null;
+        //        WoWDB.DbTable table = null;
 
         //        switch (InventoryType)
         //        {
@@ -578,133 +564,152 @@ namespace IceFlake.Client.Patchables
         //        if (row == null)
         //            return 0f;
 
-        //        return (float)Math.Round(row.GetField<float>(1 + (uint)Quality), 1);
+        //        return (float)Math.Round(row.GetField<float>(1 + (uint)Rarity), 1);
         //    }
         //}
 
-        //public Dictionary<ItemStatType, int> Stats
-        //{
-        //    get
-        //    {
-        //        // TODO: Fix this
-        //        //if (RandomProperty > 0 || RandomSuffix > 0)
-        //        //    return RandomStats;
+        public Dictionary<ItemStatType, int> Stats
+        {
+            get
+            {
+                // TODO: Fix this
+                //if (RandomProperty > 0 || RandomSuffix > 0)
+                //    return RandomStats;
 
-        //        var stats = new Dictionary<ItemStatType, int>();
-        //        for (int i = 0; i < 10; i++)
-        //        {
-        //            if (StatTypes[i] == 0 || StatValues[i] == 0) continue;
-        //            stats.Add((ItemStatType)StatTypes[i], StatValues[i]);
-        //        }
-        //        return stats;
-        //    }
-        //}
+                var stats = new Dictionary<ItemStatType, int>();
+                for (int i = 0; i < 10; i++)
+                {
+                    if (StatTypes[i] == 0 || StatValues[i] == 0) continue;
+                    stats.Add((ItemStatType)StatTypes[i], StatValues[i]);
+                }
+                return stats;
+            }
+        }
 
-        //public Dictionary<ItemStatType, int> RandomStats
-        //{
-        //    get
-        //    {
-        //        if (RandomProperty == 0 && RandomSuffix == 0)
-        //            return null;
+        public Dictionary<ItemStatType, int> RandomStats
+        {
+            get
+            {
+                if (RandomPropertyId == 0 && RandomSuffixId == 0)
+                    return null;
 
-        //        var sieEntries = new List<SpellItemEnchantmentRec>();
-        //        var sieStorage = WoWDB.GetTable(ClientDB.SpellItemEnchantment);
-        //        if (RandomProperty > 0)
-        //        { // ItemRandomProperty
-        //            var irp = WoWDB.GetTable(ClientDB.ItemRandomProperties).GetRow(RandomProperty);
-        //            for (uint i = 2; i < 6; i++)
-        //            {
-        //                var sieRef = irp.GetField<uint>(i);
-        //                if (sieRef == 0) continue;
-        //                sieEntries.Add(sieStorage.GetRow(sieRef).GetStruct<SpellItemEnchantmentRec>());
-        //            }
-        //        }
-        //        else
-        //        { // ItemRandomSuffix
-        //            var irs = WoWDB.GetTable(ClientDB.ItemRandomSuffix).GetRow(RandomSuffix);
-        //            for (uint i = 3; i < 7; i++)
-        //            {
-        //                var sieRef = irs.GetField<uint>(i);
-        //                if (sieRef == 0) continue;
-        //                sieEntries.Add(sieStorage.GetRow(sieRef).GetStruct<SpellItemEnchantmentRec>());
-        //            }
-        //        }
+                var sieEntries = new List<SpellItemEnchantmentRec>();
+                var sieStorage = Manager.DBC[ClientDB.SpellItemEnchantment];
+                if (RandomPropertyId > 0)
+                { // ItemRandomProperty
+                    var irp = Manager.DBC[ClientDB.ItemRandomProperties].GetRow(RandomPropertyId);
+                    for (uint i = 2; i < 6; i++)
+                    {
+                        var sieRef = irp.GetField<int>(i);
+                        if (sieRef == 0) continue;
+                        sieEntries.Add(sieStorage.GetRow(sieRef).GetStruct<SpellItemEnchantmentRec>());
+                    }
+                }
+                else
+                { // ItemRandomSuffix
+                    var irs = Manager.DBC[ClientDB.ItemRandomSuffix].GetRow(RandomSuffixId);
+                    for (uint i = 3; i < 7; i++)
+                    {
+                        var sieRef = irs.GetField<int>(i);
+                        if (sieRef == 0) continue;
+                        sieEntries.Add(sieStorage.GetRow(sieRef).GetStruct<SpellItemEnchantmentRec>());
+                    }
+                }
 
-        //        var stats = new Dictionary<ItemStatType, int>();
-        //        foreach (var sie in sieEntries)
-        //        {
-        //            for (var i = 0; i < 3; i++)
-        //            {
-        //                if (sie.EffectID[i] == 0
-        //                    || (sie.EffectValueMin[i] == 0 && sie.EffectValueMax[i] == 0))
-        //                    continue;
+                var stats = new Dictionary<ItemStatType, int>();
+                foreach (var sie in sieEntries)
+                {
+                    for (var i = 0; i < 3; i++)
+                    {
+                        if (sie.EffectID[i] == 0
+                            || (sie.EffectValueMin[i] == 0 && sie.EffectValueMax[i] == 0))
+                            continue;
 
-        //                var stat = (ItemStatType)sie.EffectID[i];
-        //                var value = (sie.EffectValueMin[i] + sie.EffectValueMax[i]) / 2; // get average
-        //                if (stats.ContainsKey(stat))
-        //                    stats[stat] += value;
-        //                else
-        //                    stats.Add(stat, value);
-        //            }
-        //        }
+                        var stat = (ItemStatType)sie.EffectID[i];
+                        var value = (sie.EffectValueMin[i] + sie.EffectValueMax[i]) / 2; // get average
+                        if (stats.ContainsKey(stat))
+                            stats[stat] += value;
+                        else
+                            stats.Add(stat, value);
+                    }
+                }
 
-        //        return stats;
-        //    }
-        //}
+                return stats;
+            }
+        }
 
-        //public Dictionary<SocketColor, int> Sockets
-        //{
-        //    get
-        //    {
-        //        var ret = new Dictionary<SocketColor, int>();
-        //        for (int i = 0; i < 3; i++)
-        //        {
-        //            if (SocketColor[i] == 0) continue;
-        //            ret.Add((SocketColor)SocketColor[i], SocketContent[i]);
-        //        }
-        //        return ret;
-        //    }
-        //}
+        public Dictionary<SocketColor, int> Sockets
+        {
+            get
+            {
+                var ret = new Dictionary<SocketColor, int>();
+                for (int i = 0; i < 3; i++)
+                {
+                    if (SocketColor[i] == 0) continue;
+                    ret.Add((SocketColor)SocketColor[i], SocketContent[i]);
+                }
+                return ret;
+            }
+        }
 
-        //private const int MAX_SPELL_EFFECTS = 3;
+        private const int MAX_SPELL_EFFECTS = 3;
 
-        //public bool Eatable
-        //{
-        //    get
-        //    {
-        //        var ItemInfo = WoWItem.GetItemRecordFromId(ID);
-        //        if (!ItemInfo.IsFoodDrink)
-        //            return false;
+        public bool Eatable
+        {
+            get
+            {
+                if (!IsFoodDrink)
+                    return false;
 
-        //        for (var i = 0; i < MAX_SPELL_EFFECTS; i++)
-        //        {
-        //            var effect = WoWSpellCollection.GetSpellEffectRecord(SpellId[0], i);
-        //            var auraType = (AuraType)effect.EffectAura;
-        //            if (auraType == AuraType.OBS_MOD_HEALTH || auraType == AuraType.MOD_REGEN)
-        //                return true;
-        //        }
-        //        return false;
-        //    }
-        //}
+                for (var i = 0; i < MAX_SPELL_EFFECTS; i++)
+                {
+                    //var effect = WoWSpellCollection.GetSpellEffectRecord(SpellId[0], i);
+                    //var auraType = (AuraType)effect.EffectAura;
+                    //if (auraType == AuraType.OBS_MOD_HEALTH || auraType == AuraType.MOD_REGEN)
+                    //    return true;
+                }
+                return false;
+            }
+        }
 
-        //public bool Drinkable
-        //{
-        //    get
-        //    {
-        //        var ItemInfo = WoWItem.GetItemRecordFromId(ID);
-        //        if (!ItemInfo.IsFoodDrink)
-        //            return false;
+        public bool Drinkable
+        {
+            get
+            {
+                if (!IsFoodDrink)
+                    return false;
 
-        //        for (var i = 0; i < MAX_SPELL_EFFECTS; i++)
-        //        {
-        //            var effect = WoWSpellCollection.GetSpellEffectRecord(SpellId[0], i);
-        //            var auraType = (AuraType)effect.EffectAura;
-        //            if (auraType == AuraType.OBS_MOD_MANA || (auraType == AuraType.MOD_POWER_REGEN && (PowerType)effect.EffectMiscValue == PowerType.Mana))
-        //                return true;
-        //        }
-        //        return false;
-        //    }
-        //}
+                for (var i = 0; i < MAX_SPELL_EFFECTS; i++)
+                {
+                    //var effect = WoWSpellCollection.GetSpellEffectRecord(SpellId[0], i);
+                    //var auraType = (AuraType)effect.EffectAura;
+                    //if (auraType == AuraType.OBS_MOD_MANA || (auraType == AuraType.MOD_POWER_REGEN && (PowerType)effect.EffectMiscValue == PowerType.Mana))
+                    //    return true;
+                }
+                return false;
+            }
+        }
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct SpellItemEnchantmentRec
+    {
+        public uint ID;
+        public uint Charges;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
+        public uint[] EffectID;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
+        public int[] EffectValueMin;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
+        public int[] EffectValueMax;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5)]
+        public int[] EffectArg;
+        private readonly IntPtr _Name;
+
+        public string Name
+        {
+            get { return _Name != IntPtr.Zero ? Manager.Memory.ReadString(_Name) : string.Empty; }
+        }
     }
 
     #endregion
@@ -777,7 +782,8 @@ namespace IceFlake.Client.Patchables
         private readonly uint unk0;
         public uint Id;
         public uint Entry;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 10)] public ItemEnchantment[] Enchants;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 10)]
+        public ItemEnchantment[] Enchants;
         public uint RandomProperty;
         public uint RandomSuffix;
         public uint StackSize;
@@ -799,7 +805,7 @@ namespace IceFlake.Client.Patchables
             get { return DateTime.Now.AddMilliseconds(TimeLeft - Helper.PerformanceCount); }
         }
 
-        public static readonly int Size = Marshal.SizeOf(typeof (AuctionEntry));
+        public static readonly int Size = Marshal.SizeOf(typeof(AuctionEntry));
     }
 
     #endregion
@@ -811,7 +817,8 @@ namespace IceFlake.Client.Patchables
     {
         public uint ID;
         public uint State;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public ushort[] Objectives;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+        public ushort[] Objectives;
         public uint Time;
     }
 
@@ -844,37 +851,55 @@ namespace IceFlake.Client.Patchables
         public uint SrcItemId;
         public uint QuestFlags;
         public uint QuestFlags2;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public uint[] RewItem;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public uint[] RewItemCount;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)] public uint[] ReqChoiseItem;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)] public uint[] ReqChoiseItemCount;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+        public uint[] RewItem;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+        public uint[] RewItemCount;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
+        public uint[] ReqChoiseItem;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
+        public uint[] ReqChoiseItemCount;
         public uint PointMapId;
         public float PointX;
         public float PointY;
         public uint PointOpt;
         //[MarshalAs(UnmanagedType.ByValArray, SizeConst = 512)]
         //byte[] _Title;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 512)] public string Title;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 512)]
+        public string Title;
         //[MarshalAs(UnmanagedType.ByValArray, SizeConst = 3000)]
         //byte[] _Objectives;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 3000)] public string Objectives;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 3000)]
+        public string Objectives;
         //[MarshalAs(UnmanagedType.ByValArray, SizeConst = 3000)]
         //byte[] _Details;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 3000)] public string Details;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 3000)]
+        public string Details;
         //[MarshalAs(UnmanagedType.ByValArray, SizeConst = 512)]
         //byte[] _EndText;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 512)] public string EndText;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public uint[] ReqCreatureOrGOId;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public uint[] ReqCreatureOrGOIdCount;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)] public uint[] CollectItemId;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)] public uint[] CollectItemCount;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public uint[] IntermediateItemId;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public uint[] IntermediateItemCount;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 512)]
+        public string EndText;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+        public uint[] ReqCreatureOrGOId;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+        public uint[] ReqCreatureOrGOIdCount;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
+        public uint[] CollectItemId;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
+        public uint[] CollectItemCount;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+        public uint[] IntermediateItemId;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+        public uint[] IntermediateItemCount;
         public uint ReqLearnedSpell;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)] private readonly byte[] _ObjectiveText1;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)] private readonly byte[] _ObjectiveText2;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)] private readonly byte[] _ObjectiveText3;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)] private readonly byte[] _ObjectiveText4;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
+        private readonly byte[] _ObjectiveText1;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
+        private readonly byte[] _ObjectiveText2;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
+        private readonly byte[] _ObjectiveText3;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
+        private readonly byte[] _ObjectiveText4;
         public uint CharTitleId;
         public uint PlayersSlain;
         public uint BonusTalents;
@@ -883,19 +908,31 @@ namespace IceFlake.Client.Patchables
         public uint RewSkillValue;
         public uint QuestPortrait;
         public uint QuestPortraitTurnIn;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 1024)] private readonly byte[] _QuestPortraitText;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)] private readonly byte[] _QuestPortraitName;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 1024)] private readonly byte[] _QuestPortraitTurnInText;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)] private readonly byte[] _QuestPortraitTurnInName;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2048)] private readonly byte[] _CompletedText;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5)] public uint[] RewRepFaction;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5)] public uint[] RewRepValueId;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5)] public uint[] RewRepValue;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 1024)]
+        private readonly byte[] _QuestPortraitText;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
+        private readonly byte[] _QuestPortraitName;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 1024)]
+        private readonly byte[] _QuestPortraitTurnInText;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
+        private readonly byte[] _QuestPortraitTurnInName;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2048)]
+        private readonly byte[] _CompletedText;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5)]
+        public uint[] RewRepFaction;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5)]
+        public uint[] RewRepValueId;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5)]
+        public uint[] RewRepValue;
         public uint RewRepShowMask;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public uint[] RewCurrencyId;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public uint[] RewCurrencyCount;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public uint[] ReqCurrencyId;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public uint[] ReqCurrencyCount;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+        public uint[] RewCurrencyId;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+        public uint[] RewCurrencyCount;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+        public uint[] ReqCurrencyId;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+        public uint[] ReqCurrencyCount;
         public uint AcceptSoundId;
         public uint TurnInSoundKitId;
 
@@ -914,7 +951,8 @@ namespace IceFlake.Client.Patchables
     {
         public ulong GUID;
         public Location Position;
-        [MarshalAs(UnmanagedType.U4)] public uint unk0;
+        [MarshalAs(UnmanagedType.U4)]
+        public uint unk0;
     }
 
     #endregion

@@ -40,6 +40,9 @@ namespace IceFlake.DirectX
                             OnFirstFrame(null, new EventArgs());
 
                     CallbackManager.Invoke();
+                    // TEMP SOLUTION
+                    // TODO: FIX THIS
+                    IceFlake.Client.Scripts.ScriptManager.Pulse(); 
                 }
             }
             catch (Exception e)

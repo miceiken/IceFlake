@@ -135,6 +135,19 @@
 
         #endregion
 
+        #region Nested type: WDB
+
+        // 3.3.5a: 12340
+        internal class WDB
+        {
+            internal static uint DbWoWCache_GetInfoBlockById = 0x0067FA80;
+            internal static uint DBItemCache_GetInfoBlockByID = 0x0067CA30;
+
+            internal static uint ItemInfo = 0x00C5D828;
+        }
+
+        #endregion
+
         #region Nested type: ObjectManager
 
         // 3.3.5a: 12340
@@ -230,7 +243,7 @@
             internal static uint InternalMapName = 0x00CE06D0;
             internal static uint ZoneID = 0x00BD080C;
             internal static uint ZoneText = 0x00BD0780;
-            internal static uint SubZoneText = 0x00BD0784;            
+            internal static uint SubZoneText = 0x00BD0784;
         }
 
         #endregion

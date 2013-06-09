@@ -20,9 +20,9 @@ namespace IceFlake.Client
         //    return _handleTerrainClick(new TerrainClickEvent { Position = loc });
         //}        
 
-        public static uint CurrentMapId
+        public static int CurrentMapId
         {
-            get { return Manager.Memory.Read<uint>((IntPtr)Pointers.World.CurrentMapId); }
+            get { return Manager.Memory.Read<int>((IntPtr)Pointers.World.CurrentMapId); }
         }
 
         public static string CurrentMap

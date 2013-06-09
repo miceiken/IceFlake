@@ -56,12 +56,27 @@ namespace IceFlake.Client.Collections
         }
 
         #endregion
-
+        public Queue<WoWSpell> CastQueue = new Queue<WoWSpell>(); // Debugging only
         [EndSceneHandler]
         public void Direct3D_EndScene()
         {
             if (!Manager.ObjectManager.IsInGame)
                 return;
+
+            // --- DEBUG ----
+            if (CastQueue.Count > 0 && this.Count() > 0)
+            {
+                if (!Manager.LocalPlayer.IsCasting)
+                {
+                    var spell = CastQueue.Peek();
+                    //if (spell.IsReady)
+                    //{
+                        spell.Cast();
+                        CastQueue.Dequeue();
+                    //}
+                }
+            }
+            // --------------
 
             if (!Update)
                 return;

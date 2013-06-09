@@ -63,14 +63,14 @@ namespace IceFlake.Client.Objects
             }
         }
 
-        //public bool InLoS
-        //{
-        //    get
-        //    {
-        //        return World.LineOfSightTest(Location, Core.ObjectManager.LocalPlayer.Location) ==
-        //               TracelineResult.NoCollision;
-        //    }
-        //}
+        public bool InLoS
+        {
+            get
+            {
+                return World.LineOfSightTest(Location, Manager.ObjectManager.LocalPlayer.Location) ==
+                       TracelineResult.NoCollision;
+            }
+        }
 
         public WoWObjectType Type
         {
