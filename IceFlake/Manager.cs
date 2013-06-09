@@ -14,8 +14,6 @@ namespace IceFlake
     {
         internal static void Initialize()
         {
-            AppDomain.CurrentDomain.UnhandledException += LogUnhandledException;
-
             Memory = new InProcessMemoryReader(Process.GetCurrentProcess());
 
             Direct3D.OnFirstFrame += Start;
@@ -86,16 +84,5 @@ namespace IceFlake
         internal static SpellCollection Spellbook { get; private set; }
 
         internal static Events Events { get; private set; }
-
-        private static void LogUnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            Log.WriteLine(LogType.Error, "Unhandled exception:");
-            var ex = e.ExceptionObject as Exception;
-            do
-            {
-                Log.WriteLine(LogType.Error, "\t{0}", ex.Message);
-                ex = ex.InnerException;
-            } while (ex.InnerException != null);
-        }
     }
 }
