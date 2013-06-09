@@ -6,15 +6,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
-using PathGraph = PatherPath.Graph.PathGraph;
+using PatherPath.Graph;
 using IOPath = System.IO.Path;
 
 namespace StormDll
 {
-    unsafe class StormDll
+    internal unsafe class StormDll
     {
         /*
          * 
@@ -45,13 +44,14 @@ int   WINAPI SFileAddListFile(HANDLE hMpq, const char * szListFile);
 
           
          */
+
         [DllImport("PPather\\StormLib.dll")]
         public static extern uint SFileGetLocale();
 
         [DllImport("PPather\\StormLib.dll")]
-        public static extern bool SFileOpenArchive([MarshalAs(UnmanagedType.LPStr)]string szMpqName,
-                              uint dwPriority, uint dwFlags,
-                              void** phMpq);
+        public static extern bool SFileOpenArchive([MarshalAs(UnmanagedType.LPStr)] string szMpqName,
+                                                   uint dwPriority, uint dwFlags,
+                                                   void** phMpq);
 
         [DllImport("PPather\\StormLib.dll")]
         public static extern bool SFileCloseArchive(void* hMpq);
@@ -59,9 +59,9 @@ int   WINAPI SFileAddListFile(HANDLE hMpq, const char * szListFile);
 
         [DllImport("PPather\\StormLib.dll")]
         public static extern bool SFileOpenFileEx(void* hMpq,
-                                [MarshalAs(UnmanagedType.LPStr)] string szFileName,
-                                uint dwSearchScope,
-                                void** phFile);
+                                                  [MarshalAs(UnmanagedType.LPStr)] string szFileName,
+                                                  uint dwSearchScope,
+                                                  void** phFile);
 
         [DllImport("PPather\\StormLib.dll")]
         public static extern bool SFileCloseFile(void* hFile);
@@ -74,20 +74,20 @@ int   WINAPI SFileAddListFile(HANDLE hMpq, const char * szListFile);
 
         [DllImport("PPather\\StormLib.dll")]
         public static extern uint SFileSetFilePointer(void* hFile,
-                    int lFilePos, int* pdwFilePosHigh, uint dwMethod);
+                                                      int lFilePos, int* pdwFilePosHigh, uint dwMethod);
 
         [DllImport("PPather\\StormLib.dll")]
         public static extern bool SFileReadFile(void* hFile, void* lpBuffer, uint dwToRead,
-                           uint* pdwRead, void* lpOverlapped);
+                                                uint* pdwRead, void* lpOverlapped);
 
         [DllImport("PPather\\StormLib.dll")]
         public static extern bool SFileExtractFile(void* hMpq,
-                    [MarshalAs(UnmanagedType.LPStr)] string szToExtract,
-                    [MarshalAs(UnmanagedType.LPStr)] string szExtracted);
+                                                   [MarshalAs(UnmanagedType.LPStr)] string szToExtract,
+                                                   [MarshalAs(UnmanagedType.LPStr)] string szExtracted);
 
         [DllImport("PPather\\StormLib.dll")]
         public static extern bool SFileHasFile(void* hMpq,
-                    [MarshalAs(UnmanagedType.LPStr)] string szFileName);
+                                               [MarshalAs(UnmanagedType.LPStr)] string szFileName);
 
         /*
         [DllImport("user32.dll")]
@@ -99,20 +99,23 @@ int   WINAPI SFileAddListFile(HANDLE hMpq, const char * szListFile);
 
         public static uint GetLocale()
         {
-            return StormDll.SFileGetLocale();
+            return SFileGetLocale();
         }
     }
-    public unsafe class ArchiveSet
+
+    public class ArchiveSet
     {
-        private List<Archive> archives = new List<Archive>();
+        private readonly List<Archive> archives = new List<Archive>();
         private string GameDir = ".\\";
+
         public void SetGameDir(string dir)
         {
             GameDir = dir;
         }
+
         public string SetGameDirFromReg()
         {
-            RegistryKey key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey("SOFTWARE\\Blizzard Entertainment\\World of Warcraft");
+            RegistryKey key = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Blizzard Entertainment\\World of Warcraft");
             if (key == null)
                 return null;
             Object val = key.GetValue("InstallPath");
@@ -125,7 +128,7 @@ int   WINAPI SFileAddListFile(HANDLE hMpq, const char * szListFile);
 
         public bool AddArchive(string file)
         {
-            Archive a = new Archive(GameDir + file, 0, 0);
+            var a = new Archive(GameDir + file, 0, 0);
             if (a.IsOpen())
             {
                 archives.Add(a);
@@ -134,6 +137,7 @@ int   WINAPI SFileAddListFile(HANDLE hMpq, const char * szListFile);
             }
             return false;
         }
+
         public int AddArchives(string[] files)
         {
             int n = 0;
@@ -144,6 +148,7 @@ int   WINAPI SFileAddListFile(HANDLE hMpq, const char * szListFile);
             }
             return n;
         }
+
         public bool HasFile(string name)
         {
             foreach (Archive a in archives)
@@ -168,6 +173,7 @@ int   WINAPI SFileAddListFile(HANDLE hMpq, const char * szListFile);
             }
             return false;
         }
+
         public void Close()
         {
             foreach (Archive a in archives)
@@ -186,6 +192,7 @@ int   WINAPI SFileAddListFile(HANDLE hMpq, const char * szListFile);
         {
             bool r = Open(file, Prio, Flags);
         }
+
         public bool IsOpen()
         {
             return handle != null;
@@ -229,13 +236,13 @@ int   WINAPI SFileAddListFile(HANDLE hMpq, const char * szListFile);
             bool r = StormDll.SFileExtractFile(handle, from, to);
             return r;
         }
-
     }
 
     public unsafe class File
     {
-        void* handle;
-        Archive archive;
+        private Archive archive;
+        private void* handle;
+
         public File(Archive a, void* h)
         {
             archive = a;
@@ -260,5 +267,4 @@ int   WINAPI SFileAddListFile(HANDLE hMpq, const char * szListFile);
             return low;
         }
     }
-
 }

@@ -1,19 +1,23 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
 
 namespace PatherPath.Graph
 {
     public class GraphChunk
     {
         public const int CHUNK_SIZE = 512;
+        private const uint FILE_MAGIC = 0x12341234;
+        private const uint FILE_ENDMAGIC = 0x43214321;
+        private const uint SPOT_MAGIC = 0x53504f54;
 
-        float base_x, base_y;
+        private readonly float base_x;
+        private readonly float base_y;
+        public long LRU = 0;
         public int ix, iy;
         public bool modified = false;
-        public long LRU = 0;
 
-        Spot[,] spots;
+        private Spot[,] spots;
 
         public GraphChunk(float base_x, float base_y, int ix, int iy)
         {
@@ -21,7 +25,7 @@ namespace PatherPath.Graph
             this.base_y = base_y;
             this.ix = ix;
             this.iy = iy;
-            spots = new Spot[CHUNK_SIZE, CHUNK_SIZE];
+            spots = new Spot[CHUNK_SIZE,CHUNK_SIZE];
             modified = false;
         }
 
@@ -36,8 +40,8 @@ namespace PatherPath.Graph
 
         private void LocalCoords(float x, float y, out int ix, out int iy)
         {
-            ix = (int)(x - base_x);
-            iy = (int)(y - base_y);
+            ix = (int) (x - base_x);
+            iy = (int) (y - base_y);
         }
 
         public Spot GetSpot2D(float x, float y)
@@ -80,11 +84,9 @@ namespace PatherPath.Graph
         }
 
 
-
-
         public List<Spot> GetAllSpots()
         {
-            List<Spot> l = new List<Spot>();
+            var l = new List<Spot>();
             for (int x = 0; x < CHUNK_SIZE; x++)
             {
                 for (int y = 0; y < CHUNK_SIZE; y++)
@@ -104,10 +106,6 @@ namespace PatherPath.Graph
         {
             return String.Format("c_{0,3:000}_{1,3:000}.bin", ix, iy);
         }
-
-        private const uint FILE_MAGIC = 0x12341234;
-        private const uint FILE_ENDMAGIC = 0x43214321;
-        private const uint SPOT_MAGIC = 0x53504f54;
 
 
         // Per spot: 
@@ -129,22 +127,21 @@ namespace PatherPath.Graph
             string fileName = FileName();
             string filenamebin = baseDir + fileName;
 
-            System.IO.Stream stream = null;
-            System.IO.BinaryReader file = null;
+            Stream stream = null;
+            BinaryReader file = null;
             int n_spots = 0;
             int n_steps = 0;
             try
             {
-                stream = System.IO.File.OpenRead(filenamebin);
+                stream = File.OpenRead(filenamebin);
                 if (stream != null)
                 {
-                    file = new System.IO.BinaryReader(stream);
+                    file = new BinaryReader(stream);
                     if (file != null)
                     {
                         uint magic = file.ReadUInt32();
                         if (magic == FILE_MAGIC)
                         {
-
                             uint type;
                             while ((type = file.ReadUInt32()) != FILE_ENDMAGIC)
                             {
@@ -155,7 +152,7 @@ namespace PatherPath.Graph
                                 float y = file.ReadSingle();
                                 float z = file.ReadSingle();
                                 uint n_paths = file.ReadUInt32();
-                                Spot s = new Spot(x, y, z);
+                                var s = new Spot(x, y, z);
                                 s.flags = flags;
 
                                 for (uint i = 0; i < n_paths; i++)
@@ -172,11 +169,11 @@ namespace PatherPath.Graph
                     }
                 }
             }
-            catch (System.IO.FileNotFoundException e)
+            catch (FileNotFoundException e)
             {
                 PathGraph.Log(e.Message);
             }
-            catch (System.IO.DirectoryNotFoundException e)
+            catch (DirectoryNotFoundException e)
             {
                 PathGraph.Log(e.Message);
             }
@@ -198,8 +195,6 @@ namespace PatherPath.Graph
         }
 
 
-
-
         public bool Save(string baseDir)
         {
             if (!modified)
@@ -208,24 +203,23 @@ namespace PatherPath.Graph
             string fileName = FileName();
             string filename = baseDir + fileName;
 
-            System.IO.Stream fileout = null;
-            System.IO.BinaryWriter file = null;
+            Stream fileout = null;
+            BinaryWriter file = null;
 
             //try {
-            if (!System.IO.Directory.Exists(baseDir))
-                System.IO.Directory.CreateDirectory(baseDir);
+            if (!Directory.Exists(baseDir))
+                Directory.CreateDirectory(baseDir);
             //} catch { };
 
             int n_spots = 0;
             int n_steps = 0;
             try
             {
-
-                fileout = System.IO.File.Create(filename + ".new");
+                fileout = File.Create(filename + ".new");
 
                 if (fileout != null)
                 {
-                    file = new System.IO.BinaryWriter(fileout);
+                    file = new BinaryWriter(fileout);
 
                     if (file != null)
                     {
@@ -235,19 +229,19 @@ namespace PatherPath.Graph
                         foreach (Spot s in spots)
                         {
                             file.Write(SPOT_MAGIC);
-                            file.Write((uint)0); // reserved
-                            file.Write((uint)s.flags);
-                            file.Write((float)s.X);
-                            file.Write((float)s.Y);
-                            file.Write((float)s.Z);
-                            uint n_paths = (uint)s.n_paths;
-                            file.Write((uint)n_paths);
+                            file.Write((uint) 0); // reserved
+                            file.Write(s.flags);
+                            file.Write(s.X);
+                            file.Write(s.Y);
+                            file.Write(s.Z);
+                            var n_paths = (uint) s.n_paths;
+                            file.Write(n_paths);
                             for (uint i = 0; i < n_paths; i++)
                             {
-                                uint off = i * 3;
-                                file.Write((float)s.paths[off]);
-                                file.Write((float)s.paths[off + 1]);
-                                file.Write((float)s.paths[off + 2]);
+                                uint off = i*3;
+                                file.Write(s.paths[off]);
+                                file.Write(s.paths[off + 1]);
+                                file.Write(s.paths[off + 2]);
                                 n_steps++;
                             }
                             n_spots++;
@@ -269,13 +263,13 @@ namespace PatherPath.Graph
 
                     String old = filename + ".bak";
 
-                    if (System.IO.File.Exists(old))
-                        System.IO.File.Delete(old);
-                    if (System.IO.File.Exists(filename))
-                        System.IO.File.Move(filename, old);
-                    System.IO.File.Move(filename + ".new", filename);
-                    if (System.IO.File.Exists(old))
-                        System.IO.File.Delete(old);
+                    if (File.Exists(old))
+                        File.Delete(old);
+                    if (File.Exists(filename))
+                        File.Move(filename, old);
+                    File.Move(filename + ".new", filename);
+                    if (File.Exists(old))
+                        File.Delete(old);
 
                     modified = false;
                 }
@@ -301,7 +295,6 @@ namespace PatherPath.Graph
                 fileout.Close();
                 fileout = null;
             }
-
 
 
             return false;

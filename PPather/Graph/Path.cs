@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace PatherPath.Graph
 {
@@ -28,8 +27,8 @@ namespace PatherPath.Graph
         public Location GetFirst()
         {
             return Get(0);
-
         }
+
         public Location GetSecond()
         {
             if (Locations.Count > 1)
@@ -41,7 +40,7 @@ namespace PatherPath.Graph
         {
             if (Locations.Count < 2)
                 return null;
-            Random r = new Random();
+            var r = new Random();
             return Locations[r.Next(0, (Locations.Count - 1))];
         }
 
@@ -76,7 +75,6 @@ namespace PatherPath.Graph
         {
             Locations.Add(l);
         }
-
 
         public void AddLast(Path l)
         {

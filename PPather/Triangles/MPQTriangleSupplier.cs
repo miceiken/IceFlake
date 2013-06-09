@@ -3,66 +3,55 @@
  *  Copyright Pontus Borg 2008
  * 
  */
+
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
+using PatherPath.Graph;
+using StormDll;
 using Wmo;
-using PathGraph = PatherPath.Graph.PathGraph;
 
 namespace WowTriangles
 {
     public class MPQTriangleSupplier : TriangleSupplier
     {
-        string continentFile;
-
-        StormDll.ArchiveSet archive;
+        private ArchiveSet archive;
+        private Dictionary<int, String> areaIdToName;
+        private string continentFile;
+        private Dictionary<int, String> mapIdToFile;
+        private ModelManager modelmanager;
 
         //TriangleSet global_triangles = new TriangleSet();
 
-        WDT wdt;
-        WDTFile wdtf;
-        ModelManager modelmanager;
-        WMOManager wmomanager;
+        private WDT wdt;
+        private WDTFile wdtf;
+        private WMOManager wmomanager;
 
 
-        Dictionary<String, int> zoneToMapId;
-        Dictionary<int, String> mapIdToFile;
-        Dictionary<int, String> areaIdToName;
-
-        public override void Close()
-        {
-            archive.Close();
-            wdt = null;
-            wdtf = null;
-            modelmanager = null;
-            wmomanager = null;
-            zoneToMapId = null;
-            mapIdToFile = null;
-            areaIdToName = null;
-            archive = null;
-            base.Close();
-        }
+        private Dictionary<String, int> zoneToMapId;
 
         public MPQTriangleSupplier()
         {
-            string[] archiveNames = {
-                    "patch.MPQ",            
+            string[] archiveNames =
+                {
+                    "patch.MPQ",
                     "enUS\\patch-enUS.MPQ",
                     "enGB\\patch-enGB.MPQ",
                     "lichking.MPQ",
                     "common-2.MPQ",
-                    "common.MPQ", 
-                    "expansion.MPQ", 
-		            "enUS\\lichking-locale-enUS.MPQ", "enUS\\locale-enUS.MPQ", "enUS\\expansion-locale-enUS.MPQ",
-		            "enGB\\lichking-locale-enGB.MPQ", "enGB\\locale-enGB.MPQ", "enGB\\expansion-locale-enGB.MPQ",
+                    "common.MPQ",
+                    "expansion.MPQ",
+                    "enUS\\lichking-locale-enUS.MPQ", "enUS\\locale-enUS.MPQ", "enUS\\expansion-locale-enUS.MPQ",
+                    "enGB\\lichking-locale-enGB.MPQ", "enGB\\locale-enGB.MPQ", "enGB\\expansion-locale-enGB.MPQ",
                     "enUS\\base-enUS.MPQ",
                     "enGB\\base-enGB.MPQ",
                     "enUS\\backup-enUS.MPQ",
-                    "enGB\\backup-enGB.MPQ"};
+                    "enGB\\backup-enGB.MPQ"
+                };
 
             //StormDll.ArchiveSet archive = null;
-            System.IO.Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
-            archive = new StormDll.ArchiveSet();
+            Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
+            archive = new ArchiveSet();
             string regGameDir = archive.SetGameDirFromReg();
             //string gameDir = @"C:\WoW 335\Data\";
             //archive.SetGameDir(gameDir);
@@ -78,13 +67,13 @@ namespace WowTriangles
 
 
             archive.ExtractFile("DBFilesClient\\AreaTable.dbc", "PPather\\AreaTable.dbc");
-            DBC areas = new DBC();
-            DBCFile af = new DBCFile("PPather\\AreaTable.dbc", areas);
+            var areas = new DBC();
+            var af = new DBCFile("PPather\\AreaTable.dbc", areas);
             for (int i = 0; i < areas.recordCount; i++)
             {
-                int AreaID = (int)areas.GetUint(i, 0);
-                int WorldID = (int)areas.GetUint(i, 1);
-                int Parent = (int)areas.GetUint(i, 2);
+                var AreaID = (int) areas.GetUint(i, 0);
+                var WorldID = (int) areas.GetUint(i, 1);
+                var Parent = (int) areas.GetUint(i, 2);
                 string Name = areas.GetString(i, 11);
 
                 areaIdToName.Add(AreaID, Name);
@@ -101,9 +90,9 @@ namespace WowTriangles
 
             for (int i = 0; i < areas.recordCount; i++)
             {
-                int AreaID = (int)areas.GetUint(i, 0);
-                int WorldID = (int)areas.GetUint(i, 1);
-                int Parent = (int)areas.GetUint(i, 2);
+                var AreaID = (int) areas.GetUint(i, 0);
+                var WorldID = (int) areas.GetUint(i, 1);
+                var Parent = (int) areas.GetUint(i, 2);
                 string Name = areas.GetString(i, 11);
 
                 string TotalName = "";
@@ -134,6 +123,20 @@ namespace WowTriangles
             }
         }
 
+        public override void Close()
+        {
+            archive.Close();
+            wdt = null;
+            wdtf = null;
+            modelmanager = null;
+            wmomanager = null;
+            zoneToMapId = null;
+            mapIdToFile = null;
+            areaIdToName = null;
+            archive = null;
+            base.Close();
+        }
+
         public void SetContinent(string continent)
         {
             continentFile = continent;
@@ -146,13 +149,10 @@ namespace WowTriangles
                 wdt = null; // bad
             else
             {
-
                 // PathGraph.Log("  global Objects " + wdt.gwmois.Count + " Models " + wdt.gwmois.Count);
                 //global_triangles.color = new float[3] { 0.8f, 0.8f, 1.0f };
             }
-
         }
-
 
 
         public string SetZone(string zone)
@@ -172,8 +172,8 @@ namespace WowTriangles
             }
 
             archive.ExtractFile("DBFilesClient\\Map.dbc", "PPather\\Map.dbc");
-            DBC maps = new DBC();
-            DBCFile mf = new DBCFile("PPather\\Map.dbc", maps);
+            var maps = new DBC();
+            var mf = new DBCFile("PPather\\Map.dbc", maps);
 
 
             for (int i = 0; i < maps.recordCount; i++)
@@ -197,8 +197,6 @@ namespace WowTriangles
             }
             return null;
         }
-
-
 
 
         private void GetChunkData(TriangleCollection triangles, int chunk_x, int chunk_y, SparseMatrix3D<WMO> instances)
@@ -250,17 +248,15 @@ namespace WowTriangles
                         // PathGraph.Log("    wmo: " + fn + " at " + wi.pos);
                         if (fn != null)
                         {
-
-                            WMO old = instances.Get((int)wi.pos.x, (int)wi.pos.y, (int)wi.pos.z);
+                            WMO old = instances.Get((int) wi.pos.x, (int) wi.pos.y, (int) wi.pos.z);
                             if (old == wi.wmo)
                             {
                                 //PathGraph.Log("Already got " + fn);
                             }
                             else
                             {
-                                instances.Set((int)wi.pos.x, (int)wi.pos.y, (int)wi.pos.z, wi.wmo);
+                                instances.Set((int) wi.pos.x, (int) wi.pos.y, (int) wi.pos.z, wi.wmo);
                                 AddTriangles(triangles, wi);
-
                             }
                         }
                     }
@@ -281,7 +277,6 @@ namespace WowTriangles
                 }
 
 
-
                 PathGraph.Log("wee");
                 /*PathGraph.Log(
                     String.Format(" Triangles - Map: {0,6} Objects: {1,6} Models: {2,6}",
@@ -289,7 +284,6 @@ namespace WowTriangles
                                   obj_triangles.GetNumberOfTriangles(),
                                   model_triangles.GetNumberOfTriangles()));
                 */
-
             }
             PathGraph.Log(" done");
             wdt.maptiles[chunk_x, chunk_y] = null; // clear it atain
@@ -302,14 +296,14 @@ namespace WowTriangles
             // yeah, this is ugly. But safe
             for (chunk_x = 0; chunk_x < 64; chunk_x++)
             {
-                float max_y = ChunkReader.ZEROPOINT - (float)(chunk_x) * ChunkReader.TILESIZE;
+                float max_y = ChunkReader.ZEROPOINT - (chunk_x)*ChunkReader.TILESIZE;
                 float min_y = max_y - ChunkReader.TILESIZE;
                 if (y >= min_y - 0.1f && y < max_y + 0.1f)
                     break;
             }
             for (chunk_y = 0; chunk_y < 64; chunk_y++)
             {
-                float max_x = ChunkReader.ZEROPOINT - (float)(chunk_y) * ChunkReader.TILESIZE;
+                float max_x = ChunkReader.ZEROPOINT - (chunk_y)*ChunkReader.TILESIZE;
                 float min_x = max_x - ChunkReader.TILESIZE;
                 if (x >= min_x - 0.1f && x < max_x + 0.1f)
                     break;
@@ -328,7 +322,7 @@ namespace WowTriangles
             {
                 AddTriangles(to, wi);
             }
-            SparseMatrix3D<WMO> instances = new SparseMatrix3D<WMO>();
+            var instances = new SparseMatrix3D<WMO>();
             for (float x = min_x; x < max_x; x += ChunkReader.TILESIZE)
             {
                 for (float y = min_y; y < max_y; y += ChunkReader.TILESIZE)
@@ -341,14 +335,12 @@ namespace WowTriangles
                     //to.AddAllTrianglesFrom(d.triangles); 
                 }
             }
-
-
         }
 
-        void AddTriangles(TriangleCollection s, MapChunk c)
+        private void AddTriangles(TriangleCollection s, MapChunk c)
         {
-            int[,] vertices = new int[9, 9];
-            int[,] verticesMid = new int[8, 8];
+            var vertices = new int[9,9];
+            var verticesMid = new int[8,8];
 
             for (int row = 0; row < 9; row++)
                 for (int col = 0; col < 9; col++)
@@ -383,7 +375,6 @@ namespace WowTriangles
                         s.AddTriangle(v1, v2, vMid);
                         s.AddTriangle(v2, v3, vMid);
                         s.AddTriangle(v3, v0, vMid);
-
                     }
                 }
             }
@@ -417,11 +408,10 @@ namespace WowTriangles
                     }
                 }
             }
-
         }
 
 
-        void AddTriangles(TriangleCollection s, WMOInstance wi)
+        private void AddTriangles(TriangleCollection s, WMOInstance wi)
         {
             float dx = wi.pos.x;
             float dy = wi.pos.y;
@@ -436,11 +426,11 @@ namespace WowTriangles
 
             foreach (WMOGroup g in wmo.groups)
             {
-                int[] vertices = new int[g.nVertices];
+                var vertices = new int[g.nVertices];
 
                 for (int i = 0; i < g.nVertices; i++)
                 {
-                    int off = i * 3;
+                    int off = i*3;
 
                     float x = g.vertices[off];
                     float y = g.vertices[off + 2];
@@ -466,7 +456,7 @@ namespace WowTriangles
                 {
                     //if ((g.materials[i] & 0x1000) != 0)
                     {
-                        int off = i * 3;
+                        int off = i*3;
                         int i0 = vertices[g.triangles[off]];
                         int i1 = vertices[g.triangles[off + 1]];
                         int i2 = vertices[g.triangles[off + 2]];
@@ -496,11 +486,11 @@ namespace WowTriangles
                     }
                 }
             }
-
         }
 
 
-        void AddTrianglesGroupDoodads(TriangleCollection s, ModelInstance mi, Vec3D world_dir, Vec3D world_off, float rot)
+        private void AddTrianglesGroupDoodads(TriangleCollection s, ModelInstance mi, Vec3D world_dir, Vec3D world_off,
+                                              float rot)
         {
             float dx = mi.pos.x;
             float dy = mi.pos.y;
@@ -519,7 +509,7 @@ namespace WowTriangles
             q.y = mi.dir.x;
             q.z = mi.dir.y;
             q.w = mi.w;
-            Matrix4 rotMatrix = new Matrix4();
+            var rotMatrix = new Matrix4();
             rotMatrix.makeQuaternionRotate(q);
 
 
@@ -527,18 +517,16 @@ namespace WowTriangles
 
             if (m.boundingTriangles == null)
             {
-
             }
             else
             {
-
                 // We got boiuding stuff, that is better
-                int nBoundingVertices = m.boundingVertices.Length / 3;
-                int[] vertices = new int[nBoundingVertices];
+                int nBoundingVertices = m.boundingVertices.Length/3;
+                var vertices = new int[nBoundingVertices];
 
                 for (uint i = 0; i < nBoundingVertices; i++)
                 {
-                    uint off = i * 3;
+                    uint off = i*3;
                     float x = m.boundingVertices[off];
                     float y = m.boundingVertices[off + 2];
                     float z = m.boundingVertices[off + 1];
@@ -574,22 +562,20 @@ namespace WowTriangles
                 }
 
 
-                int nBoundingTriangles = m.boundingTriangles.Length / 3;
+                int nBoundingTriangles = m.boundingTriangles.Length/3;
                 for (uint i = 0; i < nBoundingTriangles; i++)
                 {
-                    uint off = i * 3;
+                    uint off = i*3;
                     int v0 = vertices[m.boundingTriangles[off]];
                     int v1 = vertices[m.boundingTriangles[off + 1]];
                     int v2 = vertices[m.boundingTriangles[off + 2]];
                     s.AddTriangle(v0, v2, v1, ChunkedTriangleCollection.TriangleFlagModel);
                 }
-
             }
         }
 
-        void AddTriangles(TriangleCollection s, ModelInstance mi)
+        private void AddTriangles(TriangleCollection s, ModelInstance mi)
         {
-
             float dx = mi.pos.x;
             float dy = mi.pos.y;
             float dz = mi.pos.z;
@@ -604,7 +590,6 @@ namespace WowTriangles
 
             if (m.boundingTriangles == null)
             {
-
                 // /cry no bouding info, revert to normal vertives
                 /*
                 ModelView mv = m.view[0]; // View number 1 ?!?!
@@ -657,11 +642,11 @@ namespace WowTriangles
             else
             {
                 // We got boiuding stuff, that is better
-                int nBoundingVertices = m.boundingVertices.Length / 3;
-                int[] vertices = new int[nBoundingVertices];
+                int nBoundingVertices = m.boundingVertices.Length/3;
+                var vertices = new int[nBoundingVertices];
                 for (uint i = 0; i < nBoundingVertices; i++)
                 {
-                    uint off = i * 3;
+                    uint off = i*3;
                     float x = m.boundingVertices[off];
                     float y = m.boundingVertices[off + 2];
                     float z = m.boundingVertices[off + 1];
@@ -688,10 +673,10 @@ namespace WowTriangles
                 }
 
 
-                int nBoundingTriangles = m.boundingTriangles.Length / 3;
+                int nBoundingTriangles = m.boundingTriangles.Length/3;
                 for (uint i = 0; i < nBoundingTriangles; i++)
                 {
-                    uint off = i * 3;
+                    uint off = i*3;
                     int v0 = vertices[m.boundingTriangles[off]];
                     int v1 = vertices[m.boundingTriangles[off + 1]];
                     int v2 = vertices[m.boundingTriangles[off + 2]];
@@ -700,42 +685,34 @@ namespace WowTriangles
             }
         }
 
-        static void ChunkGetCoordForPoint(MapChunk c, int row, int col,
-                                          out float x, out float y, out float z)
+        private static void ChunkGetCoordForPoint(MapChunk c, int row, int col,
+                                                  out float x, out float y, out float z)
         {
-            int off = (row * 17 + col) * 3;
+            int off = (row*17 + col)*3;
             x = ChunkReader.ZEROPOINT - c.vertices[off + 2];
             y = ChunkReader.ZEROPOINT - c.vertices[off];
             z = c.vertices[off + 1];
         }
 
-        static void ChunkGetCoordForMiddlePoint(MapChunk c, int row, int col,
-                                            out float x, out float y, out float z)
+        private static void ChunkGetCoordForMiddlePoint(MapChunk c, int row, int col,
+                                                        out float x, out float y, out float z)
         {
-            int off = (9 + (row * 17 + col)) * 3;
+            int off = (9 + (row*17 + col))*3;
             x = ChunkReader.ZEROPOINT - c.vertices[off + 2];
             y = ChunkReader.ZEROPOINT - c.vertices[off];
             z = c.vertices[off + 1];
         }
-
-
-
-
-
 
 
         public static void rotate(float x, float y, float angle, out float nx, out float ny)
         {
-            double rot = (angle) / 360.0 * Math.PI * 2;
-            float c_y = (float)Math.Cos(rot);
-            float s_y = (float)Math.Sin(rot);
+            double rot = (angle)/360.0*Math.PI*2;
+            var c_y = (float) Math.Cos(rot);
+            var s_y = (float) Math.Sin(rot);
 
 
-            nx = c_y * x - s_y * y;
-            ny = s_y * x + c_y * y;
+            nx = c_y*x - s_y*y;
+            ny = s_y*x + c_y*y;
         }
-
-
-
     }
 }

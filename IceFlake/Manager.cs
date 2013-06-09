@@ -14,6 +14,8 @@ namespace IceFlake
     {
         internal static void Initialize()
         {
+            AppDomain.CurrentDomain.UnhandledException += LogUnhandledException;
+
             Memory = new InProcessMemoryReader(Process.GetCurrentProcess());
 
             Direct3D.OnFirstFrame += Start;
@@ -27,7 +29,7 @@ namespace IceFlake
             Stopwatch sw = Stopwatch.StartNew();
 
             ObjectManager = new ObjectManager();
-            AssemblyAnalyzer.RegisterTarget(ObjectManager);            
+            AssemblyAnalyzer.RegisterTarget(ObjectManager);
 
             DBC = new WoWDB();
 
@@ -48,13 +50,24 @@ namespace IceFlake
 
             sw.Stop();
             Log.WriteLine("Initialization took {0} ms", sw.ElapsedMilliseconds);
-            
         }
 
         internal static void Stop(object sender, EventArgs e)
         {
+            Log.WriteLine("Shutting down IceFlake");
+            Events = null;
+            Spellbook = null;
+            Movement = null;
+            DBC = null;
+            ObjectManager = null;
+
             Memory.Detours.RemoveAll();
             Memory.Patches.RemoveAll();
+
+            Memory = null;
+
+            GC.Collect();
+            //Environment.Exit(1);
         }
 
         internal static InProcessMemoryReader Memory { get; private set; }
@@ -68,10 +81,21 @@ namespace IceFlake
 
         internal static WoWDB DBC { get; private set; }
 
-        internal static Movement Movement { get; private set; }        
+        internal static Movement Movement { get; private set; }
 
         internal static SpellCollection Spellbook { get; private set; }
 
         internal static Events Events { get; private set; }
+
+        private static void LogUnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Log.WriteLine(LogType.Error, "Unhandled exception:");
+            var ex = e.ExceptionObject as Exception;
+            do
+            {
+                Log.WriteLine(LogType.Error, "\t{0}", ex.Message);
+                ex = ex.InnerException;
+            } while (ex.InnerException != null);
+        }
     }
 }

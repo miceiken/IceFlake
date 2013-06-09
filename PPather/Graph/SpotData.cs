@@ -1,12 +1,10 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace PatherPath.Graph
 {
-    class SpotData<T>
+    internal class SpotData<T>
     {
-        Dictionary<Spot, T> data = new Dictionary<Spot, T>();
+        private readonly Dictionary<Spot, T> data = new Dictionary<Spot, T>();
 
         public T Get(Spot s)
         {
@@ -26,6 +24,5 @@ namespace PatherPath.Graph
         {
             return data.ContainsKey(s);
         }
-
     }
 }

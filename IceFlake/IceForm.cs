@@ -113,5 +113,11 @@ namespace IceFlake
                 Manager.Movement.PathTo(ToPathTo);
             }
         }
+
+        private void IceForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Log.RemoveReader(this);
+            DirectX.Direct3D.Shutdown();
+        }
     }
 }
