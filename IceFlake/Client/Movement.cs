@@ -12,7 +12,17 @@ namespace IceFlake.Client
     {
         public Movement()
         {
-            PatherInstance = new Pather(World.CurrentMap);
+            if (!Manager.ObjectManager.IsInGame)
+                return;
+
+            CurrentMap = World.CurrentMap;
+            PatherInstance = new Pather(CurrentMap);
+        }
+
+        private string CurrentMap
+        {
+            get;
+            set;
         }
 
         private Pather PatherInstance
@@ -41,6 +51,18 @@ namespace IceFlake.Client
 
         public bool PathTo(Location pos)
         {
+            if (!Manager.ObjectManager.IsInGame)
+                return false;
+
+            if (CurrentMap != World.CurrentMap)
+            {
+                CurrentMap = World.CurrentMap;
+                PatherInstance = new Pather(CurrentMap);
+            }
+
+            if (PatherInstance == null)
+                return false;
+
             Destination = pos;
             var path = PatherInstance.Search(Manager.LocalPlayer.Location, pos);
             if (path == null)
@@ -48,7 +70,9 @@ namespace IceFlake.Client
                 Log.WriteLine("Could not path to {0}", pos);
                 return false;
             }
+
             FollowPath(path);
+
             return true;
         }
 
@@ -60,9 +84,19 @@ namespace IceFlake.Client
                 generatedPath.Enqueue(spot);
         }
 
+        public void Stop()
+        {
+            generatedPath.Clear();
+            Destination = default(Location);
+            Manager.LocalPlayer.StopCTM();
+        }
+
         [EndSceneHandler]
         public void Direct3D_EndScene()
         {
+            if (!Manager.ObjectManager.IsInGame)
+                return;
+
             if (generatedPath == null)
                 return;
 

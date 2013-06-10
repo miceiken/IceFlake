@@ -36,7 +36,10 @@ namespace IceFlake.Scripts
                 .FirstOrDefault();
 
             if (Vendor == null || !Vendor.IsValid)
+            {
                 Stop();
+                return;
+            }
 
             if (Vendor.Distance > 6)
             {

@@ -319,17 +319,17 @@ namespace IceFlake.Client.Patchables
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     public struct ItemInfo
     {
-        public int Entry;
-        public int ClassId;
+        public int ID;
+        public ItemClass Class;
         public int SubClassId;
         public int Unk0;
         public int DisplayInfoId;
-        public ItemQuality Rarity;
+        public ItemQuality Quality;
         public ItemFlags TypeFlags;
         public int BuyPrice;
         public int Faction;
         public int SellPrice;
-        public EquipSlot EquipSlot;
+        public InventoryType InventoryType;
         public int AllowedClasses;
         public int AllowedRaces;
         public int ItemLevel;
@@ -379,7 +379,7 @@ namespace IceFlake.Client.Patchables
         public int[] SpellCategory;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5, ArraySubType = UnmanagedType.I4)]
         public int[] SpellCategoryCooldown;
-        public ItemBondType BondId;
+        public ItemBondType Bonding;
         [MarshalAs(UnmanagedType.LPStr)]
         public string Description;
         public int BookTextId;
@@ -412,12 +412,6 @@ namespace IceFlake.Client.Patchables
         [MarshalAs(UnmanagedType.LPStr)]
         public string Name;
 
-
-        public ItemClass Class
-        {
-            get { return (ItemClass)ClassId; }
-        }
-
         public ItemArmorClass ArmorClass
         {
             get { return (ItemArmorClass)SubClassId; }
@@ -437,6 +431,7 @@ namespace IceFlake.Client.Patchables
         {
             get
             {
+
                 return Class == ItemClass.Consumable &&
                        (ItemSubclassConsumable)SubClassId == ItemSubclassConsumable.FoodDrink;
             }
@@ -540,7 +535,7 @@ namespace IceFlake.Client.Patchables
         //            case InventoryType.Ranged:
         //            case InventoryType.Thrown:
         //            case InventoryType.RangedRight:
-        //                switch (ItemInfo.WeaponClass)
+        //                switch (WeaponClass)
         //                {
         //                    case ItemWeaponClass.Bow:
         //                    case ItemWeaponClass.Gun:

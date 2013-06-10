@@ -90,50 +90,6 @@ namespace IceFlake
         {
             try
             {
-                //var plrname = WoWScript.Execute<string>("UnitName(\"player\")");
-                //Log.WriteLine(plrname);
-
-                //Log.WriteLine("SpellBook:");
-                //foreach (var spell in Manager.Spellbook)
-                //    Log.WriteLine("#{0}: {1}", spell.Id, spell.Name);
-
-                //Log.WriteLine("All Items:");
-                //foreach (var item in Manager.LocalPlayer.Items.Where(i => i != null))
-                //    Log.WriteLine("\t{0}", item.Name);
-
-                //Log.WriteLine("Inventory Items");
-                //foreach (var item in Manager.LocalPlayer.InventoryItems.Where(i => i != null))
-                //{
-                //    int x, y;
-                //    if (item.GetSlotIndexes(out x, out y))
-                //        Log.WriteLine("\t({0},{1}) {2}", x, y, item.Name);
-                //    else
-                //        Log.WriteLine("\t{0}", item.Name);
-                //}
-
-                //Log.WriteLine("Equipped Items:");
-                //foreach (var item in Manager.LocalPlayer.EquippedItems.Where(i => i != null))
-                //    Log.WriteLine("\t{0}", item.Name);
-
-                //Log.WriteLine("Equipped Items:");
-                //for (var i = (int)EquipSlot.Head; i < (int)EquipSlot.Tabard + 1; i++)
-                //{
-                //    var item = Manager.LocalPlayer.GetEquippedItem(i);
-                //    if (item == null || !item.IsValid) continue;
-                //    Log.WriteLine("{0}: {1}", (EquipSlot)i, item.Name);
-                //}
-
-                // Get some Item Cache info
-                var headItem = Manager.LocalPlayer.GetEquippedItem(EquipSlot.Head);
-                if (headItem == null || !headItem.IsValid)
-                    return;
-                var headItemInfo = headItem.ItemInfo;
-                Log.WriteLine("[{0}] {1}: C: {2} - AC: {3}", headItem.Entry, headItemInfo.Name, headItemInfo.Class, headItemInfo.ArmorClass);
-                var headItemStats = headItemInfo.Stats;
-                foreach (var pair in headItemStats)
-                    Log.WriteLine("{0}: {1}", pair.Key, pair.Value);
-
-                // Cast Healing Wave
                 if (Manager.LocalPlayer.Class != WoWClass.Shaman)
                     return;
                 var healingWave = Manager.Spellbook["Healing Wave"];

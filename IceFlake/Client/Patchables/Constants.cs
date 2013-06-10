@@ -2601,6 +2601,31 @@ namespace IceFlake.Client.Patchables
         Sigil
     }
 
+    public enum ItemWeaponClass
+    {
+        None = -1,
+        Axe,
+        AxeTwoHand,
+        Bow,
+        Gun,
+        Mace,
+        MaceTwoHand,
+        Polearm,
+        Sword,
+        SwordTwoHand,
+        Staff = 10,
+        Exotic,
+        ExoticTwoHand,
+        Fist,
+        Misc,
+        Dagger,
+        Thrown,
+        Spear,
+        Crossbow,
+        Wand,
+        FishingPole
+    }
+
     public enum ItemBondType
     {
         None,
@@ -2708,31 +2733,6 @@ namespace IceFlake.Client.Patchables
         RangedRight,
         Quiver,
         Relic
-    }
-
-    public enum ItemWeaponClass
-    {
-        None = -1,
-        Axe,
-        AxeTwoHand,
-        Bow,
-        Gun,
-        Mace,
-        MaceTwoHand,
-        Polearm,
-        Sword,
-        SwordTwoHand,
-        Staff = 10,
-        Exotic,
-        ExoticTwoHand,
-        Fist,
-        Misc,
-        Dagger,
-        Thrown,
-        Spear,
-        Crossbow,
-        Wand,
-        FishingPole
     }
 
     public enum Stat
