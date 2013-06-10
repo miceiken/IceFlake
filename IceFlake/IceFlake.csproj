@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -65,6 +66,7 @@
     <Compile Include="Client\API\Taxi.cs" />
     <Compile Include="Client\API\TradeSkill.cs" />
     <Compile Include="Client\API\Trainer.cs" />
+    <Compile Include="Client\Camera.cs" />
     <Compile Include="Client\ClientServices.cs" />
     <Compile Include="Client\Collections\AuraCollection.cs" />
     <Compile Include="Client\Collections\SpellCollection.cs" />
@@ -91,6 +93,7 @@
     <Compile Include="Client\Patchables\Descriptors.cs" />
     <Compile Include="Client\Patchables\Pointers.cs" />
     <Compile Include="Client\Patchables\Structures.cs" />
+    <Compile Include="Client\Pather.cs" />
     <Compile Include="Client\Raid.cs" />
     <Compile Include="Client\Scripts\Script.cs" />
     <Compile Include="Client\Scripts\ScriptLogReader.cs" />
@@ -101,6 +104,7 @@
     <Compile Include="Client\World.cs" />
     <Compile Include="Client\WoWDB.cs" />
     <Compile Include="Client\WoWScript.cs" />
+    <Compile Include="DirectX\Matrix3.cs" />
     <Compile Include="Manager.cs" />
     <Compile Include="DirectX\Direct3D.cs" />
     <Compile Include="DirectX\EndSceneHandler.cs" />
@@ -117,7 +121,6 @@
     <Compile Include="Runtime\AseemblyAnalyzer.cs" />
     <Compile Include="Runtime\CallbackManager.cs" />
     <Compile Include="Runtime\Extensions.cs" />
-    <Compile Include="Runtime\Pather.cs" />
     <Compile Include="Scripts\BreadcrumbScript.cs" />
     <Compile Include="Scripts\Dumpers.cs" />
     <Compile Include="Scripts\FishingScript.cs" />

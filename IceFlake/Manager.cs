@@ -47,6 +47,8 @@ namespace IceFlake
 
             ScriptManager.Initialize();
 
+            Camera = new Camera();
+
             AssemblyAnalyzer.Analyze(Assembly.GetExecutingAssembly());
 
             sw.Stop();
@@ -85,6 +87,8 @@ namespace IceFlake
         internal static Movement Movement { get; private set; }
 
         internal static SpellCollection Spellbook { get; private set; }
+
+        internal static Camera Camera { get; private set; }
 
         internal static Events Events { get; private set; }
     }

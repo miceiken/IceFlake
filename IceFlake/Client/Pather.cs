@@ -1,26 +1,4 @@
-﻿#region Legal
-/*
-"PPather" Copyright 2008 Pontus Borg
-Copyright 2009 scorpion
-
-This file is part of N2.
-
-N2 is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-N2 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with N2.  If not, see <http://www.gnu.org/licenses/>.
-*/
-#endregion Legal
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,7 +9,7 @@ using System.IO;
 using Location = IceFlake.Client.Location;
 using PathLoc = PatherPath.Graph.Location;
 
-namespace IceFlake.Runtime
+namespace IceFlake.Client
 {
     public class Pather : IDisposable
     {
