@@ -27,6 +27,17 @@ namespace IceFlake.Client
 
     public unsafe class Camera
     {
+
+        public Camera()
+        {
+            // TODO: THIS ISNT WORKING AND NEEDS TO BE FIXED
+            //var ptr = this.Pointer;
+            //_GetFov = Manager.Memory.RegisterDelegate<GetFovDelegate>(Manager.Memory.GetObjectVtableFunction(ptr, 0));
+            //_Forward = Manager.Memory.RegisterDelegate<ForwardDelegate>(Manager.Memory.GetObjectVtableFunction(ptr, 1));
+            //_Right = Manager.Memory.RegisterDelegate<RightDelegate>(Manager.Memory.GetObjectVtableFunction(ptr, 2));
+            //_Up = Manager.Memory.RegisterDelegate<UpDelegate>(Manager.Memory.GetObjectVtableFunction(ptr, 3));
+        }
+
         public IntPtr Pointer
         {
             get
@@ -111,13 +122,13 @@ namespace IceFlake.Client
         {
             get
             {
-                if (GetFarClip == null)
-                    GetFarClip = Manager.Memory.RegisterDelegate<GetFarClipDelegate>((IntPtr)Pointers.Drawing.GetFarClip);
+                //if (GetFarClip == null)
+                //    GetFarClip = Manager.Memory.RegisterDelegate<GetFarClipDelegate>((IntPtr)Pointers.Drawing.GetFarClip);
 
                 var cam = GetCamera();
-                //return Matrix.PerspectiveFovRH(FieldOfView * 0.6f, Aspect, cam.NearZ, cam.FarZ);
+                return Matrix.PerspectiveFovRH(cam.FieldOfView * 0.6f, cam.Aspect, cam.NearZ, cam.FarZ);
                 //return Matrix.PerspectiveFovRH(FieldOfView * 0.6f, Aspect, 0.2f, (float)GetFarClip());
-                return Matrix.PerspectiveFovRH(FieldOfView * 0.6f, cam.Aspect, 0.2f, (float)GetFarClip());
+                //return Matrix.PerspectiveFovRH(cam.FieldOfView * 0.6f, cam.Aspect, 0.2f, (float)GetFarClip());
             }
         }
 
