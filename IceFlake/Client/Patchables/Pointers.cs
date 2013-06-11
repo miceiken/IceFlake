@@ -229,6 +229,7 @@
             internal static uint GetAura = 0x00556E10;
             internal static uint GetAuraCount = 0x004F8850;
             internal static uint GetCreatureType = 0x0071F300;
+            internal static uint GetCreatureRank = 0x00718A00;
             internal static uint ShapeshiftFormId = 0x0071AF70;
             internal static uint CalculateThreat = 0x007374C0;
         }

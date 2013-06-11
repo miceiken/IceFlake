@@ -7,19 +7,41 @@ namespace IceFlake.Client.Objects
 {
     public class WoWUnit : WoWObject
     {
-        private static HasAuraDelegate _hasAura;
 
-        private static UnitReactionDelegate _unitReaction;
-
-        private static UnitThreatInfoDelegate _unitThreatInfo;
-
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+        private delegate int CreatureTypeDelegate(IntPtr thisObj);
         private static CreatureTypeDelegate _creatureType;
 
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+        private delegate int CreatureRankDelegate(IntPtr thisObj);
+        private static CreatureRankDelegate _creatureRank;
+
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+        private delegate IntPtr GetAuraDelegate(IntPtr thisObj, int index);
+
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+        private delegate int GetShapeshiftFormIdDelegate(IntPtr thisObj);
         private static GetShapeshiftFormIdDelegate _getShapeshiftFormId;
 
-        private static GetAuraCountDelegate _getAuraCount;
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+        private delegate int UnitReactionDelegate(IntPtr thisObj, IntPtr unitToCompare);
+        private static UnitReactionDelegate _unitReaction;
 
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+        private delegate int UnitThreatInfoDelegate(
+            IntPtr pThis, IntPtr guid, ref IntPtr threatStatus, ref IntPtr threatPct, ref IntPtr rawPct,
+            ref int threatValue);
+        private static UnitThreatInfoDelegate _unitThreatInfo;
+
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+        private delegate int GetAuraCountDelegate(IntPtr thisObj);
+        private static GetAuraCountDelegate _getAuraCount;
         private static GetAuraDelegate _getAura;
+
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+        private delegate bool HasAuraDelegate(IntPtr thisObj, int spellId);
+        private static HasAuraDelegate _hasAura;
+
         //private readonly AuraCollection _auras;
 
         public WoWUnit(IntPtr pointer)
@@ -359,6 +381,17 @@ namespace IceFlake.Client.Objects
         //    }
         //}
 
+        public UnitClassificationType Classification
+        {
+            get
+            {
+                if (_creatureRank == null)
+                    _creatureRank =
+                        Manager.Memory.RegisterDelegate<CreatureRankDelegate>((IntPtr)Pointers.Unit.GetCreatureRank);
+                return (UnitClassificationType)_creatureRank(Pointer);
+            }
+        }
+
         public CreatureType CreatureType
         {
             get
@@ -425,57 +458,6 @@ namespace IceFlake.Client.Objects
                 _getAura = Manager.Memory.RegisterDelegate<GetAuraDelegate>((IntPtr)Pointers.Unit.GetAura);
             return _getAura(Pointer, index);
         }
-
-        #region Nested type: CreatureTypeDelegate
-
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate int CreatureTypeDelegate(IntPtr thisObj);
-
-        #endregion
-
-        #region Nested type: GetAuraCountDelegate
-
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate int GetAuraCountDelegate(IntPtr thisObj);
-
-        #endregion
-
-        #region Nested type: GetAuraDelegate
-
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate IntPtr GetAuraDelegate(IntPtr thisObj, int index);
-
-        #endregion
-
-        #region Nested type: GetShapeshiftFormIdDelegate
-
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate int GetShapeshiftFormIdDelegate(IntPtr thisObj);
-
-        #endregion
-
-        #region Nested type: HasAuraDelegate
-
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate bool HasAuraDelegate(IntPtr thisObj, int spellId);
-
-        #endregion
-
-        #region Nested type: UnitReactionDelegate
-
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate int UnitReactionDelegate(IntPtr thisObj, IntPtr unitToCompare);
-
-        #endregion
-
-        #region Nested type: UnitThreatInfoDelegate
-
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate int UnitThreatInfoDelegate(
-            IntPtr pThis, IntPtr guid, ref IntPtr threatStatus, ref IntPtr threatPct, ref IntPtr rawPct,
-            ref int threatValue);
-
-        #endregion
 
         //public override string ToString()
         //{
