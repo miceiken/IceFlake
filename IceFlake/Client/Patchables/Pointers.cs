@@ -14,9 +14,9 @@
 
         #region Nested type: Container
 
+        // 3.3.5a: 12340
         internal class Container
         {
-            internal static uint EquippedBagGUID = 0xCDBF40; // UPDATE
             internal static uint GetBagAtIndex = 0x005D6F20;
             internal static uint LootWindowOffset = 0x00BFA8D8;
         }
@@ -25,12 +25,11 @@
 
         #region Nested type: Drawing
 
+        // 3.3.5a: 12340
         internal class Drawing
         {
             internal static uint WorldFrame = 0x00B7436C;
             internal static uint ActiveCamera = 0x7E20;
-            internal static uint AspectRatio = 0xAD743C; // UPDATE
-            internal static uint GetFarClip = 0x6EBC50; // UPDATE
             internal static uint RenderBackground = 0x2532E0; // UPDATE
         }
 
@@ -47,14 +46,11 @@
 
         #region Nested type: Item
 
+        // 3.3.5a: 12340
         internal class Item
         {
-            internal static uint UseItem = 0x00708C20; // unconfirmed, UPDATE
+            internal static uint UseItem = 0x00708C20;
             internal static uint CanUseItem = 0x006DC3F0;
-            internal static uint GetItemSparseRecPtr = 0x47B700; // UPDATE
-
-            internal static uint GetClass = 0x47B250; // UPDATE
-            internal static uint GetSubclass = 0x47B290; // UPDATE
             internal static uint InventoryType = 0x00707280;
         }
 
@@ -62,6 +58,7 @@
 
         #region Nested type: LocalPlayer
 
+        // 3.3.5a: 12340
         internal class LocalPlayer
         {
             internal static uint ClickToMove = 0x00727400;
@@ -71,23 +68,6 @@
             internal static uint GetRuneReadyBySlot = 0x629940; // UPDATE
             internal static uint CorpsePosition = 0x0051F430;
             internal static uint ComboPoints = 0x00BD084D;
-
-            // UPDATE 
-            internal static uint CurrentSpeed = 0x850;
-            internal static uint SwimSpeed = 0x810;
-            internal static uint RunSpeed = 0x808;
-            internal static uint FlySpeed = 0x818;
-
-            internal static uint Height = 0x8A0;
-            internal static uint Width = 0x84C;
-
-            internal static uint Stepheight = 0x854;
-
-            internal static uint RotationSpeed = 0x820;
-
-            internal static uint IsSwimming = 0x38;
-
-            internal static uint BackbackSlot1 = 0x4A30;
         }
 
         #endregion
@@ -238,6 +218,7 @@
 
         #region Nested type: World
 
+        // 3.3.5a: 12340
         internal class World
         {
             internal static uint Traceline = 0x007A3B70;
