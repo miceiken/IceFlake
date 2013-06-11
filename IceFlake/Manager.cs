@@ -24,7 +24,7 @@ namespace IceFlake
 
         internal static void Start(object sender, EventArgs e)
         {
-            Debugger.Break();
+            //Debugger.Break();
             Stopwatch sw = Stopwatch.StartNew();
 
             ObjectManager = new ObjectManager();

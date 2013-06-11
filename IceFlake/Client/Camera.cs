@@ -9,48 +9,31 @@ using SlimDX;
 
 namespace IceFlake.Client
 {
-#pragma warning disable 0169
-    public struct CameraInfo
+    public unsafe struct CameraInfo
     {
-        uint unk0;
-        uint unk1;
+        fixed int unk0[2];
         public Vector3 Position;
-        public Matrix3 Matrix;
-        public float FieldOfView;
-        float unk2;
-        int unk3;
+        public Matrix3 Facing;
         public float NearZ;
         public float FarZ;
+        public float FieldOfView;
         public float Aspect;
     }
-#pragma warning restore 0169
 
     public unsafe class Camera
     {
-
         public Camera()
         {
-            // TODO: THIS ISNT WORKING AND NEEDS TO BE FIXED
-            //var ptr = this.Pointer;
-            //_GetFov = Manager.Memory.RegisterDelegate<GetFovDelegate>(Manager.Memory.GetObjectVtableFunction(ptr, 0));
-            //_Forward = Manager.Memory.RegisterDelegate<ForwardDelegate>(Manager.Memory.GetObjectVtableFunction(ptr, 1));
-            //_Right = Manager.Memory.RegisterDelegate<RightDelegate>(Manager.Memory.GetObjectVtableFunction(ptr, 2));
-            //_Up = Manager.Memory.RegisterDelegate<UpDelegate>(Manager.Memory.GetObjectVtableFunction(ptr, 3));
+            this.Pointer = Manager.Memory.Read<IntPtr>(new IntPtr(Manager.Memory.Read<uint>((IntPtr)Pointers.Drawing.WorldFrame) + Pointers.Drawing.ActiveCamera));
         }
 
         public IntPtr Pointer
         {
-            get
-            {
-                return Manager.Memory.Read<IntPtr>(new IntPtr(Manager.Memory.Read<uint>((IntPtr)Pointers.Drawing.WorldFrame) + Pointers.Drawing.ActiveCamera));
-            }
+            get;
+            private set;
         }
 
         public bool IsValid { get { return Pointer != IntPtr.Zero; } }
-
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        public delegate float GetFovDelegate(IntPtr ptr);
-        private GetFovDelegate _GetFov;
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         public delegate Vector3* ForwardDelegate(IntPtr ptr, Vector3* vecOut);
@@ -63,21 +46,6 @@ namespace IceFlake.Client
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         public delegate Vector3* UpDelegate(IntPtr ptr, Vector3* vecOut);
         private UpDelegate _Up;
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate double GetFarClipDelegate();
-        private GetFarClipDelegate GetFarClip;
-
-        public float FieldOfView
-        {
-            get
-            {
-                if (_GetFov == null)
-                    _GetFov = Manager.Memory.RegisterDelegate<GetFovDelegate>(Manager.Memory.GetObjectVtableFunction(Pointer, 0));
-
-                return _GetFov(Pointer);
-            }
-        }
 
         public Vector3 Forward
         {
@@ -122,13 +90,8 @@ namespace IceFlake.Client
         {
             get
             {
-                //if (GetFarClip == null)
-                //    GetFarClip = Manager.Memory.RegisterDelegate<GetFarClipDelegate>((IntPtr)Pointers.Drawing.GetFarClip);
-
                 var cam = GetCamera();
                 return Matrix.PerspectiveFovRH(cam.FieldOfView * 0.6f, cam.Aspect, cam.NearZ, cam.FarZ);
-                //return Matrix.PerspectiveFovRH(FieldOfView * 0.6f, Aspect, 0.2f, (float)GetFarClip());
-                //return Matrix.PerspectiveFovRH(cam.FieldOfView * 0.6f, cam.Aspect, 0.2f, (float)GetFarClip());
             }
         }
 
@@ -148,52 +111,4 @@ namespace IceFlake.Client
             return Manager.Memory.Read<CameraInfo>(Pointer);
         }
     }
-
-    //public Vector3 Position
-    //{
-    //    get
-    //    {
-    //        return Memory.Read<Vector3>((uint)(pClass + 8));
-    //    }
-    //}
-
-    //public Matrix3 Facing
-    //{
-    //    get
-    //    {
-    //        return Memory.Read<Matrix3>((uint)(pClass + 20));
-    //    }
-    //}
-
-    //public float NearZ
-    //{
-    //    get
-    //    {
-    //        return Memory.Read<float>((uint)(pClass + 56));
-    //    }
-    //}
-
-    //public float FarZ
-    //{
-    //    get
-    //    {
-    //        return Memory.Read<float>((uint)(pClass + 60));
-    //    }
-    //}
-
-    //public float Fov
-    //{
-    //    get
-    //    {
-    //        return Memory.Read<float>((uint)(pClass + 64));
-    //    }
-    //}
-
-    //public float Aspect
-    //{
-    //    get
-    //    {
-    //        return Memory.Read<float>((uint)(pClass + 68));
-    //    }
-    //}
 }

@@ -37,6 +37,7 @@ namespace IceFlake.Scripts
 
             if (Vendor == null || !Vendor.IsValid)
             {
+                Print("Found no vendors");
                 Stop();
                 return;
             }

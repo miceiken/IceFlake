@@ -42,7 +42,7 @@ namespace IceFlake.DirectX
                         if (OnFirstFrame != null)
                             OnFirstFrame(null, new EventArgs());
 
-                    //PrepareRenderState();
+                    PrepareRenderState();
                     CallbackManager.Invoke();
                     // TEMP SOLUTION
                     // TODO: FIX THIS
@@ -98,36 +98,22 @@ namespace IceFlake.DirectX
         {
             if (Device == null)
                 return;
-            // This is for RenderBackground (?)
-            //var viewport = Device.Viewport;
-            //viewport.MinZ = 0.0f;
-            //viewport.MaxZ = 0.94f;
-            //Device.Viewport = viewport;
 
-            //Device.SetTransform(TransformState.View, Manager.Camera.View);
-            //Device.SetTransform(TransformState.Projection, Manager.Camera.Projection);
-
-            //Device.VertexShader = null;
-            //Device.PixelShader = null;
-            //Device.SetRenderState(RenderState.ZEnable, true);
-            //Device.SetRenderState(RenderState.ZWriteEnable, true);
-            //Device.SetRenderState(RenderState.ZFunc, 4); //
-            //Device.SetRenderState(RenderState.AlphaBlendEnable, true);
-            //Device.SetRenderState(RenderState.DestinationBlend, Blend.InverseSourceAlpha);
-            //Device.SetRenderState(RenderState.Lighting, false);
-            //Device.SetTexture(0, null);
-            //Device.SetRenderState(RenderState.CullMode, Cull.None);
+            var viewport = Device.Viewport;
+            viewport.MinZ = 0.0f;
+            viewport.MaxZ = 0.94f;
+            Device.Viewport = viewport;
 
             Device.SetTransform(TransformState.View, Manager.Camera.View);
             Device.SetTransform(TransformState.Projection, Manager.Camera.Projection);
 
             Device.VertexShader = null;
             Device.PixelShader = null;
-            Device.SetRenderState(RenderState.ZEnable, ZBufferType.UseZBuffer);
+            Device.SetRenderState(RenderState.ZEnable, true);
+            Device.SetRenderState(RenderState.ZWriteEnable, true);
+            Device.SetRenderState(RenderState.ZFunc, 4); //
             Device.SetRenderState(RenderState.AlphaBlendEnable, true);
-            Device.SetRenderState(RenderState.BlendOperation, BlendOperation.Add);
             Device.SetRenderState(RenderState.DestinationBlend, Blend.InverseSourceAlpha);
-            Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
             Device.SetRenderState(RenderState.Lighting, false);
             Device.SetTexture(0, null);
             Device.SetRenderState(RenderState.CullMode, Cull.None);

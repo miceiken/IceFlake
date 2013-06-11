@@ -68,6 +68,7 @@ namespace IceFlake.Scripts
                     Print("\tN: {0} - C: {1}c - T: {2}", n.Name, n.Cost, n.Type);
                 }
             }
+
             Stop();
         }
 
@@ -77,13 +78,6 @@ namespace IceFlake.Scripts
 
         public override void OnTick()
         {
-            //if (!Manager.ObjectManager.IsInGame)
-            //    return;
-
-            //var cast = Manager.LocalPlayer.CastingId;
-            //if (cast > 0)
-            //    Print("Casting: {0}", cast);
-            //Sleep(1000);
         }
     }
 }
