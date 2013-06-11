@@ -50,6 +50,7 @@
         internal class Item
         {
             internal static uint UseItem = 0x00708C20; // unconfirmed, UPDATE
+            internal static uint CanUseItem = 0x006DC3F0;
             internal static uint GetItemSparseRecPtr = 0x47B700; // UPDATE
 
             internal static uint GetClass = 0x47B250; // UPDATE

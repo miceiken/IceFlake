@@ -25,9 +25,9 @@ namespace IceFlake.Client.Objects
 
         private static StopCTMDelegate _stopCTM;
 
-        //[UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        //private delegate bool CanUseItemDelegate(IntPtr thisObj, IntPtr itemSparseRec, out GameError error);
-        //private static CanUseItemDelegate _canUseItem;
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+        private delegate bool CanUseItemDelegate(IntPtr thisObj, IntPtr itemSparseRec, out GameError error);
+        private static CanUseItemDelegate _canUseItem;
 
         //[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         //private delegate int GetRuneReadyDelegate(int slot);
@@ -179,17 +179,17 @@ namespace IceFlake.Client.Objects
             return Manager.ObjectManager.GetObjectByGuid(guid) as WoWItem;
         }
 
-        //public bool CanUseItem(WoWItem item, out GameError error)
-        //{
-        //    return CanUseItem(WoWItem.GetItemSparseRecordPointerFromId(item.Entry), out error);
-        //}
+        public bool CanUseItem(WoWItem item, out GameError error)
+        {
+            return CanUseItem(WoWItem.GetItemRecordPointerFromId(item.Entry), out error);
+        }
 
-        //public bool CanUseItem(IntPtr pointer, out GameError error)
-        //{
-        //    if (_canUseItem == null)
-        //        _canUseItem = Core.Memory.RegisterDelegate<CanUseItemDelegate>(Pointers.Item.CanUseItem);
-        //    return _canUseItem(this.Pointer, pointer, out error);
-        //}
+        public bool CanUseItem(IntPtr pointer, out GameError error)
+        {
+            if (_canUseItem == null)
+                _canUseItem = Manager.Memory.RegisterDelegate<CanUseItemDelegate>((IntPtr)Pointers.Item.CanUseItem);
+            return _canUseItem(this.Pointer, pointer, out error);
+        }
 
         #endregion
 

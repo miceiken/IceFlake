@@ -2,6 +2,7 @@
 using IceFlake.Client.Objects;
 using IceFlake.Client.Patchables;
 using IceFlake.Client.Scripts;
+using System;
 using System.Linq;
 
 namespace IceFlake.Scripts
@@ -148,6 +149,11 @@ namespace IceFlake.Scripts
                     Print("\t({0},{1}) [{2}]x{3}", x, y, item.Name, item.StackCount);
                 else
                     Print("\t[{0}]x{1}", item.Name, item.StackCount);
+                GameError errcode;
+                if (Manager.LocalPlayer.CanUseItem(item, out errcode))
+                    Print("\tUsable");
+                else
+                    Print("\tNot usable ({0})", errcode);
             }
 
             Stop();
