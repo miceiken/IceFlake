@@ -216,5 +216,19 @@ namespace IceFlake
                 btnScriptStop.Enabled = false;
             }
         }
+
+        private void btnExecute_Click(object sender, EventArgs e)
+        {
+            var lua = tbLUA.Text;
+            if (string.IsNullOrEmpty(lua))
+                return;
+            Manager.ESExecute.AddExececution(() =>
+            {
+                Log.WriteLine(lua);
+                var ret = WoWScript.Execute(lua);
+                for (var i = 0; i < ret.Count; i++)
+                    Log.WriteLine("\t[{0}] = \"{1}\"", i, ret[i]);
+            });
+        }
     }
 }

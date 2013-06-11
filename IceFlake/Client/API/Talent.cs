@@ -22,7 +22,7 @@ namespace IceFlake.Client.API
 
         public List<TalentTab> Tabs
         {
-            get { return Enumerable.Range(1, NumTabs + 1).Select(i => new TalentTab(i)).ToList(); }
+            get { return Enumerable.Range(1, NumTabs).Select(i => new TalentTab(i)).ToList(); }
         }
 
         public bool HasLearnedMajorTree
@@ -36,6 +36,7 @@ namespace IceFlake.Client.API
         }
     }
 
+
     public class TalentTab
     {
         public TalentTab(int index)
@@ -45,29 +46,29 @@ namespace IceFlake.Client.API
 
         public int Index { get; private set; }
 
-        public int Id
+        public string Name
         {
-            get { return WoWScript.Execute<int>("GetTalentTabInfo(" + Index + ")", 0); }
+            get { return WoWScript.Execute<string>("GetTalentTabInfo(" + Index + ")", 0); }
         }
 
-        public string Name
+        public string Icon
         {
             get { return WoWScript.Execute<string>("GetTalentTabInfo(" + Index + ")", 1); }
         }
 
         public string Description
         {
-            get { return WoWScript.Execute<string>("GetTalentTabInfo(" + Index + ")", 2); }
+            get { return WoWScript.Execute<string>("GetTalentTabInfo(" + Index + ")", 3); }
         }
 
         public int PointsSpent
         {
-            get { return WoWScript.Execute<int>("GetTalentTabInfo(" + Index + ")", 4); }
+            get { return WoWScript.Execute<int>("GetTalentTabInfo(" + Index + ")", 2); }
         }
 
         public bool IsUnlocked
         {
-            get { return WoWScript.Execute<bool>("GetTalentTabInfo(" + Index + ")", 7); }
+            get { return WoWScript.Execute<bool>("GetTalentTabInfo(" + Index + ")", 4); }
         }
 
         public int NumTalents
@@ -77,7 +78,7 @@ namespace IceFlake.Client.API
 
         public List<TalentNode> Talents
         {
-            get { return Enumerable.Range(1, NumTalents + 1).Select(i => new TalentNode(Index, i)).ToList(); }
+            get { return Enumerable.Range(1, NumTalents).Select(i => new TalentNode(Index, i)).ToList(); }
         }
     }
 

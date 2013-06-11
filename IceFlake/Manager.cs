@@ -30,6 +30,9 @@ namespace IceFlake
             ObjectManager = new ObjectManager();
             AssemblyAnalyzer.RegisterTarget(ObjectManager);
 
+            ESExecute = new EndSceneExecute();
+            AssemblyAnalyzer.RegisterTarget(ESExecute);
+
             DBC = new WoWDB();
 
             Movement = new Movement();
@@ -63,6 +66,7 @@ namespace IceFlake
             Movement = null;
             DBC = null;
             ObjectManager = null;
+            ESExecute = null;
 
             Memory.Detours.RemoveAll();
             Memory.Patches.RemoveAll();
@@ -81,6 +85,8 @@ namespace IceFlake
         {
             get { return ObjectManager.LocalPlayer; }
         }
+
+        internal static EndSceneExecute ESExecute { get; private set; }
 
         internal static WoWDB DBC { get; private set; }
 

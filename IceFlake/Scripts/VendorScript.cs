@@ -68,9 +68,10 @@ namespace IceFlake.Scripts
             if (API.Merchant.IsShown)
             {
                 API.Merchant.SellAll(ItemQuality.Poor); // Sell all gray
+                API.Merchant.SellAll(ItemQuality.Common);
                 if (Vendor.IsRepairer)
                     API.Merchant.RepairAll(); // ... and repair if it's a repairer
-                Sleep(2000);
+                Stop();
             }
         }
     }

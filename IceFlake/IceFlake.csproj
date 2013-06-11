@@ -70,6 +70,7 @@
     <Compile Include="Client\ClientServices.cs" />
     <Compile Include="Client\Collections\AuraCollection.cs" />
     <Compile Include="Client\Collections\SpellCollection.cs" />
+    <Compile Include="Client\EndSceneExecute.cs" />
     <Compile Include="Client\Events.cs" />
     <Compile Include="Client\Helper.cs" />
     <Compile Include="Client\Location.cs" />
@@ -126,7 +127,6 @@
     <Compile Include="Scripts\FishingScript.cs" />
     <Compile Include="Scripts\GuildRecruitScript.cs" />
     <Compile Include="Scripts\LoginScript.cs" />
-    <Compile Include="Scripts\QuestScript.cs" />
     <Compile Include="Scripts\TalentScript.cs" />
     <Compile Include="Scripts\UITestScript.cs" />
     <Compile Include="Scripts\VendorScript.cs" />

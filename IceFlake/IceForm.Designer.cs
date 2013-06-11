@@ -33,13 +33,15 @@
             this.btnGeneratePath = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.lstScripts = new System.Windows.Forms.CheckedListBox();
             this.btnScriptCompile = new System.Windows.Forms.Button();
             this.btnScriptStop = new System.Windows.Forms.Button();
             this.btnScriptStart = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.btnDump = new System.Windows.Forms.Button();
-            this.lstScripts = new System.Windows.Forms.CheckedListBox();
             this.GUITimer = new System.Windows.Forms.Timer(this.components);
+            this.tbLUA = new System.Windows.Forms.TextBox();
+            this.btnExecute = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -90,6 +92,16 @@
             this.tabPage1.Text = "Scripts";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // lstScripts
+            // 
+            this.lstScripts.FormattingEnabled = true;
+            this.lstScripts.Location = new System.Drawing.Point(6, 7);
+            this.lstScripts.Name = "lstScripts";
+            this.lstScripts.Size = new System.Drawing.Size(366, 139);
+            this.lstScripts.TabIndex = 4;
+            this.lstScripts.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.lstScripts_ItemCheck);
+            this.lstScripts.SelectedIndexChanged += new System.EventHandler(this.lstScripts_SelectedIndexChanged);
+            // 
             // btnScriptCompile
             // 
             this.btnScriptCompile.Location = new System.Drawing.Point(168, 156);
@@ -122,6 +134,8 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.btnExecute);
+            this.tabPage2.Controls.Add(this.tbLUA);
             this.tabPage2.Controls.Add(this.btnDump);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
@@ -141,21 +155,28 @@
             this.btnDump.UseVisualStyleBackColor = true;
             this.btnDump.Click += new System.EventHandler(this.btnDump_Click);
             // 
-            // lstScripts
-            // 
-            this.lstScripts.FormattingEnabled = true;
-            this.lstScripts.Location = new System.Drawing.Point(6, 7);
-            this.lstScripts.Name = "lstScripts";
-            this.lstScripts.Size = new System.Drawing.Size(366, 139);
-            this.lstScripts.TabIndex = 4;
-            this.lstScripts.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.lstScripts_ItemCheck);
-            this.lstScripts.SelectedIndexChanged += new System.EventHandler(this.lstScripts_SelectedIndexChanged);
-            // 
             // GUITimer
             // 
             this.GUITimer.Enabled = true;
             this.GUITimer.Interval = 500;
             this.GUITimer.Tick += new System.EventHandler(this.GUITimer_Tick);
+            // 
+            // tbLUA
+            // 
+            this.tbLUA.Location = new System.Drawing.Point(8, 162);
+            this.tbLUA.Name = "tbLUA";
+            this.tbLUA.Size = new System.Drawing.Size(167, 20);
+            this.tbLUA.TabIndex = 1;
+            // 
+            // btnExecute
+            // 
+            this.btnExecute.Location = new System.Drawing.Point(181, 160);
+            this.btnExecute.Name = "btnExecute";
+            this.btnExecute.Size = new System.Drawing.Size(75, 23);
+            this.btnExecute.TabIndex = 2;
+            this.btnExecute.Text = "Execute";
+            this.btnExecute.UseVisualStyleBackColor = true;
+            this.btnExecute.Click += new System.EventHandler(this.btnExecute_Click);
             // 
             // IceForm
             // 
@@ -175,6 +196,7 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
+            this.tabPage2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -192,6 +214,8 @@
         private System.Windows.Forms.Button btnDump;
         private System.Windows.Forms.CheckedListBox lstScripts;
         private System.Windows.Forms.Timer GUITimer;
+        private System.Windows.Forms.Button btnExecute;
+        private System.Windows.Forms.TextBox tbLUA;
     }
 }
 

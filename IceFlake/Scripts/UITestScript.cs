@@ -54,7 +54,7 @@ namespace IceFlake.Scripts
                 var tabs = API.Talent.Tabs;
                 foreach (var tab in tabs)
                 {
-                    Print("Dumping {0}-talents -debug {1} {2}", tab.Name, tab.Id, tab.Index);
+                    Print("Dumping {0}-talents", tab.Name);
                     foreach (var t in tab.Talents)
                         Print("\tTier {0}, Col {1} - {2} ({3}/{4})", t.Tier, t.Column, t.Name, t.Count, t.MaxCount);
                 }

@@ -64,10 +64,10 @@ namespace IceFlake.Client.Objects
             get { return Manager.Memory.Read<Location>((IntPtr)Pointers.LocalPlayer.CorpsePosition); }
         }
 
-        //public int UnusedTalentPoints
-        //{
-        //    get { return WoWScript.Execute<int>("UnitCharacterPoints(\"player\")", 0); }
-        //}
+        public int UnusedTalentPoints
+        {
+            get { return WoWScript.Execute<int>("UnitCharacterPoints(\"player\")", 0); }
+        }
 
         public int Combopoints
         {
@@ -79,8 +79,8 @@ namespace IceFlake.Client.Objects
             get
             {
                 for (int i = 0; i < 25; i++)
-                    if (GetDescriptor<uint>((int)WoWPlayerFields.PLAYER_QUEST_LOG_1_1 + (i * 0x14)) > 0)
-                        yield return GetDescriptor<QuestLogEntry>((int)WoWPlayerFields.PLAYER_QUEST_LOG_1_1 + (i * 0x14));
+                    if (GetAbsoluteDescriptor<uint>((int)WoWPlayerFields.PLAYER_QUEST_LOG_1_1 * 0x4 + (i * 0x14)) > 0)
+                        yield return GetAbsoluteDescriptor<QuestLogEntry>((int)WoWPlayerFields.PLAYER_QUEST_LOG_1_1 * 0x4 + (i * 0x14));
             }
         }
 
@@ -289,6 +289,13 @@ namespace IceFlake.Client.Objects
 
         #endregion
 
+        #region LUA Helpers
+
+        public void StartAttack()
+        {
+            WoWScript.Execute("StartAttack()");
+        }
+
         #region Movement
 
         public void Ascend()
@@ -339,6 +346,8 @@ namespace IceFlake.Client.Objects
 
         #endregion
 
+        #endregion
+
         public void ClickToMove(Location target, ClickToMoveType type = ClickToMoveType.Move, ulong guid = 0ul)
         {
             if (ClickToMoveFunction == null)
@@ -376,11 +385,6 @@ namespace IceFlake.Client.Objects
             if (angle > pi2)
                 angle -= pi2;
             _setFacing(Pointer, Helper.PerformanceCount, angle);
-        }
-
-        public void StartAttack()
-        {
-            WoWScript.Execute("StartAttack()");
         }
 
         #region Nested type: IsClickMovingDelegate

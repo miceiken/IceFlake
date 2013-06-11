@@ -210,7 +210,7 @@ namespace IceFlake.Scripts
     public class SpellDumperScript : Script
     {
         public SpellDumperScript()
-            : base("Spellbook", "Dumper")
+            : base("Spells", "Dumper")
         { }
 
         public override void OnStart()
@@ -221,6 +221,37 @@ namespace IceFlake.Scripts
             Print("Spellbook:");
             foreach (var spell in Manager.Spellbook)
                 Print("#{0}: {1}", spell.Id, spell.Name);
+
+            Stop();
+        }
+    }
+
+    #endregion
+
+    #region QuestDumperScript
+
+    public class QuestDumperScript : Script
+    {
+        public QuestDumperScript()
+            : base("Quests", "Dumper")
+        { }
+
+        public override void OnStart()
+        {
+            if (!Manager.ObjectManager.IsInGame)
+                return;
+
+            var quests = Manager.LocalPlayer.Quests;
+            Print("Quests:");
+            foreach (var q in quests)
+            {
+                Print("-- Quest #{0}", q.ID);
+                Print("\tState: {0}", q.State);
+                Print("\tObjectives:");
+                foreach (var o in q.Objectives)
+                    Print("\t\t{0}", o);
+                Print("\tTime: {0}", q.Time);
+            }
 
             Stop();
         }
@@ -243,11 +274,11 @@ namespace IceFlake.Scripts
 
             var camera = Manager.Camera.GetCamera();
             Print("Camera:");
-            Print("\tPosition: {0}", camera.Position);
-            Print("\tFoV: {0}", camera.FieldOfView);
+            Print("\tPosition: [{0}]", camera.Position);
             Print("\tNearZ: {0}", camera.NearZ);
             Print("\tFarZ: {0}", camera.FarZ);
-            Print("\tAspect: {0}", camera.Aspect);
+            Print("\tField of View: {0}", camera.FieldOfView);
+            Print("\tAspect Ratio: {0}", camera.Aspect);
 
             Stop();
         }
