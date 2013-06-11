@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-//using IceFlake.Client.Collections;
+using IceFlake.Client.Collections;
 using IceFlake.Client.Patchables;
 
 namespace IceFlake.Client.Objects
@@ -42,12 +42,12 @@ namespace IceFlake.Client.Objects
         private delegate bool HasAuraDelegate(IntPtr thisObj, int spellId);
         private static HasAuraDelegate _hasAura;
 
-        //private readonly AuraCollection _auras;
+        private readonly AuraCollection _auras;
 
         public WoWUnit(IntPtr pointer)
             : base(pointer)
         {
-            //_auras = new AuraCollection(this);
+            _auras = new AuraCollection(this);
         }
 
         public UnitReaction Reaction
@@ -372,14 +372,14 @@ namespace IceFlake.Client.Objects
             }
         }
 
-        //public AuraCollection Auras
-        //{
-        //    get
-        //    {
-        //        _auras.Update();
-        //        return _auras;
-        //    }
-        //}
+        public AuraCollection Auras
+        {
+            get
+            {
+                _auras.Update();
+                return _auras;
+            }
+        }
 
         public UnitClassificationType Classification
         {
