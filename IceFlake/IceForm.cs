@@ -91,6 +91,9 @@ namespace IceFlake
 
         private void SetupScripts()
         {
+            if (Manager.Scripts == null)
+                return;
+
             foreach (var s in Manager.Scripts.Scripts)
             {
                 s.OnStartedEvent += script_OnStartedEvent;

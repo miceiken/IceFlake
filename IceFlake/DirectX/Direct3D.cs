@@ -88,10 +88,12 @@ namespace IceFlake.DirectX
             _endSceneDelegate = Manager.Memory.RegisterDelegate<Direct3D9EndScene>(endScenePointer);
             _endSceneHook = Manager.Memory.Detours.CreateAndApply(_endSceneDelegate, new Direct3D9EndScene(EndSceneHook), "D9EndScene");
 
-            _resetDelegate = Manager.Memory.RegisterDelegate<Direct3D9Reset>(resetPointer);
-            _resetHook = Manager.Memory.Detours.CreateAndApply(_resetDelegate, new Direct3D9Reset(ResetHook), "D9Reset");
+            //_resetDelegate = Manager.Memory.RegisterDelegate<Direct3D9Reset>(resetPointer);
+            //_resetHook = Manager.Memory.Detours.CreateAndApply(_resetDelegate, new Direct3D9Reset(ResetHook), "D9Reset");
 
-            Log.WriteLine("EndScene detoured at 0x{0:X}", endScenePointer);
+            Log.WriteLine("Direct3D9x:");
+            Log.WriteLine("\tEndScene: 0x{0:X}", endScenePointer);
+            Log.WriteLine("\tReset: 0x{0:X}", resetPointer);
         }
 
         public static void Shutdown()
