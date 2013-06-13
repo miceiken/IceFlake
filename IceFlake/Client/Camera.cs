@@ -4,22 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
 using IceFlake.Client.Patchables;
-using IceFlake.DirectX;
 using SlimDX;
 
 namespace IceFlake.Client
 {
-    public unsafe struct CameraInfo
-    {
-        fixed int unk0[2];
-        public Vector3 Position;
-        public Matrix3 Facing;
-        public float NearZ;
-        public float FarZ;
-        public float FieldOfView;
-        public float Aspect;
-    }
-
     public unsafe class Camera
     {
         public Camera()
@@ -91,7 +79,7 @@ namespace IceFlake.Client
             get
             {
                 var cam = GetCamera();
-                return Matrix.PerspectiveFovRH(cam.FieldOfView * 0.6f, cam.Aspect, cam.NearZ, cam.FarZ);
+                return Matrix.PerspectiveFovRH(cam.FieldOfView * 0.6f, cam.Aspect, cam.NearPlane, cam.FarPlane);
             }
         }
 

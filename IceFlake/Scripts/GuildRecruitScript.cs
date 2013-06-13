@@ -34,6 +34,7 @@ namespace IceFlake.Scripts
         private GRState CurrentState;
         private DateTime LastSearch;
 
+        private const bool SendMessage = false;
         private string RecruitMessage = "";
 
         public override void OnStart()
@@ -95,7 +96,8 @@ namespace IceFlake.Scripts
                         if (string.IsNullOrEmpty(charInfo.Guild) && !InvitedCharacters.ContainsKey(charInfo.Name))
                         {
                             Print("Inviting {0} (Level {1} {2} {3})", charInfo.Name, charInfo.Level, charInfo.Race, charInfo.Class);
-                            //WoWScript.ExecuteNoResults("SendChatMessage(\"" + RecruitMessage + "\", \"WHISPER\", nil, \"" + charInfo.Name + "\")");
+                            if (SendMessage)
+                                WoWScript.ExecuteNoResults("SendChatMessage(\"" + RecruitMessage + "\", \"WHISPER\", nil, \"" + charInfo.Name + "\")");
                             WoWScript.ExecuteNoResults("GuildInvite(\"" + charInfo.Name + "\")");
                             InvitedCharacters.Add(charInfo.Name, charInfo);
                         }

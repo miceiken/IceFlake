@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 namespace IceFlake.Client.Patchables
 {
-
     #region TalentSpellInfo
 
     [StructLayout(LayoutKind.Sequential)]
@@ -293,7 +292,7 @@ namespace IceFlake.Client.Patchables
         public uint m_ZoneMusic; // 8
         public uint m_IntroSound; // 9
         public uint m_ExplorationLevel; // 10
-        public IntPtr m_AreaName_lang; // 11
+        private IntPtr m_AreaName_lang; // 11
         public uint m_factionGroupMask; // 12
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public uint[] m_liquidTypeID; // 13-16
@@ -978,6 +977,21 @@ namespace IceFlake.Client.Patchables
         public int FieldsCount;
         public int RecordSize;
         public int StringTableSize;
+    }
+
+    #endregion
+
+    #region Camera
+
+    public unsafe struct CameraInfo
+    {
+        fixed int unk0[2];
+        public SlimDX.Vector3 Position;
+        public IceFlake.DirectX.Matrix3 Facing;
+        public float NearPlane;
+        public float FarPlane;
+        public float FieldOfView;
+        public float Aspect;
     }
 
     #endregion

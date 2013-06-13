@@ -780,7 +780,7 @@ namespace IceFlake.Client.Patchables
     #region World related
 
     [Flags]
-    public enum CGWorldFrameHitFlags : uint
+    public enum TraceLineHitFlags : uint
     {
         HitTestBoundingModels = 1,
         HitTestGround = 0x100,
@@ -833,6 +833,7 @@ namespace IceFlake.Client.Patchables
         Collided,
         NoCollision
     }
+
 
     public enum InstanceType
     {

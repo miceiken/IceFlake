@@ -79,7 +79,10 @@ namespace IceFlake
                 var healingWave = Manager.Spellbook["Healing Wave"];
                 if (healingWave == null || !healingWave.IsValid)
                     return;
-                Manager.Spellbook.CastQueue.Enqueue(healingWave);
+                Manager.ExecutionQueue.AddExececution(() =>
+                {
+                    healingWave.Cast();
+                });
             }
             catch { }
         }

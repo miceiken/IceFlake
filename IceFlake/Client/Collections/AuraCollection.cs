@@ -6,7 +6,7 @@ using IceFlake.Client.Objects;
 
 namespace IceFlake.Client.Collections
 {
-    public class AuraCollection : IEnumerable<WoWAura>
+    public sealed class AuraCollection : IEnumerable<WoWAura>
     {
         private readonly Dictionary<IntPtr, WoWAura> Auras;
         private readonly WoWUnit Unit;

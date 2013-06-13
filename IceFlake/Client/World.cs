@@ -50,14 +50,14 @@ namespace IceFlake.Client
 
         public static TracelineResult Traceline(Location start, Location end)
         {
-            return Traceline(start, end, 0x120171);
+            return Traceline(start, end, (uint)TraceLineHitFlags.HitTestLOS);
         }
 
         public static TracelineResult LineOfSightTest(Location start, Location end)
         {
             start.Z += 1.3f;
             end.Z += 1.3f;
-            return Traceline(start, end, 0x100121);
+            return Traceline(start, end, (uint)TraceLineHitFlags.HitTestLOS);
         }
 
         #region Nested type: TracelineDelegate

@@ -47,12 +47,6 @@ namespace IceFlake
             Log.WriteLine("Initialization took {0} ms", sw.ElapsedMilliseconds);
         }
 
-        private static Dictionary<Type, object> typeTargets = new Dictionary<Type, object>();
-        private static void Register(object target)
-        {
-            typeTargets.Add(target.GetType(), target);
-        }
-
         internal static void Stop(object sender, EventArgs e)
         {
             Log.WriteLine("Shutting down IceFlake");

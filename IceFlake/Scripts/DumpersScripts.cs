@@ -281,8 +281,8 @@ namespace IceFlake.Scripts
             var camera = Manager.Camera.GetCamera();
             Print("Camera:");
             Print("\tPosition: [{0}]", camera.Position);
-            Print("\tNearZ: {0}", camera.NearZ);
-            Print("\tFarZ: {0}", camera.FarZ);
+            Print("\tNearZ: {0}", camera.NearPlane);
+            Print("\tFarZ: {0}", camera.FarPlane);
             Print("\tField of View: {0}", camera.FieldOfView);
             Print("\tAspect Ratio: {0}", camera.Aspect);
 

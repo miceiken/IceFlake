@@ -9,7 +9,7 @@ using IceFlake.DirectX;
 
 namespace IceFlake.Client.Collections
 {
-    public class SpellCollection : IEnumerable<WoWSpell>
+    public sealed class SpellCollection : IEnumerable<WoWSpell>
     {
         //[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         //private delegate IntPtr GetSpellEffectRec(uint spellId, int effectIdx);
@@ -56,27 +56,12 @@ namespace IceFlake.Client.Collections
         }
 
         #endregion
-        public Queue<WoWSpell> CastQueue = new Queue<WoWSpell>(); // Debugging only
+
         [EndSceneHandler]
         public void Direct3D_EndScene()
         {
             if (!Manager.ObjectManager.IsInGame)
                 return;
-
-            // --- DEBUG ----
-            if (CastQueue.Count > 0 && this.Count() > 0)
-            {
-                if (!Manager.LocalPlayer.IsCasting)
-                {
-                    var spell = CastQueue.Peek();
-                    //if (spell.IsReady)
-                    //{
-                        spell.Cast();
-                        CastQueue.Dequeue();
-                    //}
-                }
-            }
-            // --------------
 
             if (!Update)
                 return;

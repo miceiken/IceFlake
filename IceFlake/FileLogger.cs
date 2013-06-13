@@ -3,7 +3,7 @@ using System.IO;
 
 namespace IceFlake
 {
-    public class FileLogger : ILog
+    public sealed class FileLogger : ILog, IDisposable
     {
         private readonly StreamWriter sw;
 
@@ -24,6 +24,16 @@ namespace IceFlake
         public void WriteLine(LogEntry entry)
         {
             sw.WriteLine("[" + entry.Type.ToString().ToUpper() + "] " + entry.FormattedMessage);
+        }
+
+        #endregion
+
+        #region IDisposable Members
+
+        public void Dispose()
+        {
+            sw.Flush();
+            sw.Close();
         }
 
         #endregion
