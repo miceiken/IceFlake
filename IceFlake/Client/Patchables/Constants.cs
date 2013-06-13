@@ -2535,25 +2535,17 @@ namespace IceFlake.Client.Patchables
         Quest
     }
 
-    public enum PowerType
+    public enum WoWPowerType
     {
         Mana = 0,
         Rage = 1,
         Focus = 2,
         Energy = 3,
-        Chi = 4,
+        Happiness = 4,
         Runes = 5,
         RunicPower = 6,
-        SoulShards = 7,
-        Eclipse = 8,
-        HolyPower = 9,
-        Alternate = 10,
-        DarkForce = 11,
-        LightForce = 12,
-        ShadowOrbs = 13,
-        BurningEmbers = 14,
-        DemonicFury = 15,
-        ArcaneCharges = 16
+        Health = 7,
+        Unknown = 8
     }
 
     public enum EquipSlot

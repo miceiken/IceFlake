@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="Client\API\API.cs" />
     <Compile Include="Client\API\Auction.cs" />
+    <Compile Include="Client\API\Chat.cs" />
     <Compile Include="Client\API\Companion.cs" />
     <Compile Include="Client\API\Frame.cs" />
     <Compile Include="Client\API\Gossip.cs" />
@@ -122,7 +123,7 @@
     <Compile Include="Runtime\AseemblyAnalyzer.cs" />
     <Compile Include="Runtime\CallbackManager.cs" />
     <Compile Include="Runtime\Extensions.cs" />
-    <Compile Include="Scripts\DrawingScripts.cs" />
+    <Compile Include="Scripts\RenderingScripts.cs" />
     <Compile Include="Scripts\DumpersScripts.cs" />
     <Compile Include="Scripts\FishingScript.cs" />
     <Compile Include="Scripts\GuildRecruitScript.cs" />
@@ -143,6 +144,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -164,7 +166,72 @@
       <Name>PPather</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\Class\DeathKnight.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Class\Druid.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Class\Hunter.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Class\Mage.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Class\Paladin.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Class\Priest.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Class\Rogue.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Class\Shaman.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Class\Warlock.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Class\Warrior.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Icons\brick_go.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Icons\bug.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Icons\chart_line.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Icons\cog.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Icons\control_play_blue.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Icons\control_stop_blue.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Icons\controller.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Icons\hourglass.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Icons\joystick.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Icons\key.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Icons\monitor_lightning.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Icons\report.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

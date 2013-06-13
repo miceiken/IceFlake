@@ -55,12 +55,17 @@ namespace IceFlake.Scripts
 
         public override void OnTick()
         {
+            var lp = Manager.LocalPlayer;
+            //DrawCube(lp.Location.ToVector3(), 3f, 3f, 3f);
+            //DrawText(lp.Location.ToVector3(), lp.Name);
+
             foreach (var u in Manager.ObjectManager.Objects.Where(x => x.IsValid && x.IsUnit).OfType<WoWUnit>())
             {
                 if (u == null || !u.IsValid)
                     continue;
 
                 var color = (!u.IsFriendly ? colorRed : colorGreen);
+                //DrawCube(u.Location.ToVector3(), 3f, 3f, 3f);
                 DrawCircle(u.Location, 3f, color, color);
                 DrawLine(Manager.LocalPlayer.Location.ToVector3(), u.Location.ToVector3(), colorBlue);
             }
@@ -100,6 +105,30 @@ namespace IceFlake.Scripts
             SetTarget(Vector3.Zero);
 
             D3D.Device.DrawUserPrimitives(PrimitiveType.LineStrip, vertices.Count - 1, buffer);
+        }
+
+        private void DrawCube(Vector3 loc, float width, float height, float depth)
+        {
+            var mesh = Mesh.CreateBox(D3D.Device, width, height, depth);
+            DrawMesh(mesh, loc + new Vector3(0, 0, 1.3f), true);
+        }
+
+        private void DrawText(Vector3 loc, string text)
+        {
+            var font = new System.Drawing.Font("Consolas", .875f);
+            var mesh = Mesh.CreateText(D3D.Device, font, text, 0f, 0f);
+            DrawMesh(mesh, loc + new Vector3(0, 0, 2f));
+        }
+
+        private void DrawMesh(Mesh mesh, Vector3 loc, bool wireframe = false)
+        {
+            if (wireframe)
+                D3D.Device.SetRenderState(RenderState.FillMode, FillMode.Wireframe);
+            var worldMatrix = Matrix.Translation(loc);
+            D3D.Device.SetTransform(TransformState.World, worldMatrix);
+            mesh.DrawSubset(0);
+            if (wireframe)
+                D3D.Device.SetRenderState(RenderState.FillMode, FillMode.Solid);
         }
 
         private void SetTarget(Vector3 target, float yaw = 0, float pitch = 0, float roll = 0)

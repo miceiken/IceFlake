@@ -215,6 +215,16 @@ namespace IceFlake
                 btnScriptStart.Enabled = true;
                 btnScriptStop.Enabled = false;
             }
+
+            if (!Manager.ObjectManager.IsInGame)
+                return;
+
+            var lp = Manager.LocalPlayer;
+            lblHealth.Text = string.Format("{0}/{1} ({2:0}%)", lp.Health, lp.MaxHealth, lp.HealthPercentage);
+            lblPowerText.Text = string.Format("{0}:", lp.PowerType);
+            lblPower.Text = string.Format("{0}/{1} ({2:0}%)", lp.Power, lp.MaxPower, lp.PowerPercentage);
+            lblLevel.Text = string.Format("{0}", lp.Level);
+            lblZone.Text = string.Format("{0}", World.CurrentZoneId);
         }
 
         private void btnExecute_Click(object sender, EventArgs e)

@@ -121,6 +121,16 @@ namespace IceFlake.Client.Objects
             get { return (WoWClass)UnitBytes0[1]; }
         }
 
+        public WoWGender Gender
+        {
+            get { return (WoWGender)UnitBytes0[2]; }
+        }
+
+        public WoWPowerType PowerType
+        {
+            get { return (WoWPowerType)UnitBytes0[3]; }
+        }
+
         public bool IsLootable
         {
             get { return HasFlag(WoWUnitFields.UNIT_DYNAMIC_FLAGS, UnitDynamicFlags.Lootable); }
@@ -159,11 +169,6 @@ namespace IceFlake.Client.Objects
         public double HealthPercentage
         {
             get { return (Health / (double)MaxHealth) * 100; }
-        }
-
-        public double PowerPercentage
-        {
-            get { return (Power / (double)MaxPower) * 100; }
         }
 
         public uint Level
@@ -326,14 +331,59 @@ namespace IceFlake.Client.Objects
             get { return GetDescriptor<uint>(WoWUnitFields.UNIT_FIELD_MAXRANGEDDAMAGE); }
         }
 
+        private uint GetPowerByType(WoWPowerType power)
+        {
+            switch (power)
+            {
+                default:
+                case WoWPowerType.Mana:
+                    return GetDescriptor<uint>(WoWUnitFields.UNIT_FIELD_POWER1);
+                case WoWPowerType.Rage:
+                    return GetDescriptor<uint>(WoWUnitFields.UNIT_FIELD_POWER2);
+                case WoWPowerType.Energy:
+                    return GetDescriptor<uint>(WoWUnitFields.UNIT_FIELD_POWER3);
+                case WoWPowerType.Focus:
+                    return GetDescriptor<uint>(WoWUnitFields.UNIT_FIELD_POWER4);
+                case WoWPowerType.Happiness:
+                    return GetDescriptor<uint>(WoWUnitFields.UNIT_FIELD_POWER5);
+                case WoWPowerType.RunicPower:
+                    return GetDescriptor<uint>(WoWUnitFields.UNIT_FIELD_POWER7);
+            }
+        }
+
+        private uint GetMaxPowerByType(WoWPowerType power)
+        {
+            switch (power)
+            {
+                default:
+                case WoWPowerType.Mana:
+                    return GetDescriptor<uint>(WoWUnitFields.UNIT_FIELD_MAXPOWER1);
+                case WoWPowerType.Rage:
+                    return GetDescriptor<uint>(WoWUnitFields.UNIT_FIELD_MAXPOWER2);
+                case WoWPowerType.Energy:
+                    return GetDescriptor<uint>(WoWUnitFields.UNIT_FIELD_MAXPOWER3);
+                case WoWPowerType.Focus:
+                    return GetDescriptor<uint>(WoWUnitFields.UNIT_FIELD_MAXPOWER4);
+                case WoWPowerType.Happiness:
+                    return GetDescriptor<uint>(WoWUnitFields.UNIT_FIELD_MAXPOWER5);
+                case WoWPowerType.RunicPower:
+                    return GetDescriptor<uint>(WoWUnitFields.UNIT_FIELD_MAXPOWER7);
+            }
+        }
+
         public uint Power
         {
-            get { return GetDescriptor<uint>(WoWUnitFields.UNIT_FIELD_POWER1); }
+            get { return GetPowerByType(PowerType); }
         }
 
         public uint MaxPower
         {
-            get { return GetDescriptor<uint>(WoWUnitFields.UNIT_FIELD_MAXPOWER1); }
+            get { return GetMaxPowerByType(PowerType); }
+        }
+
+        public double PowerPercentage
+        {
+            get { return (Power / (double)MaxPower) * 100; }
         }
 
         public ulong SummonedBy

@@ -376,7 +376,15 @@ namespace Wmo
         public override Model Load(String path)
         {
             // change .mdx to .m2
-            string file = path.Substring(0, path.Length - 4) + ".m2";
+            string file = path;
+            if (System.IO.Path.GetExtension(path).Equals(".mdx"))
+            {
+                file = System.IO.Path.ChangeExtension(path, ".m2");
+            }
+            else if (System.IO.Path.GetExtension(path).Equals(".mdl"))
+            {
+                file = System.IO.Path.ChangeExtension(path, ".m2");
+            }
 
             //PathGraph.Log("Load model " + path);
             string localPath = "PPather\\model.tmp";
