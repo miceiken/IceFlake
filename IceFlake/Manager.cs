@@ -6,8 +6,11 @@ using IceFlake.Client.Scripts;
 using IceFlake.DirectX;
 using IceFlake.Runtime;
 using System;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Diagnostics;
 using System.Reflection;
+using System.Collections.Generic;
 
 namespace IceFlake
 {
@@ -24,38 +27,30 @@ namespace IceFlake
 
         internal static void Start(object sender, EventArgs e)
         {
-            //Debugger.Break();
             Stopwatch sw = Stopwatch.StartNew();
 
-            ObjectManager = new ObjectManager();
-            AssemblyAnalyzer.RegisterTarget(ObjectManager);
-
-            ESExecute = new EndSceneExecute();
-            AssemblyAnalyzer.RegisterTarget(ESExecute);
-
-            DBC = new WoWDB();
-
-            Movement = new Movement();
-            AssemblyAnalyzer.RegisterTarget(Movement);
-
-            LuaInterface.Initialize();
-
-            Events = new Events();
-            AssemblyAnalyzer.RegisterTarget(Events);
+            AssemblyAnalyzer.RegisterTargets(
+                ObjectManager = new ObjectManager(),
+                ExecutionQueue = new EndSceneExecute(),
+                Movement = new Movement(),
+                Events = new Events(),
+                Spellbook = new SpellCollection(),
+                Scripts = new ScriptManager()
+                );
+            AssemblyAnalyzer.Analyze(Assembly.GetExecutingAssembly());
 
             Helper.Initialize();
-
-            Spellbook = new SpellCollection();
-            AssemblyAnalyzer.RegisterTarget(Spellbook);
-
-            ScriptManager.Initialize();
-
-            Camera = new Camera();
-
-            AssemblyAnalyzer.Analyze(Assembly.GetExecutingAssembly());
+            DBC = new WoWDB();            
+            Camera = new Camera();            
 
             sw.Stop();
             Log.WriteLine("Initialization took {0} ms", sw.ElapsedMilliseconds);
+        }
+
+        private static Dictionary<Type, object> typeTargets = new Dictionary<Type, object>();
+        private static void Register(object target)
+        {
+            typeTargets.Add(target.GetType(), target);
         }
 
         internal static void Stop(object sender, EventArgs e)
@@ -66,7 +61,7 @@ namespace IceFlake
             Movement = null;
             DBC = null;
             ObjectManager = null;
-            ESExecute = null;
+            ExecutionQueue = null;
 
             Memory.Detours.RemoveAll();
             Memory.Patches.RemoveAll();
@@ -86,7 +81,7 @@ namespace IceFlake
             get { return ObjectManager.LocalPlayer; }
         }
 
-        internal static EndSceneExecute ESExecute { get; private set; }
+        internal static EndSceneExecute ExecutionQueue { get; private set; }
 
         internal static WoWDB DBC { get; private set; }
 
@@ -97,5 +92,7 @@ namespace IceFlake
         internal static Camera Camera { get; private set; }
 
         internal static Events Events { get; private set; }
+
+        internal static ScriptManager Scripts { get; private set; }
     }
 }

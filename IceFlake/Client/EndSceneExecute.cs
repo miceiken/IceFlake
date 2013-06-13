@@ -21,7 +21,7 @@ namespace IceFlake.Client
         }
 
         [EndSceneHandler]
-        private void Direct3D_EndScene()
+        public void Direct3D_EndScene()
         {
             if (ExecutionQueue == null)
                 return;

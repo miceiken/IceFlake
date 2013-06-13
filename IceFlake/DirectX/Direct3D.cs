@@ -44,9 +44,6 @@ namespace IceFlake.DirectX
 
                     PrepareRenderState();
                     CallbackManager.Invoke();
-                    // TEMP SOLUTION
-                    // TODO: FIX THIS
-                    IceFlake.Client.Scripts.ScriptManager.Pulse(); 
                 }
             }
             catch (Exception e)
@@ -97,6 +94,9 @@ namespace IceFlake.DirectX
         private static void PrepareRenderState()
         {
             if (Device == null)
+                return;
+
+            if (Manager.Camera == null)
                 return;
 
             var viewport = Device.Viewport;

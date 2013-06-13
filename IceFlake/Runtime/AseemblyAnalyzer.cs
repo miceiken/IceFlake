@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
 using IceFlake.DirectX;
@@ -11,9 +12,9 @@ namespace IceFlake.Runtime
 
         public static void Analyze(Assembly assembly)
         {
-            Type[] types = assembly.GetTypes();
+            var types = assembly.GetTypes();
 
-            foreach (Type type in types)
+            foreach (var type in types)
                 AnalyzeType(type);
         }
 
@@ -72,6 +73,12 @@ namespace IceFlake.Runtime
         public static void RegisterTarget(object target)
         {
             targets.Add(target.GetType(), target);
+        }
+
+        public static void RegisterTargets(params object[] targets)
+        {
+            foreach (var target in targets)
+                RegisterTarget(target);
         }
     }
 }

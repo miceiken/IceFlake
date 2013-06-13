@@ -21,8 +21,6 @@ namespace IceFlake
             InitializeComponent();
         }
 
-        private Location ToPathTo;
-
         #region ILog Members
 
         public void WriteLine(LogEntry entry)
@@ -58,20 +56,6 @@ namespace IceFlake
 
         #endregion
 
-        private void SetupScripts()
-        {
-            foreach (var s in ScriptManager.Scripts)
-            {
-                s.OnStartedEvent += new EventHandler(script_OnStartedEvent);
-                s.OnStoppedEvent += new EventHandler(script_OnStoppedEvent);
-            }
-
-            lstScripts.DataSource = ScriptManager.Scripts.OrderBy(x => x.Category).ToList();
-            Log.WriteLine(LogType.Information, "Loaded {0} scripts.", ScriptManager.Scripts.Count);
-
-            ScriptManager.ScriptRegistered += new EventHandler(ScriptManager_ScriptRegistered);
-        }
-
         private void IceForm_Load(object sender, EventArgs e)
         {
             Log.AddReader(this);
@@ -82,7 +66,7 @@ namespace IceFlake
 
         private void IceForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            foreach (var s in ScriptManager.Scripts.Where(x => x.IsRunning))
+            foreach (var s in Manager.Scripts.Scripts.Where(x => x.IsRunning))
                 s.Stop();
         }
 
@@ -100,19 +84,21 @@ namespace IceFlake
             catch { }
         }
 
-        private void btnGeneratePath_Click(object sender, EventArgs e)
-        {
-            if (ToPathTo == default(Location))
-            {
-                ToPathTo = Manager.LocalPlayer.Location;
-            }
-            else
-            {
-                Manager.Movement.PathTo(ToPathTo);
-            }
-        }
-
         #region Scripts tab
+
+        private void SetupScripts()
+        {
+            foreach (var s in Manager.Scripts.Scripts)
+            {
+                s.OnStartedEvent += script_OnStartedEvent;
+                s.OnStoppedEvent += script_OnStoppedEvent;
+            }
+
+            lstScripts.DataSource = Manager.Scripts.Scripts.OrderBy(x => x.Category).ToList();
+            Log.WriteLine(LogType.Information, "Loaded {0} scripts.", Manager.Scripts.Scripts.Count);
+
+            Manager.Scripts.ScriptRegistered += ScriptManager_ScriptRegistered;
+        }
 
         private Script SelectedScript;
 
@@ -134,7 +120,7 @@ namespace IceFlake
 
         private void btnScriptCompile_Click(object sender, EventArgs e)
         {
-            ScriptManager.CompileAsync();
+            Manager.Scripts.CompileAsync();
         }
 
         private void lstScripts_SelectedIndexChanged(object sender, EventArgs e)
@@ -148,17 +134,11 @@ namespace IceFlake
 
         private void lstScripts_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            //var script = ScriptManager.Scripts[e.Index];
             var script = lstScripts.Items[e.Index] as Script;
-            // Starting script
             if (e.NewValue == CheckState.Checked)
-            {
                 script.Start();
-            }
             else if (e.NewValue == CheckState.Unchecked)
-            {
                 script.Stop();
-            }
         }
 
         private void ScriptManager_ScriptRegistered(object sender, EventArgs e)
@@ -168,7 +148,7 @@ namespace IceFlake
                 var script = (Script)sender;
                 script.OnStartedEvent += new EventHandler(script_OnStartedEvent);
                 script.OnStoppedEvent += new EventHandler(script_OnStoppedEvent);
-                lstScripts.DataSource = ScriptManager.Scripts.OrderBy(x => x.Category).ToList();
+                lstScripts.DataSource = Manager.Scripts.Scripts.OrderBy(x => x.Category).ToList();
             }));
             lstScripts.Invalidate();
         }
@@ -191,21 +171,11 @@ namespace IceFlake
             }));
         }
 
-        public void InvokeForm(Form form)
-        {
-            if (InvokeRequired) { this.Invoke((Action)(() => InvokeForm(form))); }
-            else
-            {
-                if (form != null)
-                    form.Show();
-            }
-        }
-
         #endregion
 
         private void GUITimer_Tick(object sender, EventArgs e)
         {
-            if (ScriptManager.Scripts.Where(s => s.IsRunning).Contains(SelectedScript))
+            if (Manager.Scripts.Scripts.Where(s => s.IsRunning).Contains(SelectedScript))
             {
                 btnScriptStart.Enabled = false;
                 btnScriptStop.Enabled = true;
@@ -232,7 +202,7 @@ namespace IceFlake
             var lua = tbLUA.Text;
             if (string.IsNullOrEmpty(lua))
                 return;
-            Manager.ESExecute.AddExececution(() =>
+            Manager.ExecutionQueue.AddExececution(() =>
             {
                 Log.WriteLine(lua);
                 var ret = WoWScript.Execute(lua);

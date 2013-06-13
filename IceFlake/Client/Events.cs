@@ -13,8 +13,9 @@ namespace IceFlake.Client
         {
             var eventVictim = Manager.Memory.RegisterDelegate<LuaFunctionDelegate>(
                 (IntPtr)Pointers.Events.EventVictim);
-            _eventDetour = Manager.Memory.Detours.CreateAndApply(eventVictim, new LuaFunctionDelegate(HandleVictimCall),
-                                                                 "EventVictim");
+            if (_eventDetour == null)
+                _eventDetour = Manager.Memory.Detours.CreateAndApply(eventVictim, new LuaFunctionDelegate(HandleVictimCall),
+                                                                     "EventVictim");
         }
 
         private bool ListenerExists
@@ -28,7 +29,7 @@ namespace IceFlake.Client
         }
 
         [EndSceneHandler]
-        private void Direct3D_EndScene()
+        public void Direct3D_EndScene()
         {
             if ((DateTime.Now - _lastRegisterCheck).TotalMilliseconds >= RegisterCheckWait)
             {
@@ -65,18 +66,17 @@ namespace IceFlake.Client
 
         private int HandleVictimCall(IntPtr luaState)
         {
-            int top = LuaInterface.GetTop(luaState);
+            int top = WoWScript.LuaInterface.GetTop(luaState);
             if (top > 0)
             {
                 var args = new List<string>(top);
                 for (int i = 1; i <= top; i++)
-                    args.Add(LuaInterface.StackObjectToString(luaState, i));
-                LuaInterface.Pop(luaState, top);
+                    args.Add(WoWScript.LuaInterface.StackObjectToString(luaState, i));
+                WoWScript.LuaInterface.Pop(luaState, top);
                 HandleEvent(args);
             }
             else
             {
-                // legal call
                 return (int)_eventDetour.CallOriginal(luaState);
             }
 
@@ -107,7 +107,7 @@ namespace IceFlake.Client
 
         private const int RegisterCheckWait = 500; /*ms*/
 
-        private readonly Detour _eventDetour;
+        private static Detour _eventDetour;
 
         private readonly Dictionary<string, List<EventHandler>> _eventHandler =
             new Dictionary<string, List<EventHandler>>();

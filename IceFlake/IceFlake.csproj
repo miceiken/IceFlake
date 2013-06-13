@@ -54,7 +54,6 @@
   <ItemGroup>
     <Compile Include="Client\API\API.cs" />
     <Compile Include="Client\API\Auction.cs" />
-    <Compile Include="Client\API\Chat.cs" />
     <Compile Include="Client\API\Companion.cs" />
     <Compile Include="Client\API\Frame.cs" />
     <Compile Include="Client\API\Gossip.cs" />
@@ -98,7 +97,6 @@
     <Compile Include="Client\Pather.cs" />
     <Compile Include="Client\Raid.cs" />
     <Compile Include="Client\Scripts\Script.cs" />
-    <Compile Include="Client\Scripts\ScriptLogReader.cs" />
     <Compile Include="Client\Scripts\ScriptManager.cs" />
     <Compile Include="Client\Scripts\ScriptThread.cs" />
     <Compile Include="Client\Scripts\SleepException.cs" />

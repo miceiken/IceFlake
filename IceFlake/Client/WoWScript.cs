@@ -7,6 +7,8 @@ namespace IceFlake.Client
 {
     public static class WoWScript
     {
+        internal static readonly LuaInterface LuaInterface = new LuaInterface();
+
         private static string PopError(IntPtr state)
         {
             IntPtr p = LuaInterface.ToLString(state, 1, 0);

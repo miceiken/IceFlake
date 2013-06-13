@@ -6,79 +6,78 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using Microsoft.CSharp;
+using IceFlake.DirectX;
 
 namespace IceFlake.Client.Scripts
 {
-    public static class ScriptManager
+    public class ScriptManager
     {
-        static ScriptManager()
+        public ScriptManager()
         {
             RegistrationQueue = new Queue<Type>();
             Scripts = new List<Script>();
-        }
 
-        private static readonly object SynchronizeLock = new object();
-
-        public static string ScriptFolder
-        {
-            get;
-            private set;
-        }
-
-        private static Queue<Type> RegistrationQueue
-        {
-            get;
-            set;
-        }
-
-        public static List<Script> Scripts
-        {
-            get;
-            private set;
-        }
-
-        private static Script CurrentScript
-        {
-            get;
-            set;
-        }
-
-        public static void Initialize()
-        {
             ScriptFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scripts");
-            //CompileAsync();
-            lock (SynchronizeLock)
-            {
-                var typeScripts = Assembly.GetExecutingAssembly().GetTypes()
-                                    .Where(t => t.IsSubclassOf(typeof(Script)));
-                foreach (var t in typeScripts)
-                    RegistrationQueue.Enqueue(t);
-            }
+            CompileInternal();
         }
 
-        public static void Pulse()
+        public string ScriptFolder
         {
-            lock (SynchronizeLock)
-            {
-                while (RegistrationQueue.Count > 0)
-                    Register(RegistrationQueue.Dequeue());
-
-                foreach (var script in Scripts)
-                {
-                    CurrentScript = script;
-                    script.Tick();
-                }
-
-                CurrentScript = null;
-            }
+            get;
+            private set;
         }
 
-        public static void CompileAsync()
+        private Queue<Type> RegistrationQueue
         {
-            ThreadPool.QueueUserWorkItem((state) => Compile());
+            get;
+            set;
         }
 
-        private static void Compile()
+        public List<Script> Scripts
+        {
+            get;
+            private set;
+        }
+
+        private Script CurrentScript
+        {
+            get;
+            set;
+        }
+
+        [EndSceneHandler]
+        public void Direct3D_EndScene()
+        {
+            while (RegistrationQueue.Count > 0)
+                Register(RegistrationQueue.Dequeue());
+
+            foreach (var script in Scripts)
+            {
+                CurrentScript = script;
+                script.Tick();
+            }
+
+            CurrentScript = null;
+        }
+
+        public void CompileAsync()
+        {
+            ThreadPool.QueueUserWorkItem((state) => CompileExternal());
+        }
+
+        private void CompileInternal()
+        {
+            OnCompilerStarted();
+
+            var typeScripts = Assembly.GetExecutingAssembly().GetTypes()
+                    .Where(t => t.IsSubclassOf(typeof(Script)));
+            foreach (var t in typeScripts)
+                RegistrationQueue.Enqueue(t);
+
+            OnCompilerFinished();
+        }
+
+        private void CompileExternal()
         {
             try
             {
@@ -101,7 +100,6 @@ namespace IceFlake.Client.Scripts
 
                 parameters.ReferencedAssemblies.Add("System.dll");
                 parameters.ReferencedAssemblies.Add("System.Core.dll");
-                //parameters.ReferencedAssemblies.Add("cleanLayer.dll");
                 parameters.ReferencedAssemblies.Add(Assembly.GetExecutingAssembly().Location);
 
                 var provider = new CSharpCodeProvider(new Dictionary<string, string>() { { "CompilerVersion", "v4.0" } });
@@ -140,30 +138,27 @@ namespace IceFlake.Client.Scripts
             }
         }
 
-        private static void AnalyzeAssembly(Assembly asm)
+        private void AnalyzeAssembly(Assembly asm)
         {
             Log.WriteLine("Analyzing compiled assembly {0}", asm.FullName);
 
             var types = asm.GetTypes();
-            Log.WriteLine("Found {0} types", types.Length);
-            lock (SynchronizeLock)
-            {
-                foreach (var type in types)
-                {
-                    if (!type.IsClass || !type.IsSubclassOf(typeof(Script)))
-                    {
-                        Log.WriteLine("Ignoring {0}", type.Name);
-                        continue;
-                    }
 
-                    RegistrationQueue.Enqueue(type);
+            Log.WriteLine("Found {0} types", types.Length);
+            foreach (var type in types)
+            {
+                if (!type.IsClass || !type.IsSubclassOf(typeof(Script)))
+                {
+                    Log.WriteLine("Ignoring {0}", type.Name);
+                    continue;
                 }
+
+                RegistrationQueue.Enqueue(type);
             }
         }
 
-        private static void Register(Type type)
+        private void Register(Type type)
         {
-            //Log.WriteLine("Registering {0} as script", type.Name);
             try
             {
                 var ctor = type.GetConstructor(new Type[] { });
@@ -183,26 +178,26 @@ namespace IceFlake.Client.Scripts
             }
         }
 
-        private static void OnCompilerStarted()
+        private void OnCompilerStarted()
         {
             if (CompilerStarted != null)
                 CompilerStarted(null, new EventArgs());
         }
 
-        private static void OnCompilerFinished()
+        private void OnCompilerFinished()
         {
             if (CompilerFinished != null)
                 CompilerFinished(null, new EventArgs());
         }
 
-        private static void OnScriptRegistered(Script script)
+        private void OnScriptRegistered(Script script)
         {
             if (ScriptRegistered != null)
                 ScriptRegistered(script, new EventArgs());
         }
 
-        public static event EventHandler CompilerStarted;
-        public static event EventHandler CompilerFinished;
-        public static event EventHandler ScriptRegistered;
+        public event EventHandler CompilerStarted;
+        public event EventHandler CompilerFinished;
+        public event EventHandler ScriptRegistered;
     }
 }

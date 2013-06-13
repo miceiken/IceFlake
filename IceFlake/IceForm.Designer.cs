@@ -30,7 +30,6 @@
         {
             this.components = new System.ComponentModel.Container();
             this.rbLogBox = new System.Windows.Forms.RichTextBox();
-            this.btnGeneratePath = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabStatus = new System.Windows.Forms.TabPage();
             this.gbPlayer = new System.Windows.Forms.GroupBox();
@@ -71,16 +70,6 @@
             this.rbLogBox.Size = new System.Drawing.Size(361, 298);
             this.rbLogBox.TabIndex = 0;
             this.rbLogBox.Text = "";
-            // 
-            // btnGeneratePath
-            // 
-            this.btnGeneratePath.Location = new System.Drawing.Point(0, 0);
-            this.btnGeneratePath.Name = "btnGeneratePath";
-            this.btnGeneratePath.Size = new System.Drawing.Size(75, 23);
-            this.btnGeneratePath.TabIndex = 2;
-            this.btnGeneratePath.Text = "Path";
-            this.btnGeneratePath.UseVisualStyleBackColor = true;
-            this.btnGeneratePath.Click += new System.EventHandler(this.btnGeneratePath_Click);
             // 
             // tabControl1
             // 
@@ -324,7 +313,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(361, 511);
             this.Controls.Add(this.tabControl1);
-            this.Controls.Add(this.btnGeneratePath);
             this.Controls.Add(this.rbLogBox);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -348,7 +336,6 @@
         #endregion
 
         private System.Windows.Forms.RichTextBox rbLogBox;
-        private System.Windows.Forms.Button btnGeneratePath;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabScripts;
         private System.Windows.Forms.Button btnScriptCompile;
