@@ -62,7 +62,7 @@ namespace GreyMagic
 
             for (int i = 0; i < elements; i++)
             {
-                ret[i] = Read<T>(address + (i*MarshalCache<T>.Size));
+                ret[i] = Read<T>(address + (i * MarshalCache<T>.Size));
             }
 
             return ret;
@@ -253,7 +253,7 @@ namespace GreyMagic
         /// <remarks>Created 2012-01-16 19:41</remarks>
         public IntPtr GetAbsolute(IntPtr relative)
         {
-            return ImageBase + (int) relative;
+            return ImageBase + (int)relative;
         }
 
         /// <summary>
@@ -264,7 +264,7 @@ namespace GreyMagic
         /// <remarks>Created 2012-01-16 19:41</remarks>
         public IntPtr GetRelative(IntPtr absolute)
         {
-            return ImageBase - (int) absolute;
+            return ImageBase - (int)absolute;
         }
 
         /// <summary>
@@ -277,7 +277,7 @@ namespace GreyMagic
         /// <remarks>Created 2012-01-16 20:40 by Nesox.</remarks>
         public T CreateFunction<T>(IntPtr address, bool isRelative = false) where T : class
         {
-            return Marshal.GetDelegateForFunctionPointer(isRelative ? GetAbsolute(address) : address, typeof (T)) as T;
+            return Marshal.GetDelegateForFunctionPointer(isRelative ? GetAbsolute(address) : address, typeof(T)) as T;
         }
 
         /// <summary>
@@ -301,7 +301,7 @@ namespace GreyMagic
         public IntPtr GetVFTableEntry(IntPtr address, int index)
         {
             var vftable = Read<IntPtr>(address);
-            return Read<IntPtr>(vftable + (index*4));
+            return Read<IntPtr>(vftable + (index * 4));
         }
     }
 }

@@ -74,14 +74,22 @@ namespace IceFlake.Scripts
                 var slots = API.Loot.LootSlots;
                 foreach (var s in slots)
                 {
-                    Print("\tLoot #{0}: [{1}]{2}", s.Slot, s.Name, s.Quantity > 0 ? "x" + s.Quantity : "");
+                    Print("\tLoot #{0}: [{1}]{2}", s.Slot, s.Name, s.Quantity > 1 ? "x" + s.Quantity : "");
                     if (s.IsItem)
                         Print("\t{0} ({1})", s.Quality, s.ItemLink);
+
                     if (s.Locked)
                         Print("Not lootable");
                     else
                         s.Loot();
                 }
+            }
+            if (API.Companion.IsShown)
+            {
+                Print("Dumping mounts");
+                var mounts = API.Companion.Mounts;
+                foreach (var mount in mounts)
+                    Print("\t{0}: {1}{2}", mount.SpellId, mount.Name, mount.Active ? " (Active)" : "");
             }
 
             Stop();

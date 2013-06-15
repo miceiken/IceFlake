@@ -28,7 +28,7 @@ namespace IceFlake.Client.API
 
         public IEnumerable<MerchantItem> Items
         {
-            get { return Enumerable.Range(1, NumItems + 1).Select(i => GetItemInfo(i)); }
+            get { return Enumerable.Range(1, NumItems).Select(i => new MerchantItem(i)); }
         }
 
         public void RepairAll()
@@ -42,12 +42,6 @@ namespace IceFlake.Client.API
                 "for i=0,4 do for j=1, GetContainerNumSlots(i) do l=GetContainerItemLink(i,j) if l then _,_,q=GetItemInfo(l) if q == " +
                 (int) quality + " then UseContainerItem(i,j) end end end end");
         }
-
-        public MerchantItem GetItemInfo(int index)
-        {
-            return new MerchantItem(index);
-        }
-
         public void Close()
         {
             WoWScript.ExecuteNoResults("CloseMerchant()");

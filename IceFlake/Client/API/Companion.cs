@@ -93,17 +93,14 @@ namespace IceFlake.Client.API
     {
         public WoWCompanion(string type, int index)
         {
-            List<string> ret = WoWScript.Execute("GetCompanionInfo(\"" + type + "\", " + index + ")");
+            var ret = WoWScript.Execute("GetCompanionInfo(\"" + type + "\", " + index + ")");
             Type = type;
             Index = index;
-            if (ret.Count < 5)
-                return;
 
             CreatureId = int.Parse(ret[0]);
             Name = ret[1];
             SpellId = int.Parse(ret[2]);
             Active = !(ret[4] == "false" || ret[4] == "0" || ret[4] == "nil");
-            Flags = int.Parse(ret[5]);
         }
 
         private string Type { get; set; }
@@ -113,26 +110,10 @@ namespace IceFlake.Client.API
         public string Name { get; private set; }
         public int SpellId { get; private set; }
         public bool Active { get; private set; }
-        public int Flags { get; private set; }
 
         public bool IsMount
         {
             get { return Type.ToLower().Equals("mount"); }
-        }
-
-        public bool IsGround
-        {
-            get { return IsMount && (Flags & 0x01) != 0; }
-        }
-
-        public bool IsFlying
-        {
-            get { return IsMount && (Flags & 0x02) != 0; }
-        }
-
-        public bool IsSwimming
-        {
-            get { return IsMount && (Flags & 0x08) != 0; }
         }
 
         public void Summon()

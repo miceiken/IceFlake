@@ -75,6 +75,7 @@
     <Compile Include="Client\EndSceneExecute.cs" />
     <Compile Include="Client\Events.cs" />
     <Compile Include="Client\Helper.cs" />
+    <Compile Include="Client\Inventory.cs" />
     <Compile Include="Client\Location.cs" />
     <Compile Include="Client\LuaInterface.cs" />
     <Compile Include="Client\Movement.cs" />

@@ -113,7 +113,7 @@
             internal static uint CurrentMapId = 0x00AB63BC;
             internal static uint InternalMapName = 0x00CE06D0;
             internal static uint ZoneID = 0x00BD080C;
-            internal static uint ZoneText = 0x00BD0788;
+            internal static uint ZoneText = 0x00BD0788; 
             internal static uint SubZoneText = 0x00BD0784;
         }
 

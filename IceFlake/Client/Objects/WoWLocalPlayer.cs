@@ -100,75 +100,23 @@ namespace IceFlake.Client.Objects
             }
         }
 
-        #region Items
-
-        public IEnumerable<WoWItem> Items
-        {
-            get
-            {
-                return Manager.ObjectManager.Objects
-                    .Where(obj => obj.IsValid && obj.IsItem)
-                    .OfType<WoWItem>()
-                    .Where(item => item.OwnerGuid == this.Guid);
-            }
-        }
-
-        public IEnumerable<WoWItem> BackpackItems
-        {
-            get { return Enumerable.Range(0, 16).Select(i => GetBackpackItem(i)).Where(item => item != null && item.IsValid); }
-        }
-
-        public IEnumerable<WoWItem> InventoryItems
-        {
-            get { return BackpackItems.Concat(InventoryContainers.SelectMany(x => x.Items)); }
-        }
-
-        public IEnumerable<WoWItem> EquippedItems
-        {
-            get { return Enumerable.Range((int)EquipSlot.Start, (int)EquipSlot.End + 1).Select(eq => GetEquippedItem(eq)).Where(item => item != null && item.IsValid); }
-        }
-
-        #endregion
-
-        #region Containers
-
-        public IEnumerable<WoWContainer> InventoryContainers
-        {
-            get
-            {
-                return
-                    Enumerable.Range((int)BagSlot.Bag1, (int)BagSlot.Bag4 + 1).Select(bs => WoWContainer.GetBagByIndex(bs))
-                        .Where(container => container.IsValid);
-            }
-        }
-
-        public IEnumerable<WoWContainer> BankContainers
-        {
-            get
-            {
-                return
-                    Enumerable.Range((int)BagSlot.Bank1, (int)BagSlot.Bank7 + 1).Select(
-                        bs => WoWContainer.GetBagByIndex(bs)).Where(container => container != null && container.IsValid);
-            }
-        }
-
-        public IEnumerable<WoWContainer> AllContainers
-        {
-            get
-            {
-                return
-                    Enumerable.Range((int)BagSlot.Bag1, (int)BagSlot.Bank7 + 1).Select(
-                        bs => WoWContainer.GetBagByIndex(bs)).Where(container => container != null && container.IsValid);
-            }
-        }
-
-        #endregion
-
         #region Item helpers
+
+        private Inventory _inventory = new Inventory();
+        public Inventory Inventory
+        {
+            get { return _inventory; }
+        }
 
         public WoWItem GetBackpackItem(int slot)
         {
             var guid = GetAbsoluteDescriptor<ulong>((int)WoWPlayerFields.PLAYER_FIELD_PACK_SLOT_1 * 4 + (slot * 8));
+            return Manager.ObjectManager.GetObjectByGuid(guid) as WoWItem;
+        }
+
+        public WoWItem GetBankedItem(int slot)
+        {
+            var guid = GetAbsoluteDescriptor<ulong>((int)WoWPlayerFields.PLAYER_FIELD_BANK_SLOT_1 * 4 + (slot * 8));
             return Manager.ObjectManager.GetObjectByGuid(guid) as WoWItem;
         }
 

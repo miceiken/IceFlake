@@ -140,15 +140,15 @@ namespace IceFlake.Scripts
                 return;
 
             Print("Inventory Items");
-            foreach (var item in Manager.LocalPlayer.InventoryItems)
+            foreach (var item in Manager.LocalPlayer.Inventory.InventoryItems)
             {
                 if (item == null || !item.IsValid) continue;
 
                 int x, y;
                 if (item.GetSlotIndexes(out x, out y))
-                    Print("\t({0},{1}) [{2}]x{3}", x, y, item.Name, item.StackCount);
+                    Print("\t({0},{1}) [{2}]{3}", x, y, item.Name, item.StackCount > 1 ? "x" + item.StackCount : "");
                 else
-                    Print("\t[{0}]x{1}", item.Name, item.StackCount);
+                    Print("\t[{0}]{1}", item.Name, item.StackCount > 1 ? "x" + item.StackCount : "");
                 GameError errcode;
                 if (Manager.LocalPlayer.CanUseItem(item, out errcode))
                     Print("\tUsable");

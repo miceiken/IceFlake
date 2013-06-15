@@ -93,6 +93,7 @@ namespace IceFlake.Client.Objects
             private set;
         }
 
+        // TODO: This can probably be optimized (a lot)
         public bool GetSlotIndexes(out int container, out int slot)
         {
             // Remember that lua is 1 indexed based!
