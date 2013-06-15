@@ -1,25 +1,54 @@
 What needs to be done:
-=======================
+============================================================================================================
 
 Refactoring a lot of the logic. The EndScene handling can be improved by great lengths, but this goes beyond my capacity.
 The code needs to be more consistent in style and design. Do we go for OOP or more of the static classes?
 
-************
+************************************************************************************************************
 
 Most of the code here was taken from a project meant for later versions of WoW.
 Many changes have been applied since 3.3.5a and a bunch of stuff needs to be backported.
 
+High priority:
+
+- Dude, relax.
+
+************************************************************************************************************
+
+Normal priority:
+
+- Create a container/helper class for inventory, items and bags
+	- Add support for tradeskills and socketing
+
+- Implement LUA API
+	- Auction House, Battleground, Chat, Bank, Guild Bank, Mailbox, Guild(?)
+	- Glyph, Socketing
+
+- Fix LUA API
+	- Merchant, Trainer, TradeSkills, Quest (? unknown state), Talent (fairly completed)
+
+- Implement a proper drawing/rendering system
+
+- Make a proper Movement helper
+	To be able to properly support our system of navigation
+
+************************************************************************************************************
+
+Low priority:
+
 - Implement direct packet interception?
 	If it should be needed (see ClientServices.cs)
-- Make a proper Movement helper
-	To be able to properly support PPather
+
 - Refactor the DBC reader?
 - Improve World functions
 	Referring to World.cs
 - Add a proper plugin/scripting system
 - Double check and verify the structures and constants we have
 
-************
+
+************************************************************************************************************
 
 PPather needs a proper implementation and optimization.
 The project shut down in WotLK so it shouldn't be that much of a hassle.
+
+************************************************************************************************************
