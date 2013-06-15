@@ -33,9 +33,9 @@ namespace IceFlake.Client.API
         }
     }
 
-    public static class Inventory
+    public class Inventory
     {
-        public static int FreeSlots
+        public int FreeSlots
         {
             get
             {
@@ -50,14 +50,12 @@ namespace IceFlake.Client.API
             }
         }
 
-        public static List<Bag> Bags
+        public IEnumerable<Bag> Bags
         {
             get
             {
-                var ret = new List<Bag>(5);
                 for (int i = 0; i < 5; i++)
-                    ret.Add(new Bag(i));
-                return ret;
+                    yield return new Bag(i);
             }
         }
     }

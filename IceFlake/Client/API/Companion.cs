@@ -10,8 +10,7 @@ namespace IceFlake.Client.API
         private List<WoWCompanion> CachedMounts = new List<WoWCompanion>();
 
         public Companion()
-            // TODO: Find real frame name
-            : base("CompanionFrame")
+            : base("PetPaperDollFrameCompanionFrame")
         {
         }
 

@@ -31,6 +31,16 @@ namespace IceFlake.Client
             get { return Manager.Memory.ReadString((IntPtr)Pointers.World.InternalMapName); }
         }
 
+        public static string CurrentZone
+        {
+            get { return Manager.Memory.ReadString((IntPtr)Pointers.World.ZoneText); }
+        }
+
+        public static string CurrentSubZone
+        {
+            get { return Manager.Memory.ReadString((IntPtr)Pointers.World.SubZoneText); }
+        }
+
         public static uint CurrentZoneId
         {
             get { return Manager.Memory.Read<uint>((IntPtr)Pointers.World.ZoneID); }

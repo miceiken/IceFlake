@@ -68,6 +68,21 @@ namespace IceFlake.Scripts
                     Print("\tN: {0} - C: {1}c - T: {2}", n.Name, n.Cost, n.Type);
                 }
             }
+            if (API.Loot.IsShown)
+            {
+                Print("Dumping loot");
+                var slots = API.Loot.LootSlots;
+                foreach (var s in slots)
+                {
+                    Print("\tLoot #{0}: [{1}]{2}", s.Slot, s.Name, s.Quantity > 0 ? "x" + s.Quantity : "");
+                    if (s.IsItem)
+                        Print("\t{0} ({1})", s.Quality, s.ItemLink);
+                    if (s.Locked)
+                        Print("Not lootable");
+                    else
+                        s.Loot();
+                }
+            }
 
             Stop();
         }

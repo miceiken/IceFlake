@@ -59,6 +59,7 @@
     <Compile Include="Client\API\Gossip.cs" />
     <Compile Include="Client\API\Inventory.cs" />
     <Compile Include="Client\API\Login.cs" />
+    <Compile Include="Client\API\Loot.cs" />
     <Compile Include="Client\API\Merchant.cs" />
     <Compile Include="Client\API\Profession.cs" />
     <Compile Include="Client\API\QuestGossip.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="Client\ClientServices.cs" />
     <Compile Include="Client\Collections\AuraCollection.cs" />
     <Compile Include="Client\Collections\SpellCollection.cs" />
+    <Compile Include="Client\Console.cs" />
     <Compile Include="Client\EndSceneExecute.cs" />
     <Compile Include="Client\Events.cs" />
     <Compile Include="Client\Helper.cs" />
@@ -104,7 +106,6 @@
     <Compile Include="Client\World.cs" />
     <Compile Include="Client\WoWDB.cs" />
     <Compile Include="Client\WoWScript.cs" />
-    <Compile Include="DirectX\Matrix3.cs" />
     <Compile Include="Manager.cs" />
     <Compile Include="DirectX\Direct3D.cs" />
     <Compile Include="DirectX\EndSceneHandler.cs" />

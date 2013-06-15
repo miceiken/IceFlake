@@ -2,12 +2,40 @@
 {
     internal static class Pointers
     {
-        #region Nested type: CVar
+        #region Nested type: ObjectManager
 
-        internal class CVar
+        // 3.3.5a: 12340
+        internal class ObjectManager
         {
-            internal static uint LookupRegistered = 0x6CA80; // UPDATE
-            internal static uint Set = 0x6BF50; // UPDATE
+            internal static uint EnumVisibleObjects = 0x004D4B30;
+            internal static uint GetObjectByGuid = 0x004D4DB0;
+            internal static uint GetLocalPlayerGuid = 0x004D3790;
+        }
+
+        #endregion
+
+        #region Nested type: Object
+
+        // 3.3.5a: 12340
+        internal class Object
+        {
+            internal static uint GetObjectName = 54;
+            internal static uint GetObjectLocation = 12;
+            internal static uint GetObjectFacing = 14;
+
+            internal static uint Interact = 44;
+            internal static uint SelectObject = 0x00524BF0;
+        }
+
+        #endregion
+
+        #region Nested type: Item
+
+        // 3.3.5a: 12340
+        internal class Item
+        {
+            internal static uint UseItem = 0x00708C20;
+            internal static uint CanUseItem = 0x006DC3F0;
         }
 
         #endregion
@@ -23,35 +51,23 @@
 
         #endregion
 
-        #region Nested type: Drawing
+        #region Nested type: Unit
 
         // 3.3.5a: 12340
-        internal class Drawing
+        internal class Unit
         {
-            internal static uint WorldFrame = 0x00B7436C;
-            internal static uint ActiveCamera = 0x7E20;
-            internal static uint RenderBackground = 0x2532E0; // UPDATE
-        }
+            internal static uint FishChanneledCasting = 0xD70;
+            internal static uint ChanneledCastingId = 0xC20;
+            internal static uint CastingId = 0xc08;
 
-        #endregion
-
-        #region Nested type: Events
-
-        internal class Events
-        {
-            internal static uint EventVictim = 0x004DDBD0;
-        }
-
-        #endregion
-
-        #region Nested type: Item
-
-        // 3.3.5a: 12340
-        internal class Item
-        {
-            internal static uint UseItem = 0x00708C20;
-            internal static uint CanUseItem = 0x006DC3F0;
-            internal static uint InventoryType = 0x00707280;
+            internal static uint UnitReaction = 0x007251C0;
+            internal static uint HasAuraBySpellId = 0x007282A0;
+            internal static uint GetAura = 0x00556E10;
+            internal static uint GetAuraCount = 0x004F8850;
+            internal static uint GetCreatureType = 0x0071F300;
+            internal static uint GetCreatureRank = 0x00718A00;
+            internal static uint ShapeshiftFormId = 0x0071AF70;
+            internal static uint CalculateThreat = 0x007374C0;
         }
 
         #endregion
@@ -62,12 +78,43 @@
         internal class LocalPlayer
         {
             internal static uint ClickToMove = 0x00727400;
-            internal static uint SetFacing = 0x004F42A0;
+            internal static uint SetFacing = 0x0072EA50;
             internal static uint IsClickMoving = 0x00721F90;
             internal static uint StopCTM = 0x0072B3A0;
             internal static uint GetRuneReadyBySlot = 0x629940; // UPDATE
             internal static uint CorpsePosition = 0x0051F430;
             internal static uint ComboPoints = 0x00BD084D;
+        }
+
+        #endregion
+
+        #region Nested type: Spell
+
+        // 3.3.5a: 12340
+        internal class Spell
+        {
+            internal static uint SpellCount = 0x00BE8D9C;
+            internal static uint SpellBook = 0x00BE5D88;
+            internal static uint CastSpell = 0x0080DA40;
+            internal static uint GetSpellCooldown = 0x00807980;
+            internal static uint GetSpellEffectRec = 0x953B0; // UPDATE
+
+            internal static uint FirstActionBarSpellId = 0xC1E358;
+        }
+
+        #endregion
+
+        #region Nested type: World
+
+        // 3.3.5a: 12340
+        internal class World
+        {
+            internal static uint Traceline = 0x007A3B70;
+            internal static uint CurrentMapId = 0x00AB63BC;
+            internal static uint InternalMapName = 0x00CE06D0;
+            internal static uint ZoneID = 0x00BD080C;
+            internal static uint ZoneText = 0x00BD0788;
+            internal static uint SubZoneText = 0x00BD0784;
         }
 
         #endregion
@@ -90,20 +137,15 @@
 
         #endregion
 
-        #region Nested type: Object
+        #region Nested type: Events
 
-        // 3.3.5a: 12340
-        internal class Object
+        internal class Events
         {
-            internal static uint GetObjectName = 54;
-            internal static uint GetObjectLocation = 12;
-            internal static uint GetObjectFacing = 14;
-            internal static uint Interact = 44;
-            internal static uint SelectObject = 0x00524BF0;
+            internal static uint EventVictim = 0x004DDBD0;
         }
 
-        #endregion
-
+        #endregion   
+     
         #region Nested type: DBC
 
         // 3.3.5a: 12340
@@ -129,14 +171,14 @@
 
         #endregion
 
-        #region Nested type: ObjectManager
+        #region Nested type: Drawing
 
         // 3.3.5a: 12340
-        internal class ObjectManager
+        internal class Drawing
         {
-            internal static uint EnumVisibleObjects = 0x004D4B30;
-            internal static uint GetObjectByGuid = 0x004D4DB0;
-            internal static uint GetLocalPlayerGuid = 0x004D3790;
+            internal static uint WorldFrame = 0x00B7436C;
+            internal static uint ActiveCamera = 0x7E20;
+            internal static uint RenderBackground = 0x2532E0; // UPDATE
         }
 
         #endregion
@@ -151,8 +193,6 @@
             internal static uint GameState = 0x00B6A9E0;
             internal static uint IsLoading = 0x00B6AA38;
             internal static uint RealmName = 0x00C79B9E;
-            // return ( InstanceDifficulty* )0x00C4EC2C;
-            internal static uint InstanceDifficulty = 0x00C4EC2C;
         }
 
         #endregion
@@ -176,57 +216,8 @@
             internal static uint RaidCount = 0x00C543E0;
             // return ( ulong** )0x00C54340;
             internal static uint RaidArray = 0x00C54340;
-        }
-
-        #endregion
-
-        #region Nested type: Spell
-
-        // 3.3.5a: 12340
-        internal class Spell
-        {
-            internal static uint SpellCount = 0x00BE8D9C;
-            internal static uint SpellBook = 0x00BE5D88;
-            internal static uint CastSpell = 0x0080DA40;
-            internal static uint GetSpellCooldown = 0x00807980;
-            internal static uint GetSpellEffectRec = 0x953B0; // UPDATE
-
-            internal static uint FirstActionBarSpellId = 0xC1E358;
-        }
-
-        #endregion
-
-        #region Nested type: Unit
-
-        // 3.3.5a: 12340
-        internal class Unit
-        {
-            internal static uint FishChanneledCasting = 0xD70;
-            internal static uint ChanneledCastingId = 0xC20;
-            internal static uint CastingId = 0xc08;
-            internal static uint UnitReaction = 0x007251C0;
-            internal static uint HasAuraBySpellId = 0x007282A0;
-            internal static uint GetAura = 0x00556E10;
-            internal static uint GetAuraCount = 0x004F8850;
-            internal static uint GetCreatureType = 0x0071F300;
-            internal static uint GetCreatureRank = 0x00718A00;
-            internal static uint ShapeshiftFormId = 0x0071AF70;
-            internal static uint CalculateThreat = 0x007374C0;
-        }
-
-        #endregion
-
-        #region Nested type: World
-
-        // 3.3.5a: 12340
-        internal class World
-        {
-            internal static uint Traceline = 0x007A3B70;
-            internal static uint CurrentMapId = 0x00AB63BC;
-            internal static uint InternalMapName = 0x00CE06D0;
-            internal static uint ZoneID = 0x00BD080C;
-            internal static uint ZoneText = 0x00BD0780;
-            internal static uint SubZoneText = 0x00BD0784;
+            // return ( InstanceDifficulty* )0x00C4EC2C;
+            internal static uint InstanceDifficulty = 0x00C4EC2C;
         }
 
         #endregion

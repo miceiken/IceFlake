@@ -20,17 +20,15 @@ namespace IceFlake.Client.API
             get { return WoWScript.Execute<int>("GetNumTrainerServices()"); }
         }
 
-        public List<TrainerService> Services
+        public IEnumerable<TrainerService> Services
         {
             get
             {
                 WoWScript.ExecuteNoResults("SetTrainerServiceTypeFilter(\"available\", 1)");
                 WoWScript.ExecuteNoResults("SetTrainerServiceTypeFilter(\"unavailable\", 0)");
                 WoWScript.ExecuteNoResults("SetTrainerServiceTypeFilter(\"used\", 0)");
-                var services = new List<TrainerService>();
                 for (int i = 1; i <= NumServices; i++)
-                    services.Add(GetServiceInfo(i));
-                return services;
+                    yield return GetServiceInfo(i);
             }
         }
 
@@ -42,7 +40,7 @@ namespace IceFlake.Client.API
         public void BuyAllAvailable()
         {
             WoWScript.ExecuteNoResults("SetTrainerServiceTypeFilter(\"available\", 1)");
-            foreach (TrainerService s in Services.Where(x => x.Available))
+            foreach (var s in Services.Where(x => x.Available))
                 s.Buy();
         }
 

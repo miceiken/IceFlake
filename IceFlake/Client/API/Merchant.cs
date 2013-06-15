@@ -26,9 +26,9 @@ namespace IceFlake.Client.API
             get { return WoWScript.Execute<int>("GetMerchantNumItems()"); }
         }
 
-        public List<MerchantItem> Items
+        public IEnumerable<MerchantItem> Items
         {
-            get { return Enumerable.Range(1, NumItems + 1).Select(i => GetItemInfo(i)).ToList(); }
+            get { return Enumerable.Range(1, NumItems + 1).Select(i => GetItemInfo(i)); }
         }
 
         public void RepairAll()

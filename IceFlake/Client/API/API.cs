@@ -12,8 +12,10 @@
         public static Auction Auction = new Auction();
         public static Companion Companion = new Companion();
         public static TradeSkill TradeSkill = new TradeSkill();
+        public static Loot Loot = new Loot();
 
         // API stuff
+        public static Inventory Inventory = new Inventory();
         public static Login Login = new Login();
         public static Profession Profession = new Profession();
     }

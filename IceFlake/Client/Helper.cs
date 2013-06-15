@@ -30,8 +30,7 @@ namespace IceFlake.Client
 
         public static void ResetHardwareAction()
         {
-            Manager.Memory.Write(Manager.Memory.GetAbsolute((IntPtr)Pointers.Other.LastHardwareAction),
-                                 PerformanceCount);
+            Manager.Memory.Write((IntPtr)Pointers.Other.LastHardwareAction, PerformanceCount);
         }
 
         private static void SetInCombat(string ev, List<string> args)

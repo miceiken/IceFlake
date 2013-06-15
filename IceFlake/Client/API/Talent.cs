@@ -20,9 +20,9 @@ namespace IceFlake.Client.API
             get { return WoWScript.Execute<int>("GetNumTalentTabs()"); }
         }
 
-        public List<TalentTab> Tabs
+        public IEnumerable<TalentTab> Tabs
         {
-            get { return Enumerable.Range(1, NumTabs).Select(i => new TalentTab(i)).ToList(); }
+            get { return Enumerable.Range(1, NumTabs).Select(i => new TalentTab(i)); }
         }
 
         public bool HasLearnedMajorTree
@@ -76,9 +76,9 @@ namespace IceFlake.Client.API
             get { return WoWScript.Execute<int>("GetNumTalents(" + Index + ")"); }
         }
 
-        public List<TalentNode> Talents
+        public IEnumerable<TalentNode> Talents
         {
-            get { return Enumerable.Range(1, NumTalents).Select(i => new TalentNode(Index, i)).ToList(); }
+            get { return Enumerable.Range(1, NumTalents).Select(i => new TalentNode(Index, i)); }
         }
     }
 

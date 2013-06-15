@@ -14,7 +14,6 @@ namespace IceFlake.Client.Scripts
     {
         public ScriptManager()
         {
-            RegistrationQueue = new Queue<Type>();
             Scripts = new List<Script>();
 
             ScriptFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scripts");
@@ -25,12 +24,6 @@ namespace IceFlake.Client.Scripts
         {
             get;
             private set;
-        }
-
-        private Queue<Type> RegistrationQueue
-        {
-            get;
-            set;
         }
 
         public List<Script> Scripts
@@ -48,9 +41,6 @@ namespace IceFlake.Client.Scripts
         [EndSceneHandler]
         public void Direct3D_EndScene()
         {
-            while (RegistrationQueue.Count > 0)
-                Register(RegistrationQueue.Dequeue());
-
             foreach (var script in Scripts)
             {
                 CurrentScript = script;
@@ -69,10 +59,12 @@ namespace IceFlake.Client.Scripts
         {
             OnCompilerStarted();
 
-            var typeScripts = Assembly.GetExecutingAssembly().GetTypes()
-                    .Where(t => t.IsSubclassOf(typeof(Script)));
-            foreach (var t in typeScripts)
-                RegistrationQueue.Enqueue(t);
+            Scripts.AddRange(
+                Assembly.GetExecutingAssembly().GetTypes()
+                    .Where(t => t.IsSubclassOf(typeof(Script)))
+                    .Select(s => Register(s))
+                    .Where(s => s != null)
+                    );
 
             OnCompilerFinished();
         }
@@ -82,9 +74,6 @@ namespace IceFlake.Client.Scripts
             try
             {
                 OnCompilerStarted();
-
-                //lock (SynchronizeLock)
-                //    ScriptPool.Clear();
 
                 string[] files = Directory.GetFiles(ScriptFolder, "*.cs", SearchOption.AllDirectories);
                 Log.WriteLine("Found {0} files in Scripts folder", files.Length);
@@ -153,11 +142,11 @@ namespace IceFlake.Client.Scripts
                     continue;
                 }
 
-                RegistrationQueue.Enqueue(type);
+                Scripts.Add(Register(type));
             }
         }
 
-        private void Register(Type type)
+        private Script Register(Type type)
         {
             try
             {
@@ -169,13 +158,14 @@ namespace IceFlake.Client.Scripts
                 if (script == null)
                     throw new Exception("Unable to instantiate script");
 
-                Scripts.Add(script);
                 OnScriptRegistered(script);
+                return script;
             }
             catch (Exception ex)
             {
                 Log.WriteLine("Failed to compile: {0}", ex.Message);
             }
+            return null;
         }
 
         private void OnCompilerStarted()

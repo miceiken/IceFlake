@@ -37,7 +37,7 @@ namespace IceFlake.Client
 
         public static InstanceDifficulty Difficulty
         {
-            get { return (InstanceDifficulty)Manager.Memory.Read<int>((IntPtr)Pointers.Other.InstanceDifficulty); }
+            get { return (InstanceDifficulty)Manager.Memory.Read<int>((IntPtr)Pointers.Raid.InstanceDifficulty); }
         }
     }
 }

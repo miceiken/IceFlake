@@ -16,27 +16,24 @@ namespace IceFlake.Client.API
             get { return WoWScript.Execute<int>("GetNumGossipOptions()"); }
         }
 
-        public List<GossipOption> Options
+        public IEnumerable<GossipOption> Options
         {
             get
             {
-                var options = new List<GossipOption>();
                 List<string> ret = WoWScript.Execute("GetGossipOptions()");
                 if (ret.Count > 0)
                 {
                     for (int i = 0; i < ret.Count / 2; i++)
                     {
                         int idx = i * 2;
-                        var opt = new GossipOption
+                        yield return new GossipOption
                                       {
                                           Index = i + 1,
                                           Title = ret[idx],
                                           Gossip = (GossipType)Enum.Parse(typeof(GossipType), ret[idx + 1], true)
                                       };
-                        options.Add(opt);
                     }
                 }
-                return options;
             }
         }
 
@@ -45,18 +42,17 @@ namespace IceFlake.Client.API
             get { return WoWScript.Execute<int>("GetNumGossipAvailableQuests()"); }
         }
 
-        public List<GossipAvailableQuest> AvailableQuests
+        public IEnumerable<GossipAvailableQuest> AvailableQuests
         {
             get
             {
-                var options = new List<GossipAvailableQuest>();
                 List<string> ret = WoWScript.Execute("GetGossipAvailableQuests()");
                 if (ret.Count > 0)
                 {
                     for (int i = 0; i < ret.Count / 5; i++)
                     {
                         int idx = i * 5;
-                        var opt = new GossipAvailableQuest
+                        yield return new GossipAvailableQuest
                                       {
                                           Index = i + 1,
                                           Title = ret[idx],
@@ -65,10 +61,8 @@ namespace IceFlake.Client.API
                                           IsDaily = !(ret[idx + 3] == "0" || ret[idx + 3] == "nil"),
                                           IsRepeatable = !(ret[idx + 4] == "0" || ret[idx + 4] == "nil"),
                                       };
-                        options.Add(opt);
                     }
                 }
-                return options;
             }
         }
 
@@ -77,18 +71,17 @@ namespace IceFlake.Client.API
             get { return WoWScript.Execute<int>("GetNumGossipActiveQuests()"); }
         }
 
-        public List<GossipActiveQuest> ActiveQuests
+        public IEnumerable<GossipActiveQuest> ActiveQuests
         {
             get
             {
-                var options = new List<GossipActiveQuest>();
                 List<string> ret = WoWScript.Execute("GetGossipActiveQuests()");
                 if (ret.Count > 0)
                 {
                     for (int i = 0; i < ret.Count / 4; i++)
                     {
                         int idx = i * 4;
-                        var opt = new GossipActiveQuest
+                        yield return new GossipActiveQuest
                                       {
                                           Index = i + 1,
                                           Title = ret[idx],
@@ -96,10 +89,8 @@ namespace IceFlake.Client.API
                                           IsLowLevel = !(ret[idx + 2] == "0" || ret[idx + 2] == "nil"),
                                           IsComplete = !(ret[idx + 3] == "0" || ret[idx + 3] == "nil"),
                                       };
-                        options.Add(opt);
                     }
                 }
-                return options;
             }
         }
 

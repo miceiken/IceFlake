@@ -15,14 +15,14 @@ namespace IceFlake.Client.API
             get { return WoWScript.Execute<int>("NumTaxiNodes()"); }
         }
 
-        public List<TaxiNode> Nodes
+        public IEnumerable<TaxiNode> Nodes
         {
-            get { return Enumerable.Range(1, NumNodes + 1).Select(i => new TaxiNode(i)).ToList(); }
+            get { return Enumerable.Range(1, NumNodes + 1).Select(i => new TaxiNode(i)); }
         }
 
-        public List<TaxiNode> ReachableNodes
+        public IEnumerable<TaxiNode> ReachableNodes
         {
-            get { return Nodes.Where(x => x.Type.ToLower() == "reachable").ToList(); }
+            get { return Nodes.Where(x => x.Type.ToLower() == "reachable"); }
         }
 
         public TaxiNode CurrentNode

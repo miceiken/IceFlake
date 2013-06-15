@@ -94,16 +94,16 @@ namespace IceFlake
             if (Manager.Scripts == null)
                 return;
 
+            Manager.Scripts.ScriptRegistered += OnScriptRegisteredEvent;
+
             foreach (var s in Manager.Scripts.Scripts)
             {
-                s.OnStartedEvent += script_OnStartedEvent;
-                s.OnStoppedEvent += script_OnStoppedEvent;
+                s.OnStartedEvent += OnScriptStartedEvent;
+                s.OnStoppedEvent += OnScriptStoppedEvent;
             }
 
             lstScripts.DataSource = Manager.Scripts.Scripts.OrderBy(x => x.Category).ToList();
-            Log.WriteLine(LogType.Information, "Loaded {0} scripts.", Manager.Scripts.Scripts.Count);
-
-            Manager.Scripts.ScriptRegistered += ScriptManager_ScriptRegistered;
+            Log.WriteLine(LogType.Information, "Loaded {0} scripts.", Manager.Scripts.Scripts.Count);            
         }
 
         private Script SelectedScript;
@@ -147,19 +147,19 @@ namespace IceFlake
                 script.Stop();
         }
 
-        private void ScriptManager_ScriptRegistered(object sender, EventArgs e)
+        private void OnScriptRegisteredEvent(object sender, EventArgs e)
         {
             Invoke((Action)(() =>
             {
                 var script = (Script)sender;
-                script.OnStartedEvent += new EventHandler(script_OnStartedEvent);
-                script.OnStoppedEvent += new EventHandler(script_OnStoppedEvent);
+                script.OnStartedEvent += new EventHandler(OnScriptStartedEvent);
+                script.OnStoppedEvent += new EventHandler(OnScriptStoppedEvent);
                 lstScripts.DataSource = Manager.Scripts.Scripts.OrderBy(x => x.Category).ToList();
             }));
             lstScripts.Invalidate();
         }
 
-        private void script_OnStartedEvent(object sender, EventArgs e)
+        private void OnScriptStartedEvent(object sender, EventArgs e)
         {
             Invoke((Action)(() =>
             {
@@ -168,7 +168,7 @@ namespace IceFlake
             }));
         }
 
-        private void script_OnStoppedEvent(object sender, EventArgs e)
+        private void OnScriptStoppedEvent(object sender, EventArgs e)
         {
             Invoke((Action)(() =>
             {
@@ -200,7 +200,7 @@ namespace IceFlake
             lblPowerText.Text = string.Format("{0}:", lp.PowerType);
             lblPower.Text = string.Format("{0}/{1} ({2:0}%)", lp.Power, lp.MaxPower, lp.PowerPercentage);
             lblLevel.Text = string.Format("{0}", lp.Level);
-            lblZone.Text = string.Format("{0}", World.CurrentZoneId);
+            lblZone.Text = string.Format("{0} ({1})", World.CurrentZone, World.CurrentSubZone);
         }
 
         private void btnExecute_Click(object sender, EventArgs e)

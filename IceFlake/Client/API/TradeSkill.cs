@@ -21,10 +21,8 @@ namespace IceFlake.Client.API
             get
             {
                 ResetFilter();
-                var ret = new List<TradeSkillInfo>();
                 for (int i = 1; i <= WoWScript.Execute<int>("GetNumTradeSkills()"); i++)
-                    ret.Add(new TradeSkillInfo(i));
-                return ret;
+                    yield return new TradeSkillInfo(i);
             }
         }
 
@@ -119,18 +117,16 @@ namespace IceFlake.Client.API
         {
             get
             {
-                var ret = new List<TradeSkillTool>();
                 List<string> tools = WoWScript.Execute("GetTradeSkillTools(" + Index + ")");
                 for (int i = 0; i < tools.Count/2; i++)
                 {
                     string ht = tools[i + 1];
-                    ret.Add(new TradeSkillTool
+                    yield return new TradeSkillTool
                                 {
                                     Name = tools[i],
                                     HasTool = !(ht == "false" || ht == "0" || ht == "nil")
-                                });
+                                };
                 }
-                return ret;
             }
         }
 

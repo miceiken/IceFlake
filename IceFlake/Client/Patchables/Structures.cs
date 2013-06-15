@@ -987,7 +987,7 @@ namespace IceFlake.Client.Patchables
     {
         fixed int unk0[2];
         public SlimDX.Vector3 Position;
-        public IceFlake.DirectX.Matrix3 Facing;
+        public SlimDX.Matrix Facing;
         public float NearPlane;
         public float FarPlane;
         public float FieldOfView;

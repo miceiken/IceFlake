@@ -18,11 +18,11 @@ namespace IceFlake.Client.Objects
 
             if (IsValid)
             {
-                _getObjectName = RegisterVirtualFunction<GetObjectNameDelegate>(Pointers.Object.GetObjectName * 4);
+                _getObjectName = RegisterVirtualFunction<GetObjectNameDelegate>(Pointers.Object.GetObjectName);
                 _getObjectLocation =
-                    RegisterVirtualFunction<GetObjectLocationDelegate>(Pointers.Object.GetObjectLocation * 4);
-                _getObjectFacing = RegisterVirtualFunction<GetObjectFacingDelegate>(Pointers.Object.GetObjectFacing * 4);
-                _interact = RegisterVirtualFunction<InteractDelegate>(Pointers.Object.Interact * 4);
+                    RegisterVirtualFunction<GetObjectLocationDelegate>(Pointers.Object.GetObjectLocation);
+                _getObjectFacing = RegisterVirtualFunction<GetObjectFacingDelegate>(Pointers.Object.GetObjectFacing);
+                _interact = RegisterVirtualFunction<InteractDelegate>(Pointers.Object.Interact);
             }
         }
 
@@ -135,7 +135,7 @@ namespace IceFlake.Client.Objects
 
         protected T RegisterVirtualFunction<T>(uint offset) where T : class
         {
-            IntPtr pointer = Manager.Memory.GetObjectVtableFunction(Pointer, offset / 4);
+            IntPtr pointer = Manager.Memory.GetObjectVtableFunction(Pointer, offset);
             if (pointer == IntPtr.Zero)
                 return null;
             return Manager.Memory.RegisterDelegate<T>(pointer);
@@ -161,46 +161,36 @@ namespace IceFlake.Client.Objects
             Manager.LocalPlayer.LookAt(Location);
         }
 
-        //protected unsafe T GetDescriptor<T>(int offset)
-        //{
-        //    uint descriptorArray = *(uint*)(Pointer + Offsets.DescriptorOffset);
-        //    int size = Marshal.SizeOf(typeof(T));
-        //    object ret = null;
-        //    switch (size)
-        //    {
-        //        case 1:
-        //            ret = *(byte*)(descriptorArray + offset);
-        //            break;
-
-        //        case 2:
-        //            ret = *(short*)(descriptorArray + offset);
-        //            break;
-
-        //        case 4:
-        //            ret = *(uint*)(descriptorArray + offset);
-        //            break;
-
-        //        case 8:
-        //            ret = *(ulong*)(descriptorArray + offset);
-        //            break;
-        //    }
-        //    return (T)ret;
-        //}
-
-        protected T GetDescriptor<T>(Enum idx) where T : struct
+        internal T GetDescriptor<T>(Enum idx) where T : struct
         {
             return GetDescriptor<T>(Convert.ToInt32(idx));
         }
 
-        protected T GetDescriptor<T>(int idx) where T : struct
+        internal T GetDescriptor<T>(int idx) where T : struct
         {
             return GetAbsoluteDescriptor<T>(idx * 0x4);
         }
 
-        protected T GetAbsoluteDescriptor<T>(int offset) where T : struct
+        internal T GetAbsoluteDescriptor<T>(int offset) where T : struct
         {
             var descriptorArray = Manager.Memory.Read<uint>(new IntPtr(Pointer.ToInt64() + 0x8));
             return Manager.Memory.Read<T>(new IntPtr(descriptorArray + offset));
+        }
+
+        internal void SetDescriptor<T>(Enum idx, T value) where T : struct
+        {
+            SetDescriptor<T>(Convert.ToInt32(idx), value);
+        }
+
+        internal void SetDescriptor<T>(int idx, T value) where T : struct
+        {
+            SetAbsoluteDescriptor<T>(idx * 0x4, value);
+        }
+
+        internal void SetAbsoluteDescriptor<T>(int offset, T value) where T : struct
+        {
+            var descriptorArray = Manager.Memory.Read<uint>(new IntPtr(Pointer.ToInt64() + 0x8));
+            Manager.Memory.Write<T>(new IntPtr(descriptorArray + offset), value);
         }
 
         protected bool HasFlag(Enum idx, Enum flag)

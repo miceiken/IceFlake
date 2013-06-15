@@ -1,4 +1,5 @@
-﻿using System;
+﻿#define DEBUG
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -9,21 +10,22 @@ namespace IceFlake.Client.Objects
 {
     public class WoWLocalPlayer : WoWPlayer
     {
-        #region Delegates
-
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         public delegate int ClickToMoveDelegate(
             IntPtr thisPointer, int clickType, ref ulong interactGuid, ref Location clickLocation, float precision);
-
-        #endregion
-
         public static ClickToMoveDelegate ClickToMoveFunction;
 
-        private static SetFacingDelegate _setFacing;
-
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+        private delegate bool IsClickMovingDelegate(IntPtr thisObj);
         private static IsClickMovingDelegate _isClickMoving;
 
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+        private delegate void StopCTMDelegate(IntPtr thisObj);
         private static StopCTMDelegate _stopCTM;
+
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+        private delegate void SetFacingDelegate(IntPtr thisObj, uint time, float facing);
+        private static SetFacingDelegate _setFacing;
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         private delegate bool CanUseItemDelegate(IntPtr thisObj, IntPtr itemSparseRec, out GameError error);
@@ -36,14 +38,16 @@ namespace IceFlake.Client.Objects
         public WoWLocalPlayer(IntPtr pointer)
             : base(pointer)
         {
+#if DEBUG
             if (Direct3D.FrameCount == 0)
             {
                 Log.WriteLine("LocalPlayer:");
                 Log.WriteLine("\tLevel {0} {1} {2}", Level, Race, Class);
-                Log.WriteLine("\tHealth: {0}/{1} ({2}%)", Health, MaxHealth, (int)HealthPercentage);
-                Log.WriteLine("\t{0}: {1}/{2} ({3}%)", "Mana", Power, MaxPower, PowerPercentage);
+                Log.WriteLine("\tHealth: {0}/{1} ({2:1}%)", Health, MaxHealth, HealthPercentage);
+                Log.WriteLine("\t{0}: {1}/{2} ({3:1}%)", PowerType, Power, MaxPower, PowerPercentage);
                 Log.WriteLine("\tPosition: {0}", Location);
             }
+#endif
         }
 
         public bool IsClickMoving
@@ -376,8 +380,7 @@ namespace IceFlake.Client.Objects
         public void SetFacing(float angle)
         {
             if (_setFacing == null)
-                _setFacing = Manager.Memory.RegisterDelegate<SetFacingDelegate>(
-                    (IntPtr)Pointers.LocalPlayer.SetFacing);
+                _setFacing = Manager.Memory.RegisterDelegate<SetFacingDelegate>((IntPtr)Pointers.LocalPlayer.SetFacing);
 
             const float pi2 = (float)(Math.PI * 2);
             if (angle < 0.0f)
@@ -386,26 +389,5 @@ namespace IceFlake.Client.Objects
                 angle -= pi2;
             _setFacing(Pointer, Helper.PerformanceCount, angle);
         }
-
-        #region Nested type: IsClickMovingDelegate
-
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate bool IsClickMovingDelegate(IntPtr thisObj);
-
-        #endregion
-
-        #region Nested type: SetFacingDelegate
-
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate void SetFacingDelegate(IntPtr thisObj, uint time, float facing);
-
-        #endregion
-
-        #region Nested type: StopCTMDelegate
-
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate void StopCTMDelegate(IntPtr thisObj);
-
-        #endregion
     }
 }
