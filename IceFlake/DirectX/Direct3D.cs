@@ -129,12 +129,24 @@ namespace IceFlake.DirectX
             Device.PixelShader = null;
             Device.SetRenderState(RenderState.ZEnable, true);
             Device.SetRenderState(RenderState.ZWriteEnable, true);
-            Device.SetRenderState(RenderState.ZFunc, 4); //
+            Device.SetRenderState(RenderState.ZFunc, Compare.LessEqual);
             Device.SetRenderState(RenderState.AlphaBlendEnable, true);
             Device.SetRenderState(RenderState.DestinationBlend, Blend.InverseSourceAlpha);
             Device.SetRenderState(RenderState.Lighting, false);
             Device.SetTexture(0, null);
             Device.SetRenderState(RenderState.CullMode, Cull.None);
+
+            //Device.VertexShader = null;
+            //Device.PixelShader = null;
+            //Device.SetRenderState(RenderState.ZEnable, true);
+            //Device.SetRenderState(RenderState.ZWriteEnable, true);
+            //Device.SetRenderState(RenderState.ZFunc, Compare.LessEqual);
+            //Device.SetRenderState(RenderState.AlphaBlendEnable, true);
+            //Device.SetRenderState(RenderState.SourceBlend, Blend.One);
+            //Device.SetRenderState(RenderState.DestinationBlend, Blend.One);
+            //Device.SetRenderState(RenderState.Lighting, false);
+            //Device.SetTexture(0, null);
+            //Device.SetRenderState(RenderState.CullMode, Cull.None);
         }
 
         #region Nested type: Direct3D9EndScene

@@ -3,9 +3,70 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
+using IceFlake.Client.Patchables;
 
 namespace IceFlake.Client
 {
+    //public enum WoWConsoleColor : int
+    //{
+    //    DEFAULT_COLOR = 0x0,
+    //    INPUT_COLOR = 0x1,
+    //    ECHO_COLOR = 0x2,
+    //    ERROR_COLOR = 0x3,
+    //    WARNING_COLOR = 0x4,
+    //    GLOBAL_COLOR = 0x5,
+    //    ADMIN_COLOR = 0x6,
+    //    HIGHLIGHT_COLOR = 0x7,
+    //    BACKGROUND_COLOR = 0x8,
+    //}
+
+    //public enum CommandCategory : int
+    //{
+    //    CATEGORY_DEBUG = 0x0,
+    //    CATEGORY_GRAPHICS = 0x1,
+    //    CATEGORY_CONSOLE = 0x2,
+    //    CATEGORY_COMBAT = 0x3,
+    //    CATEGORY_GAME = 0x4,
+    //    CATEGORY_DEFAULT = 0x5,
+    //    CATEGORY_NET = 0x6,
+    //    CATEGORY_SOUND = 0x7,
+    //    CATEGORY_GM = 0x8,
+    //}
+
+    //public class WoWConsole
+    //{
+    //    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    //    private delegate void ConsoleWriteADelegate(string text, WoWConsoleColor color, params string[] args);
+    //    private ConsoleWriteADelegate _write;
+
+    //    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    //    private delegate bool ConsoleRegisterCommandDelegate(string command, IntPtr handler, CommandCategory category, string help);
+    //    private ConsoleRegisterCommandDelegate _registerCommand;
+
+    //    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    //    private delegate bool ConsoleUnregisterCommandDelegate(string command);
+    //    private ConsoleUnregisterCommandDelegate _unregisterCommand;
+
+    //    public WoWConsole()
+    //    {
+    //        Toggle(true);
+
+    //        _write = Manager.Memory.RegisterDelegate<ConsoleWriteADelegate>((IntPtr)Pointers.Console.WriteA);
+    //        _registerCommand = Manager.Memory.RegisterDelegate<ConsoleRegisterCommandDelegate>((IntPtr)Pointers.Console.RegisterCommand);
+    //        _unregisterCommand = Manager.Memory.RegisterDelegate<ConsoleUnregisterCommandDelegate>((IntPtr)Pointers.Console.UnregisterCommand);
+    //    }
+
+    //    public void Toggle(bool enable)
+    //    {
+    //        Manager.Memory.Write<int>((IntPtr)Pointers.Console.Enable, enable ? 1 : 0);
+    //    }
+
+    //    public void Write(string text, WoWConsoleColor color, params string[] args)
+    //    {
+    //        _write(text, color, args);
+    //    }
+    //}
+
     // Credits go to [TOM_RUS] for this one
     // http://www.ownedcore.com/forums/world-of-warcraft/world-of-warcraft-bots-programs/wow-memory-editing/406212-3-3-5a-implementing-new-console-commands.html
 

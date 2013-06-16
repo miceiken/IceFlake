@@ -4,22 +4,6 @@ using System.Collections.Generic;
 
 namespace IceFlake.Client.Patchables
 {
-    #region TalentSpellInfo
-
-    [StructLayout(LayoutKind.Sequential)]
-    internal struct TalentSpellInfo
-    {
-        public uint TalentSpellId;
-        public IntPtr NextPtr;
-        public int dword8;
-        public int dwordC;
-        public int dword10;
-        public int dword14;
-        public uint OverridenSpellId;
-    }
-
-    #endregion
-
     #region SpellBookRec
 
     public struct SpellBookRec
@@ -773,7 +757,7 @@ namespace IceFlake.Client.Patchables
     [StructLayout(LayoutKind.Sequential)]
     public struct AuctionEntry
     {
-        private readonly uint unk0;
+        private uint unk0;
         public uint Id;
         public uint Entry;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 10)]
@@ -797,6 +781,16 @@ namespace IceFlake.Client.Patchables
         public DateTime Expires
         {
             get { return DateTime.Now.AddMilliseconds(TimeLeft - Helper.PerformanceCount); }
+        }
+
+        public ItemInfo ItemData
+        {
+            get { return IceFlake.Client.Objects.WoWItem.GetItemRecordFromId(Id); }
+        }
+
+        public string BuyoutPriceInCurrency
+        {
+            get { return BuyoutPrice.ToWowCurrency(); }
         }
 
         public static readonly int Size = Marshal.SizeOf(typeof(AuctionEntry));
@@ -857,20 +851,12 @@ namespace IceFlake.Client.Patchables
         public float PointX;
         public float PointY;
         public uint PointOpt;
-        //[MarshalAs(UnmanagedType.ByValArray, SizeConst = 512)]
-        //byte[] _Title;
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 512)]
         public string Title;
-        //[MarshalAs(UnmanagedType.ByValArray, SizeConst = 3000)]
-        //byte[] _Objectives;
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 3000)]
         public string Objectives;
-        //[MarshalAs(UnmanagedType.ByValArray, SizeConst = 3000)]
-        //byte[] _Details;
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 3000)]
         public string Details;
-        //[MarshalAs(UnmanagedType.ByValArray, SizeConst = 512)]
-        //byte[] _EndText;
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 512)]
         public string EndText;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
@@ -929,11 +915,6 @@ namespace IceFlake.Client.Patchables
         public uint[] ReqCurrencyCount;
         public uint AcceptSoundId;
         public uint TurnInSoundKitId;
-
-        //public string Title { get { return Encoding.UTF8.GetString(_Title.TakeWhile(b => b != 0).ToArray()); } }
-        //public string Objectives { get { return Encoding.UTF8.GetString(_Objectives.TakeWhile(b => b != 0).ToArray()); } }
-        //public string Details { get { return Encoding.UTF8.GetString(_Details.TakeWhile(b => b != 0).ToArray()); } }
-        //public string EndText { get { return Encoding.UTF8.GetString(_EndText.TakeWhile(b => b != 0).ToArray()); } }
     }
 
     #endregion
@@ -987,7 +968,7 @@ namespace IceFlake.Client.Patchables
     {
         fixed int unk0[2];
         public SlimDX.Vector3 Position;
-        public SlimDX.Matrix Facing;
+        public fixed float Facing[9];
         public float NearPlane;
         public float FarPlane;
         public float FieldOfView;

@@ -48,7 +48,7 @@ namespace IceFlake.Scripts
             CurrentState = FishingState.Lure;
             Fishes = 0;
             Fishing = Manager.Spellbook["Fishing"];
-            if (!Fishing.IsValid)
+            if (Fishing == null || !Fishing.IsValid)
             {
                 Print("You don't know fishing!");
                 Stop();
@@ -130,7 +130,7 @@ namespace IceFlake.Scripts
 
                 // TODO: Clean up, add dynamic fishing trainer locator.
                 case FishingState.Training:
-                    if (!Trainer.IsValid)
+                    if (Trainer == null || !Trainer.IsValid)
                     { // Marcia Chase, Dalaran - Neutral.
                         Trainer = Manager.ObjectManager.Objects.Where(x => x.IsValid && x.IsUnit).OfType<WoWUnit>().FirstOrDefault(u => u.Entry == 28742);
                         return;

@@ -107,6 +107,8 @@
     <Compile Include="Client\World.cs" />
     <Compile Include="Client\WoWDB.cs" />
     <Compile Include="Client\WoWScript.cs" />
+    <Compile Include="DirectX\Graphics.cs" />
+    <Compile Include="DirectX\IResource.cs" />
     <Compile Include="Manager.cs" />
     <Compile Include="DirectX\Direct3D.cs" />
     <Compile Include="DirectX\EndSceneHandler.cs" />
@@ -123,6 +125,7 @@
     <Compile Include="Runtime\AseemblyAnalyzer.cs" />
     <Compile Include="Runtime\CallbackManager.cs" />
     <Compile Include="Runtime\Extensions.cs" />
+    <Compile Include="Scripts\DebugScript.cs" />
     <Compile Include="Scripts\RenderingScripts.cs" />
     <Compile Include="Scripts\DumpersScripts.cs" />
     <Compile Include="Scripts\FishingScript.cs" />

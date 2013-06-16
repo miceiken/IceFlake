@@ -56,9 +56,6 @@ namespace IceFlake.Scripts
         public override void OnTick()
         {
             var lp = Manager.LocalPlayer;
-            //DrawCube(lp.Location.ToVector3(), 3f, 3f, 3f);
-            //DrawText(lp.Location.ToVector3(), lp.Name);
-
             foreach (var u in Manager.ObjectManager.Objects.Where(x => x.IsValid && x.IsUnit).OfType<WoWUnit>())
             {
                 if (u == null || !u.IsValid)
@@ -107,10 +104,12 @@ namespace IceFlake.Scripts
             D3D.Device.DrawUserPrimitives(PrimitiveType.LineStrip, vertices.Count - 1, buffer);
         }
 
+        private Mesh cube = null;
         private void DrawCube(Vector3 loc, float width, float height, float depth)
         {
-            var mesh = Mesh.CreateBox(D3D.Device, width, height, depth);
-            DrawMesh(mesh, loc + new Vector3(0, 0, 1.3f), true);
+            if (cube == null)
+                cube = Mesh.CreateBox(D3D.Device, width, height, depth);
+            DrawMesh(cube, loc + new Vector3(0, 0, 1.3f), true);
         }
 
         private void DrawText(Vector3 loc, string text)
@@ -124,8 +123,7 @@ namespace IceFlake.Scripts
         {
             if (wireframe)
                 D3D.Device.SetRenderState(RenderState.FillMode, FillMode.Wireframe);
-            var worldMatrix = Matrix.Translation(loc);
-            D3D.Device.SetTransform(TransformState.World, worldMatrix);
+            SetTarget(loc);
             mesh.DrawSubset(0);
             if (wireframe)
                 D3D.Device.SetRenderState(RenderState.FillMode, FillMode.Solid);

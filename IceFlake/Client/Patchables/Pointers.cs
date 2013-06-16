@@ -221,5 +221,18 @@
         }
 
         #endregion
+
+        #region Nested type: Console
+
+        // 3.3.5a: 12340
+        internal class Console
+        {
+            internal static uint Enable = 0x00CABCC4;
+            internal static uint WriteA = 0x00765360;
+            internal static uint RegisterCommand = 0x00769100;
+            internal static uint UnregisterCommand = 0x007689E0;
+        }
+
+        #endregion
     }
 }

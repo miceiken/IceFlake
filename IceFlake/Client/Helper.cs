@@ -43,6 +43,11 @@ namespace IceFlake.Client
             InCombat = false;
         }
 
+        public static string ToWowCurrency(this ulong amount)
+        {
+            return String.Format("{0}g {1}s {2}c", amount / 10000, amount / 100 % 100, amount % 100);
+        }
+
         #region Properties
 
         public static bool InCombat { get; private set; }
