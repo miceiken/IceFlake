@@ -255,7 +255,7 @@ namespace IceFlake.Scripts
             Print("QuestLog:");
             foreach (var q in quests)
             {
-                var qcr = Manager.Quests[q.ID];
+                var qcr = q.AsWoWQuest();
                 Print("-- Quest #{0}: {1}", q.ID, qcr.CachedEntry.Name);
                 Print("\tState: {0}", q.State);
                 Print("\tObjectives:");

@@ -168,8 +168,8 @@
             internal static uint DdItemCache_GetInfoBlockByID = 0x0067CA30;
             internal static uint DbQuestCache_GetInfoBlockByID = 0x0067DE90;
 
-            internal static uint ItemInfo = 0x00C5D828;
-            internal static uint QuestInfo = 0x00C5DA48;
+            internal static uint WdbItemCache = 0x00C5D828;
+            internal static uint WdbQuestCache = 0x00C5DA48;
         }
 
         #endregion

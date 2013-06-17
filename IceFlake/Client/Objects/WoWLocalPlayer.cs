@@ -137,7 +137,7 @@ namespace IceFlake.Client.Objects
                 _getQuestInfoBlockById = Manager.Memory.RegisterDelegate<GetQuestInfoBlockByIdDelegate>((IntPtr)Pointers.WDB.DbQuestCache_GetInfoBlockByID);
 
             long a3 = 0;
-            var recPtr = _getQuestInfoBlockById((IntPtr)Pointers.WDB.QuestInfo, id, ref id);
+            var recPtr = _getQuestInfoBlockById((IntPtr)Pointers.WDB.WdbQuestCache, id, ref id);
             return Manager.Memory.Read<QuestCacheRecord>(recPtr);
         }
 

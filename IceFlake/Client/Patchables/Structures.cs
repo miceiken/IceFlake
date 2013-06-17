@@ -783,7 +783,7 @@ namespace IceFlake.Client.Patchables
             get { return DateTime.Now.AddMilliseconds(TimeLeft - Helper.PerformanceCount); }
         }
 
-        public ItemCacheRecord ItemData
+        public ItemCacheRecord ItemInfo
         {
             get { return IceFlake.Client.Objects.WoWItem.GetItemRecordFromId(Id); }
         }
@@ -808,6 +808,11 @@ namespace IceFlake.Client.Patchables
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public short[] Objectives;
         public int Time;
+
+        public WoWQuest AsWoWQuest()
+        {
+            return new WoWQuest(this.ID);
+        }
     }
 
     [StructLayout(LayoutKind.Sequential)]

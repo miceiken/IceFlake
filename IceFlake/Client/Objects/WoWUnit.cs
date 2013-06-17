@@ -42,14 +42,6 @@ namespace IceFlake.Client.Objects
         private delegate bool HasAuraDelegate(IntPtr thisObj, int spellId);
         private static HasAuraDelegate _hasAura;
 
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate int HandleTrackingFacingDelegate(IntPtr thisObj, int a2, float a3);
-        private HandleTrackingFacingDelegate _handleTrackingFacing;
-
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate int SetPlayerPitchDelegate(IntPtr thisObj, float a2, int a3, float a4);
-        private SetPlayerPitchDelegate _setPlayerPitch;
-
         private readonly AuraCollection _auras;
 
         public WoWUnit(IntPtr pointer)

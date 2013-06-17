@@ -138,7 +138,7 @@ namespace IceFlake.Client.Objects
             if (_getItemInfoBlockById == null)
                 _getItemInfoBlockById = Manager.Memory.RegisterDelegate<GetItemInfoBlockByIdDelegate>((IntPtr)Pointers.WDB.DdItemCache_GetInfoBlockByID);
 
-            return _getItemInfoBlockById((IntPtr)Pointers.WDB.ItemInfo, id, ref guid);
+            return _getItemInfoBlockById((IntPtr)Pointers.WDB.WdbItemCache, id, ref guid);
         }
 
         public static ItemCacheRecord GetItemRecordFromId(uint id, ulong guid = 0ul)
