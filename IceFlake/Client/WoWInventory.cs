@@ -8,11 +8,11 @@ using IceFlake.Client.Patchables;
 
 namespace IceFlake.Client
 {
-    public class Inventory
+    public class WoWInventory
     {
         private WoWLocalPlayer Me { get { return Manager.ObjectManager.LocalPlayer; } }
 
-        public Inventory()
+        public WoWInventory()
         {
         }
 

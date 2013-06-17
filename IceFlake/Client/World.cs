@@ -33,12 +33,12 @@ namespace IceFlake.Client
 
         public static string CurrentZone
         {
-            get { return Manager.Memory.ReadString((IntPtr)Pointers.World.ZoneText); }
+            get { return Manager.Memory.ReadString(Manager.Memory.Read<IntPtr>((IntPtr)Pointers.World.ZoneText)); }
         }
 
         public static string CurrentSubZone
         {
-            get { return Manager.Memory.ReadString((IntPtr)Pointers.World.SubZoneText); }
+            get { return Manager.Memory.ReadString(Manager.Memory.Read<IntPtr>((IntPtr)Pointers.World.SubZoneText)); }
         }
 
         public static uint CurrentZoneId
@@ -67,7 +67,7 @@ namespace IceFlake.Client
         {
             start.Z += 1.3f;
             end.Z += 1.3f;
-            return Traceline(start, end, (uint)TraceLineHitFlags.HitTestLOS);
+            return Traceline(start, end, 0x120171);
         }
 
         #region Nested type: TracelineDelegate

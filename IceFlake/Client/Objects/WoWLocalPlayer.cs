@@ -31,6 +31,10 @@ namespace IceFlake.Client.Objects
         private delegate bool CanUseItemDelegate(IntPtr thisObj, IntPtr itemSparseRec, out GameError error);
         private static CanUseItemDelegate _canUseItem;
 
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+        private delegate IntPtr GetQuestInfoBlockByIdDelegate(IntPtr instance, int a2, ref int a3, int a4 = 0, int a5 = 0, int a6 = 0);
+        private static GetQuestInfoBlockByIdDelegate _getQuestInfoBlockById;
+
         //[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         //private delegate int GetRuneReadyDelegate(int slot);
         //private static GetRuneReadyDelegate _getRuneReday;
@@ -78,16 +82,6 @@ namespace IceFlake.Client.Objects
             get { return Manager.Memory.Read<int>((IntPtr)Pointers.LocalPlayer.ComboPoints); }
         }
 
-        public IEnumerable<QuestLogEntry> Quests
-        {
-            get
-            {
-                for (int i = 0; i < 25; i++)
-                    if (GetAbsoluteDescriptor<uint>((int)WoWPlayerFields.PLAYER_QUEST_LOG_1_1 * 0x4 + (i * 0x14)) > 0)
-                        yield return GetAbsoluteDescriptor<QuestLogEntry>((int)WoWPlayerFields.PLAYER_QUEST_LOG_1_1 * 0x4 + (i * 0x14));
-            }
-        }
-
         public IEnumerable<WoWUnit> Totems
         {
             get
@@ -101,12 +95,6 @@ namespace IceFlake.Client.Objects
         }
 
         #region Item helpers
-
-        private Inventory _inventory = new Inventory();
-        public Inventory Inventory
-        {
-            get { return _inventory; }
-        }
 
         public WoWItem GetBackpackItem(int slot)
         {
@@ -141,6 +129,16 @@ namespace IceFlake.Client.Objects
             if (_canUseItem == null)
                 _canUseItem = Manager.Memory.RegisterDelegate<CanUseItemDelegate>((IntPtr)Pointers.Item.CanUseItem);
             return _canUseItem(this.Pointer, pointer, out error);
+        }
+
+        public QuestCacheRecord GetQuestRecordFromId(int id)
+        {
+            if (_getQuestInfoBlockById == null)
+                _getQuestInfoBlockById = Manager.Memory.RegisterDelegate<GetQuestInfoBlockByIdDelegate>((IntPtr)Pointers.WDB.DbQuestCache_GetInfoBlockByID);
+
+            long a3 = 0;
+            var recPtr = _getQuestInfoBlockById((IntPtr)Pointers.WDB.QuestInfo, id, ref id);
+            return Manager.Memory.Read<QuestCacheRecord>(recPtr);
         }
 
         #endregion

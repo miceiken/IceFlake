@@ -12,8 +12,8 @@ namespace IceFlake.Client.Objects
         private static UseItemDelegate _useItem;
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate IntPtr GetInfoBlockByIdDelegate(IntPtr instance, uint id, ref ulong guid, int a4 = 0, int a5 = 0, int a6 = 0);
-        private static GetInfoBlockByIdDelegate _getInfoBlockById;
+        private delegate IntPtr GetItemInfoBlockByIdDelegate(IntPtr instance, uint id, ref ulong guid, int a4 = 0, int a5 = 0, int a6 = 0);
+        private static GetItemInfoBlockByIdDelegate _getItemInfoBlockById;
 
         public WoWItem(IntPtr pointer)
             : base(pointer)
@@ -87,7 +87,7 @@ namespace IceFlake.Client.Objects
             get { return ((uint)this.Flags & 1u) != 0; }
         }
 
-        public ItemInfo ItemInfo
+        public ItemCacheRecord ItemInfo
         {
             get;
             private set;
@@ -135,18 +135,18 @@ namespace IceFlake.Client.Objects
 
         public static IntPtr GetItemRecordPointerFromId(uint id, ulong guid = 0ul)
         {
-            if (_getInfoBlockById == null)
-                _getInfoBlockById = Manager.Memory.RegisterDelegate<GetInfoBlockByIdDelegate>((IntPtr)Pointers.WDB.DBItemCache_GetInfoBlockByID);
+            if (_getItemInfoBlockById == null)
+                _getItemInfoBlockById = Manager.Memory.RegisterDelegate<GetItemInfoBlockByIdDelegate>((IntPtr)Pointers.WDB.DdItemCache_GetInfoBlockByID);
 
-            return _getInfoBlockById((IntPtr)Pointers.WDB.ItemInfo, id, ref guid);
+            return _getItemInfoBlockById((IntPtr)Pointers.WDB.ItemInfo, id, ref guid);
         }
 
-        public static ItemInfo GetItemRecordFromId(uint id, ulong guid = 0ul)
+        public static ItemCacheRecord GetItemRecordFromId(uint id, ulong guid = 0ul)
         {
             var ptr = GetItemRecordPointerFromId(id, guid);
             if (ptr == IntPtr.Zero)
-                return default(ItemInfo);
-            return Manager.Memory.Read<ItemInfo>(ptr);
+                return default(ItemCacheRecord);
+            return Manager.Memory.Read<ItemCacheRecord>(ptr);
         }
 
         public static IEnumerable<EquipSlot> GetInventorySlotsByEquipSlot(InventoryType type)

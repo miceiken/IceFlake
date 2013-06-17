@@ -140,7 +140,7 @@ namespace IceFlake.Scripts
                 return;
 
             Print("Inventory Items");
-            foreach (var item in Manager.LocalPlayer.Inventory.InventoryItems)
+            foreach (var item in Manager.Inventory.InventoryItems)
             {
                 if (item == null || !item.IsValid) continue;
 
@@ -247,14 +247,19 @@ namespace IceFlake.Scripts
             if (!Manager.ObjectManager.IsInGame)
                 return;
 
-            var quests = Manager.LocalPlayer.Quests;
-            Print("Quests:");
+            Print("Completed Quests:");
+            foreach (var q in Manager.Quests.CompletedQuests)
+                Print("\t{0}", q);
+
+            var quests = Manager.Quests.QuestLog;
+            Print("QuestLog:");
             foreach (var q in quests)
             {
-                Print("-- Quest #{0}", q.ID);
+                var qcr = Manager.Quests[q.ID];
+                Print("-- Quest #{0}: {1}", q.ID, qcr.CachedEntry.Name);
                 Print("\tState: {0}", q.State);
                 Print("\tObjectives:");
-                foreach (var o in q.Objectives)
+                foreach (var o in q.Objectives.Where(qo => qo != 0))
                     Print("\t\t{0}", o);
                 Print("\tTime: {0}", q.Time);
             }

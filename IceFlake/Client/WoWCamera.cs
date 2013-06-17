@@ -8,9 +8,9 @@ using SlimDX;
 
 namespace IceFlake.Client
 {
-    public unsafe class Camera
+    public unsafe class WoWCamera
     {
-        public Camera()
+        public WoWCamera()
         {
             this.Pointer = Manager.Memory.Read<IntPtr>(new IntPtr(Manager.Memory.Read<uint>((IntPtr)Pointers.Drawing.WorldFrame) + Pointers.Drawing.ActiveCamera));
         }

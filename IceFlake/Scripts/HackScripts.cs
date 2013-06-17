@@ -18,7 +18,7 @@ namespace IceFlake.Scripts
         private readonly IntPtr POINTER = new IntPtr(0x6F14A8);
 
         private const uint START_SPEED = 0x9000E6C1;
-        private const uint SPEED_MODIFIER = 4;
+        private const uint SPEED_MODIFIER = 3; // 1-4
 
         public override void OnStart()
         {

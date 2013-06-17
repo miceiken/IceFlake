@@ -84,6 +84,7 @@
             internal static uint GetRuneReadyBySlot = 0x629940; // UPDATE
             internal static uint CorpsePosition = 0x0051F430;
             internal static uint ComboPoints = 0x00BD084D;
+            internal static uint CompletedQuests = 0x00ACFDF4;
         }
 
         #endregion
@@ -164,9 +165,11 @@
         internal class WDB
         {
             internal static uint DbWoWCache_GetInfoBlockById = 0x0067FA80;
-            internal static uint DBItemCache_GetInfoBlockByID = 0x0067CA30;
+            internal static uint DdItemCache_GetInfoBlockByID = 0x0067CA30;
+            internal static uint DbQuestCache_GetInfoBlockByID = 0x0067DE90;
 
             internal static uint ItemInfo = 0x00C5D828;
+            internal static uint QuestInfo = 0x00C5DA48;
         }
 
         #endregion

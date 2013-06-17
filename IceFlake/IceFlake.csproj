@@ -67,15 +67,15 @@
     <Compile Include="Client\API\Taxi.cs" />
     <Compile Include="Client\API\TradeSkill.cs" />
     <Compile Include="Client\API\Trainer.cs" />
-    <Compile Include="Client\Camera.cs" />
+    <Compile Include="Client\WoWCamera.cs" />
     <Compile Include="Client\ClientServices.cs" />
     <Compile Include="Client\Collections\AuraCollection.cs" />
     <Compile Include="Client\Collections\SpellCollection.cs" />
-    <Compile Include="Client\Console.cs" />
+    <Compile Include="Client\WoWConsole.cs" />
     <Compile Include="Client\EndSceneExecute.cs" />
     <Compile Include="Client\Events.cs" />
     <Compile Include="Client\Helper.cs" />
-    <Compile Include="Client\Inventory.cs" />
+    <Compile Include="Client\WoWInventory.cs" />
     <Compile Include="Client\Location.cs" />
     <Compile Include="Client\LuaInterface.cs" />
     <Compile Include="Client\Movement.cs" />
@@ -98,6 +98,7 @@
     <Compile Include="Client\Patchables\Pointers.cs" />
     <Compile Include="Client\Patchables\Structures.cs" />
     <Compile Include="Client\Pather.cs" />
+    <Compile Include="Client\Collections\QuestCollection.cs" />
     <Compile Include="Client\Raid.cs" />
     <Compile Include="Client\Scripts\Script.cs" />
     <Compile Include="Client\Scripts\ScriptManager.cs" />
@@ -106,6 +107,7 @@
     <Compile Include="Client\Scripts\TerminateException.cs" />
     <Compile Include="Client\World.cs" />
     <Compile Include="Client\WoWDB.cs" />
+    <Compile Include="Client\WoWQuest.cs" />
     <Compile Include="Client\WoWScript.cs" />
     <Compile Include="DirectX\Graphics.cs" />
     <Compile Include="DirectX\IResource.cs" />

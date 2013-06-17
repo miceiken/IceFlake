@@ -300,7 +300,7 @@ namespace IceFlake.Client.Patchables
     #region ItemRec
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-    public struct ItemInfo
+    public struct ItemCacheRecord
     {
         public int ID;
         public ItemClass Class;
@@ -783,7 +783,7 @@ namespace IceFlake.Client.Patchables
             get { return DateTime.Now.AddMilliseconds(TimeLeft - Helper.PerformanceCount); }
         }
 
-        public ItemInfo ItemData
+        public ItemCacheRecord ItemData
         {
             get { return IceFlake.Client.Objects.WoWItem.GetItemRecordFromId(Id); }
         }
@@ -798,123 +798,91 @@ namespace IceFlake.Client.Patchables
 
     #endregion
 
-    #region QuestLogEntry
+    #region Quest
 
     [StructLayout(LayoutKind.Sequential)]
     public struct QuestLogEntry
     {
-        public uint ID;
-        public uint State;
+        public int ID;
+        public QuestState State;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public ushort[] Objectives;
-        public uint Time;
+        public short[] Objectives;
+        public int Time;
     }
 
-    #endregion
-
-    #region QuestCacheRec
-
     [StructLayout(LayoutKind.Sequential)]
-    public struct QuestCacheRec
+    public unsafe struct QuestCacheRecord
     {
-        public uint Id;
-        public uint Tag;
+        public int Id;
+        public int Method;
         public int Level;
-        public uint MinLevel;
-        public int ZoneOrSort;
-        public uint Type;
-        public uint SuggestedPlayers;
-        public uint RepObjectiveFaction;
-        public uint RepObjectiveValue;
-        public uint OppositeRepFaction;
-        public uint OppositeRepValue;
-        public uint FollowupQuestId;
-        public uint RewXPId;
-        public uint RewOrReqMoney;
-        public uint RewMoneyMaxLevel;
-        public uint RewSpell;
-        public uint RewSpellCast;
-        public uint RewHonorAddition;
-        public float RewHonorMultiplier;
-        public uint SrcItemId;
-        public uint QuestFlags;
-        public uint QuestFlags2;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public uint[] RewItem;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public uint[] RewItemCount;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
-        public uint[] ReqChoiseItem;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
-        public uint[] ReqChoiseItemCount;
-        public uint PointMapId;
+        public int RequiredLevel;
+        public int AreaIdOrSortId;
+        public int InfoId;
+        public int SuggestedPlayers;
+        public int FriendlyFactionID;
+        public int FriendlyFactionAmount;
+        public int HostileFactionID;
+        public int HostileFactionAmount;
+        public int NextQuestId;
+        public int XPId;
+        public int RewardMoney;
+        public int RewardMoneyInsteadOfXp;
+        public int RewardSpellId;
+        public int EffectOnPlayer;
+        public int RewardHonor;
+        public float RewardHonorBonus;
+        public int StartingItemId;
+        public int Flags;
+        public fixed int RewardItem[4];
+        public fixed int RewardItemCount[4];
+        public fixed int RewardChoiceItem[6];
+        public fixed int RewardChoiceItemCount[6];
+        public int PointMapID;
         public float PointX;
         public float PointY;
-        public uint PointOpt;
+        public int PointOptional;
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 512)]
-        public string Title;
+        public string Name;
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 3000)]
-        public string Objectives;
+        public string ObjectiveText;
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 3000)]
-        public string Details;
+        public string Description;
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 512)]
         public string EndText;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public uint[] ReqCreatureOrGOId;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public uint[] ReqCreatureOrGOIdCount;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
-        public uint[] CollectItemId;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
-        public uint[] CollectItemCount;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public uint[] IntermediateItemId;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public uint[] IntermediateItemCount;
-        public uint ReqLearnedSpell;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
-        private readonly byte[] _ObjectiveText1;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
-        private readonly byte[] _ObjectiveText2;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
-        private readonly byte[] _ObjectiveText3;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
-        private readonly byte[] _ObjectiveText4;
-        public uint CharTitleId;
-        public uint PlayersSlain;
-        public uint BonusTalents;
-        public uint BonusArenaPoints;
-        public uint RewSkill;
-        public uint RewSkillValue;
-        public uint QuestPortrait;
-        public uint QuestPortraitTurnIn;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 1024)]
-        private readonly byte[] _QuestPortraitText;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
-        private readonly byte[] _QuestPortraitName;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 1024)]
-        private readonly byte[] _QuestPortraitTurnInText;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
-        private readonly byte[] _QuestPortraitTurnInName;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2048)]
-        private readonly byte[] _CompletedText;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5)]
-        public uint[] RewRepFaction;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5)]
-        public uint[] RewRepValueId;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5)]
-        public uint[] RewRepValue;
-        public uint RewRepShowMask;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public uint[] RewCurrencyId;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public uint[] RewCurrencyCount;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public uint[] ReqCurrencyId;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public uint[] ReqCurrencyCount;
-        public uint AcceptSoundId;
-        public uint TurnInSoundKitId;
+        public fixed int ObjectiveId[4];
+        public fixed int ObjectiveRequiredCount[4];
+        public fixed int CollectItemId[6];
+        public fixed int CollectItemCount[6];
+        public fixed int IntermediateItemId[4];
+        public fixed int IntermediateItemCount[4];
+        //[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
+        //public fixed byte OverrideObjectiveText[4][256]; // 4 * 256
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
+        public string OverrideObjectiveText1;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
+        public string OverrideObjectiveText2;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
+        public string OverrideObjectiveText3;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
+        public string OverrideObjectiveText4;
+        public int RewardTitleId;
+        public int RequiredPlayersKilled;
+        public int RewardTalentPoints;
+        public int RewardArenaPoints;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 2048)]
+        public string CompletionText;
+        public fixed int RewardReputationFaction[5];
+        public fixed int FactionRewardID[5];
+        public fixed int RewardReputationOverride[5];
+        public int Unk17;
+    }
+
+    public enum QuestState
+    {
+        None = 0,
+        Complete = 1,
+        Fail = 2,
     }
 
     #endregion

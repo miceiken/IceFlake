@@ -64,7 +64,7 @@ namespace IceFlake.Scripts
                 var color = (!u.IsFriendly ? colorRed : colorGreen);
                 //DrawCube(u.Location.ToVector3(), 3f, 3f, 3f);
                 DrawCircle(u.Location, 3f, color, color);
-                DrawLine(Manager.LocalPlayer.Location.ToVector3(), u.Location.ToVector3(), colorBlue);
+                DrawLine(Manager.LocalPlayer.Location.ToVector3(), u.Location.ToVector3(), u.InLoS ? colorBlue : colorRed);
             }
         }
 

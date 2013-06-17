@@ -40,8 +40,10 @@ namespace IceFlake
             AssemblyAnalyzer.Analyze(Assembly.GetExecutingAssembly());
 
             Helper.Initialize();
-            DBC = new WoWDB();            
-            Camera = new Camera();            
+            DBC = new WoWDB();
+            Quests = new QuestCollection();
+            Inventory = new WoWInventory();
+            Camera = new WoWCamera();            
 
             sw.Stop();
             Log.WriteLine("Initialization took {0} ms", sw.ElapsedMilliseconds);
@@ -67,26 +69,20 @@ namespace IceFlake
         }
 
         internal static InProcessMemoryReader Memory { get; private set; }
-
         internal static ObjectManager ObjectManager { get; private set; }
+        internal static EndSceneExecute ExecutionQueue { get; private set; }
+        internal static WoWDB DBC { get; private set; }
+        internal static Movement Movement { get; private set; }
+        internal static SpellCollection Spellbook { get; private set; }
+        internal static QuestCollection Quests { get; private set; }
+        internal static WoWInventory Inventory { get; private set; }
+        internal static WoWCamera Camera { get; private set; }
+        internal static Events Events { get; private set; }
+        internal static ScriptManager Scripts { get; private set; }
 
         internal static WoWLocalPlayer LocalPlayer
         {
             get { return ObjectManager.LocalPlayer; }
         }
-
-        internal static EndSceneExecute ExecutionQueue { get; private set; }
-
-        internal static WoWDB DBC { get; private set; }
-
-        internal static Movement Movement { get; private set; }
-
-        internal static SpellCollection Spellbook { get; private set; }
-
-        internal static Camera Camera { get; private set; }
-
-        internal static Events Events { get; private set; }
-
-        internal static ScriptManager Scripts { get; private set; }
     }
 }

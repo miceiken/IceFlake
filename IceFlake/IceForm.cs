@@ -60,8 +60,6 @@ namespace IceFlake
         {
             Log.AddReader(this);
             Log.WriteLine("CoreForm loaded");
-
-            SetupScripts();
         }
 
         private void IceForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -91,9 +89,6 @@ namespace IceFlake
 
         private void SetupScripts()
         {
-            if (Manager.Scripts == null)
-                return;
-
             Manager.Scripts.ScriptRegistered += OnScriptRegisteredEvent;
 
             foreach (var s in Manager.Scripts.Scripts)
@@ -181,6 +176,10 @@ namespace IceFlake
 
         private void GUITimer_Tick(object sender, EventArgs e)
         {
+            if (lstScripts.Items.Count == 0)
+                if (Manager.Scripts != null)
+                    SetupScripts();
+
             if (Manager.Scripts.Scripts.Where(s => s.IsRunning).Contains(SelectedScript))
             {
                 btnScriptStart.Enabled = false;
@@ -195,12 +194,16 @@ namespace IceFlake
             if (!Manager.ObjectManager.IsInGame)
                 return;
 
-            var lp = Manager.LocalPlayer;
-            lblHealth.Text = string.Format("{0}/{1} ({2:0}%)", lp.Health, lp.MaxHealth, lp.HealthPercentage);
-            lblPowerText.Text = string.Format("{0}:", lp.PowerType);
-            lblPower.Text = string.Format("{0}/{1} ({2:0}%)", lp.Power, lp.MaxPower, lp.PowerPercentage);
-            lblLevel.Text = string.Format("{0}", lp.Level);
-            lblZone.Text = string.Format("{0} ({1})", World.CurrentZone, World.CurrentSubZone);
+            try
+            {
+                var lp = Manager.LocalPlayer;
+                lblHealth.Text = string.Format("{0}/{1} ({2:0}%)", lp.Health, lp.MaxHealth, lp.HealthPercentage);
+                lblPowerText.Text = string.Format("{0}:", lp.PowerType);
+                lblPower.Text = string.Format("{0}/{1} ({2:0}%)", lp.Power, lp.MaxPower, lp.PowerPercentage);
+                lblLevel.Text = string.Format("{0}", lp.Level);
+                lblZone.Text = string.Format("{0} ({1})", World.CurrentZone ?? "<unknown>", World.CurrentSubZone ?? "<unknown>");
+            }
+            catch { }
         }
 
         private void btnExecute_Click(object sender, EventArgs e)
