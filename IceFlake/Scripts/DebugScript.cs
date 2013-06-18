@@ -19,13 +19,14 @@ namespace IceFlake.Scripts
             if (!Manager.ObjectManager.IsInGame)
                 return;
 
+            Print("Death Knight Runes:");
             var runeStates = Manager.Memory.Read<uint>((IntPtr)Pointers.LocalPlayer.RuneState);
             for (var i = 0; i < 6; i++)
             {
                 var runeType = Manager.Memory.Read<int>(new IntPtr(Pointers.LocalPlayer.RuneType + i * 4));
                 var runeReady = (runeStates & (1 << i)) > 0;
                 var runeCooldown = Manager.Memory.Read<int>(new IntPtr(Pointers.LocalPlayer.RuneCooldown + i * 4));
-                Print("{0}: {1} {2}", (RuneType)runeType, runeReady ? "Ready" : "Not ready", runeCooldown);
+                Print("\t {0}: {1} {2}", (RuneType)runeType, runeReady ? "Ready" : "Not ready", runeCooldown);
             }
         }
     }

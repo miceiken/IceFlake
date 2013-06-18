@@ -7,6 +7,8 @@ namespace IceFlake.Client
 {
     public static class Party
     {
+        // Party Leader GUID BD1968
+        // Party Difficulty BD0898  BD1978
         public static int NumPartyMembers
         {
             get
@@ -41,7 +43,12 @@ namespace IceFlake.Client
 
         public static ulong GetPartyMemberGuid(int index)
         {
-            return Manager.Memory.Read<ulong>(new IntPtr(Pointers.Party.PartyArray + (index * 8)), true);
+            return Manager.Memory.Read<ulong>(new IntPtr(Pointers.Party.PartyArray + index));
+        }
+
+        public static DungeonDifficulty Difficulty
+        {
+            get { return (DungeonDifficulty)Manager.Memory.Read<int>((IntPtr)Pointers.Party.DungeonDifficulty); }
         }
     }
 }

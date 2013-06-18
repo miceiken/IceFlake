@@ -216,7 +216,8 @@
         // 3.3.5a: 12340
         internal class Party
         {
-            internal static uint PartyArray = 0x00BD1948; // UNCONFIRMED: 0x00C4FCC8?
+            internal static uint PartyArray = 0x00BD1948;
+            internal static uint DungeonDifficulty = 0x00BD0898;
         }
 
         #endregion
@@ -226,10 +227,9 @@
         // 3.3.5a: 12340
         internal class Raid
         {
-            internal static uint RaidCount = 0x00C543E0;
-            // return ( ulong** )0x00C54340;
-            internal static uint RaidArray = 0x00C54340;
-            internal static uint InstanceDifficulty = 0x00C4EC2C;
+            internal static uint RaidCount = 0x00BEB608;
+            internal static uint RaidArray = 0x00BEB568;
+            internal static uint RaidDifficulty = 0x00BD089C;
         }
 
         #endregion

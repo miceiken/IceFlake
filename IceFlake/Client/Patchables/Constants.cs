@@ -1085,7 +1085,13 @@ namespace IceFlake.Client.Patchables
 
     #region Player related
 
-    public enum InstanceDifficulty : int
+    public enum DungeonDifficulty : int
+    {
+        Normal = 0,
+        Heroic = 1,
+    }
+
+    public enum RaidDifficulty : int
     {
         Normal10 = 0,
         Normal25 = 1,

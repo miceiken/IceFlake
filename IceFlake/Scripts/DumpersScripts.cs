@@ -86,6 +86,10 @@ namespace IceFlake.Scripts
                 Print("\tLoS: {0}", p.InLoS);
             }
 
+            //Print("Party:");
+            //for (var i = 0; i < 4; i++)
+            //    Print("\t{0}", Party.GetPartyMemberGuid(i));
+
             Stop();
         }
     }
@@ -119,6 +123,10 @@ namespace IceFlake.Scripts
                 Print("\tLocation: {0} ({1} yards)", p.Location, p.Distance);
                 Print("\tLoS: {0}", p.InLoS);
             }
+
+            //Print("Raid ({0} members):", Raid.NumRaidMembers);
+            //for (var i = 0; i < Raid.NumRaidMembers; i++)
+            //    Print("\t{0}", Raid.GetRaidMemberGuid(i));
 
             Stop();
         }
