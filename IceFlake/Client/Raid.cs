@@ -32,7 +32,7 @@ namespace IceFlake.Client
 
         public static ulong GetRaidMemberGuid(int index)
         {
-            return Manager.Memory.Read<ulong>(new IntPtr(Pointers.Raid.RaidArray + (index * 8)), true);
+            return Manager.Memory.Read<ulong>(new IntPtr(Manager.Memory.Read<uint>((IntPtr)Pointers.Raid.RaidArray) + (index * 8)), true);
         }
 
         public static InstanceDifficulty Difficulty

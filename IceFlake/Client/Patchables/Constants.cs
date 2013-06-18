@@ -1188,7 +1188,7 @@ namespace IceFlake.Client.Patchables
 
     public enum RuneType : uint
     {
-        Blood,
+        Blood = 0,
         Unholy,
         Frost,
         Death

@@ -60,6 +60,7 @@
             internal static uint ChanneledCastingId = 0xC20;
             internal static uint CastingId = 0xc08;
 
+            internal static uint UpdateDisplayInfo = 0x73e410; // TODO: IMPLEMENT
             internal static uint UnitReaction = 0x007251C0;
             internal static uint HasAuraBySpellId = 0x007282A0;
             internal static uint GetAura = 0x00556E10;
@@ -81,10 +82,13 @@
             internal static uint SetFacing = 0x0072EA50;
             internal static uint IsClickMoving = 0x00721F90;
             internal static uint StopCTM = 0x0072B3A0;
-            internal static uint GetRuneReadyBySlot = 0x629940; // UPDATE
             internal static uint CorpsePosition = 0x0051F430;
             internal static uint ComboPoints = 0x00BD084D;
             internal static uint CompletedQuests = 0x00ACFDF4;
+
+            internal static uint RuneState = 0xC24388;
+            internal static uint RuneType = 0xC24304;
+            internal static uint RuneCooldown = 0xC24364;
         }
 
         #endregion
@@ -98,9 +102,8 @@
             internal static uint SpellBook = 0x00BE5D88;
             internal static uint CastSpell = 0x0080DA40;
             internal static uint GetSpellCooldown = 0x00807980;
-            internal static uint GetSpellEffectRec = 0x953B0; // UPDATE
 
-            internal static uint FirstActionBarSpellId = 0xC1E358;
+            internal static uint FirstActionBarSpellId = 0xC1E358; // Don't really need this unless we want to auto-set up actionbars?
         }
 
         #endregion
@@ -114,7 +117,7 @@
             internal static uint CurrentMapId = 0x00AB63BC;
             internal static uint InternalMapName = 0x00CE06D0;
             internal static uint ZoneID = 0x00BD080C;
-            internal static uint ZoneText = 0x00BD0788; 
+            internal static uint ZoneText = 0x00BD0788;
             internal static uint SubZoneText = 0x00BD0784;
         }
 
@@ -140,13 +143,14 @@
 
         #region Nested type: Events
 
+        // 3.3.5a: 12340
         internal class Events
         {
             internal static uint EventVictim = 0x004DDBD0;
         }
 
-        #endregion   
-     
+        #endregion
+
         #region Nested type: DBC
 
         // 3.3.5a: 12340
@@ -190,12 +194,19 @@
 
         internal class Other
         {
-            internal static uint PerformanceCounter = 0x0086AE20; // UNCONFIRMED
+            internal static uint PerformanceCounter = 0x0086AE20;
             internal static uint LastHardwareAction = 0x00B499A4;
             internal static uint IsBobbing = 0xBC;
+            // TODO: IMPLEMENT
+            internal static uint WorldLoaded = 0x00BEBA40;
             internal static uint GameState = 0x00B6A9E0;
             internal static uint IsLoading = 0x00B6AA38;
             internal static uint RealmName = 0x00C79B9E;
+
+            // TODO: IMPLEMENT
+            internal static uint AHListAuctions = 0xc0f448;
+            internal static uint AHListNumAuctions = 0xc0f444;
+            internal static uint AHListTotalAuctions = 0xc0f408;
         }
 
         #endregion
@@ -215,11 +226,9 @@
         // 3.3.5a: 12340
         internal class Raid
         {
-            //return ( int* )0x00C543E0;
             internal static uint RaidCount = 0x00C543E0;
             // return ( ulong** )0x00C54340;
             internal static uint RaidArray = 0x00C54340;
-            // return ( InstanceDifficulty* )0x00C4EC2C;
             internal static uint InstanceDifficulty = 0x00C4EC2C;
         }
 
