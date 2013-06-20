@@ -1,4 +1,5 @@
 ﻿using System;
+using IceFlake.Runtime;
 
 namespace IceFlake.Client.Scripts
 {

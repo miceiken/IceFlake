@@ -64,20 +64,20 @@ namespace IceFlake.Client
                 return false;
 
             Destination = pos;
-            var path = PatherInstance.Search(Manager.LocalPlayer.Location, pos);
+            var path = PatherInstance.FindPath(Manager.LocalPlayer.Location, pos, false);
             if (path == null)
             {
                 Log.WriteLine("Could not path to {0}", pos);
                 return false;
             }
 
-            FollowPath(path);
+            FollowPath(path.ToLocation());
 
             return true;
         }
 
         private Queue<Location> generatedPath;
-        public void FollowPath(List<Location> Path, Action<int, int> AfterSpot = null, double tolerance = 3D, double face_tolerance = 0.5D)
+        public void FollowPath(IEnumerable<Location> Path)
         {
             generatedPath = new Queue<Location>();
             foreach (var spot in Path)

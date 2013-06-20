@@ -36,6 +36,9 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="RecastManaged">
+      <HintPath>..\Libs\RecastManaged.dll</HintPath>
+    </Reference>
     <Reference Include="SlimDX, Version=4.0.13.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_32\SlimDX\v4.0_4.0.13.43__b1b0c32fd1ffe4f9\SlimDX.dll</HintPath>
@@ -67,6 +70,12 @@
     <Compile Include="Client\API\Taxi.cs" />
     <Compile Include="Client\API\TradeSkill.cs" />
     <Compile Include="Client\API\Trainer.cs" />
+    <Compile Include="Client\Pather.cs" />
+    <Compile Include="Client\Routines\Combat\HarmfulSpellRoutine.cs" />
+    <Compile Include="Client\Routines\Combat\HelpfulSpellRoutine.cs" />
+    <Compile Include="Client\Routines\Combat\SpellRoutine.cs" />
+    <Compile Include="Client\Routines\RoutineAction.cs" />
+    <Compile Include="Client\Routines\RoutineBrain.cs" />
     <Compile Include="Client\WoWCamera.cs" />
     <Compile Include="Client\ClientServices.cs" />
     <Compile Include="Client\Collections\AuraCollection.cs" />
@@ -97,13 +106,13 @@
     <Compile Include="Client\Patchables\Descriptors.cs" />
     <Compile Include="Client\Patchables\Pointers.cs" />
     <Compile Include="Client\Patchables\Structures.cs" />
-    <Compile Include="Client\Pather.cs" />
     <Compile Include="Client\Collections\QuestCollection.cs" />
     <Compile Include="Client\Raid.cs" />
     <Compile Include="Client\Scripts\Script.cs" />
     <Compile Include="Client\Scripts\ScriptManager.cs" />
     <Compile Include="Client\Scripts\ScriptThread.cs" />
-    <Compile Include="Client\Scripts\SleepException.cs" />
+    <Compile Include="Routines\TestRoutineBrain.cs" />
+    <Compile Include="Runtime\SleepException.cs" />
     <Compile Include="Client\Scripts\TerminateException.cs" />
     <Compile Include="Client\World.cs" />
     <Compile Include="Client\WoWDB.cs" />
@@ -127,6 +136,7 @@
     <Compile Include="Runtime\AseemblyAnalyzer.cs" />
     <Compile Include="Runtime\CallbackManager.cs" />
     <Compile Include="Runtime\Extensions.cs" />
+    <Compile Include="Scripts\ChatScript.cs" />
     <Compile Include="Scripts\DebugScript.cs" />
     <Compile Include="Scripts\RenderingScripts.cs" />
     <Compile Include="Scripts\DumpersScripts.cs" />
@@ -165,10 +175,6 @@
     <ProjectReference Include="..\GreyMagic\GreyMagic.csproj">
       <Project>{29bee34e-8d6a-47bf-96fa-aba46f6e9b66}</Project>
       <Name>GreyMagic</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PPather\PPather.csproj">
-      <Project>{ec734271-9b29-4455-b191-41d25daa6abc}</Project>
-      <Name>PPather</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -237,6 +243,7 @@
   <ItemGroup>
     <None Include="Resources\Icons\report.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

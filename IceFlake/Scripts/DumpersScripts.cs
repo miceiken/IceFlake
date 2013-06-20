@@ -2,6 +2,7 @@
 using IceFlake.Client.Objects;
 using IceFlake.Client.Patchables;
 using IceFlake.Client.Scripts;
+using IceFlake.Runtime;
 using System;
 using System.Linq;
 
@@ -250,7 +251,7 @@ namespace IceFlake.Scripts
             : base("Quests", "Dumper")
         { }
 
-        public override void OnStart()
+        public unsafe override void OnStart()
         {
             if (!Manager.ObjectManager.IsInGame)
                 return;
@@ -263,13 +264,45 @@ namespace IceFlake.Scripts
             Print("QuestLog:");
             foreach (var q in quests)
             {
-                var qcr = q.AsWoWQuest();
-                Print("-- Quest #{0}: {1}", q.ID, qcr.CachedEntry.Name);
-                Print("\tState: {0}", q.State);
-                Print("\tObjectives:");
-                foreach (var o in q.Objectives.Where(qo => qo != 0))
-                    Print("\t\t{0}", o);
-                Print("\tTime: {0}", q.Time);
+                //var qle = q.AsWoWQuest();
+                //qle.DumpProperties();
+                var qcr = Manager.LocalPlayer.GetQuestRecordFromId(q.ID);
+                qcr.DumpProperties();
+                //Print("-- {0} {1}", q.ID, qcr.Name);
+                //for (var i = 0; i < 6; i++)
+                //{
+                //    Print("");
+                //    Print("\tRewardChoiceItem[{1}] {0}", qcr.RewardChoiceItem[i], i);
+                //    Print("\tRewardChoiceItemCount[{1}] {0}", qcr.RewardChoiceItemCount[i], i);
+
+                //    Print("\tCollectItemId[{1}] {0}", qcr.CollectItemId[i], i);
+                //    Print("\tCollectItemCount[{1}] {0}", qcr.CollectItemCount[i], i);
+
+                //    if (i > 5) continue;
+
+                //    Print("\tRewardReputationFaction[{1}] {0}", qcr.RewardReputationFaction[i], i);
+                //    Print("\tFactionRewardID[{1}] {0}", qcr.FactionRewardID[i], i);
+                //    Print("\tRewardReputationOverride[{1}] {0}", qcr.RewardReputationOverride[i], i);
+
+                //    if (i > 4) continue;
+
+                //    Print("\tRewardItem[{1}] {0}", qcr.RewardItem[i], i);
+                //    Print("\tRewardItemCount[{1}] {0}", qcr.RewardItemCount[i], i);
+
+                //    Print("\tObjectiveId[{1}] {0}", qcr.ObjectiveId[i], i);
+                //    Print("\tObjectiveRequiredCount[{1}] {0}", qcr.ObjectiveRequiredCount[i], i);
+
+                //    Print("\tIntermediateItemId[{1}] {0}", qcr.IntermediateItemId[i], i);
+                //    Print("\tIntermediateItemCount[{1}] {0}", qcr.IntermediateItemCount[i], i);
+                //    Print("");
+                //}
+                //qcr.DumpProperties();
+                //Print("-- Quest #{0}: {1}", q.ID, qcr.CachedEntry.Name);
+                //Print("\tState: {0}", q.State);
+                //Print("\tObjectives:");
+                //foreach (var o in q.Objectives.Where(qo => qo != 0))
+                //    Print("\t\t{0}", o);
+                //Print("\tTime: {0}", q.Time);
             }
 
             Stop();

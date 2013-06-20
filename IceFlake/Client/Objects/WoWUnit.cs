@@ -346,6 +346,7 @@ namespace IceFlake.Client.Objects
                     return GetDescriptor<uint>(WoWUnitFields.UNIT_FIELD_POWER4);
                 case WoWPowerType.Happiness:
                     return GetDescriptor<uint>(WoWUnitFields.UNIT_FIELD_POWER5);
+                case WoWPowerType.Runes:
                 case WoWPowerType.RunicPower:
                     return GetDescriptor<uint>(WoWUnitFields.UNIT_FIELD_POWER7);
             }
@@ -366,6 +367,7 @@ namespace IceFlake.Client.Objects
                     return GetDescriptor<uint>(WoWUnitFields.UNIT_FIELD_MAXPOWER4);
                 case WoWPowerType.Happiness:
                     return GetDescriptor<uint>(WoWUnitFields.UNIT_FIELD_MAXPOWER5);
+                case WoWPowerType.Runes:
                 case WoWPowerType.RunicPower:
                     return GetDescriptor<uint>(WoWUnitFields.UNIT_FIELD_MAXPOWER7);
             }

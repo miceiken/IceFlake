@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace IceFlake.Client.Scripts
+namespace IceFlake.Runtime
 {
     public class SleepException : Exception
     {

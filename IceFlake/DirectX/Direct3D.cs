@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using IceFlake.Runtime;
 using GreyMagic.Internals;
+using SlimDX;
 using SlimDX.Direct3D9;
 
 namespace IceFlake.DirectX
@@ -117,6 +118,9 @@ namespace IceFlake.DirectX
             if (Manager.Camera == null)
                 return;
 
+            //var preRenderState = new StateBlock(Device, StateBlockType.All);
+            //preRenderState.Capture();
+
             var viewport = Device.Viewport;
             viewport.MinZ = 0.0f;
             viewport.MaxZ = 0.94f;
@@ -136,17 +140,7 @@ namespace IceFlake.DirectX
             Device.SetTexture(0, null);
             Device.SetRenderState(RenderState.CullMode, Cull.None);
 
-            //Device.VertexShader = null;
-            //Device.PixelShader = null;
-            //Device.SetRenderState(RenderState.ZEnable, true);
-            //Device.SetRenderState(RenderState.ZWriteEnable, true);
-            //Device.SetRenderState(RenderState.ZFunc, Compare.LessEqual);
-            //Device.SetRenderState(RenderState.AlphaBlendEnable, true);
-            //Device.SetRenderState(RenderState.SourceBlend, Blend.One);
-            //Device.SetRenderState(RenderState.DestinationBlend, Blend.One);
-            //Device.SetRenderState(RenderState.Lighting, false);
-            //Device.SetTexture(0, null);
-            //Device.SetRenderState(RenderState.CullMode, Cull.None);
+            //preRenderState.Apply();
         }
 
         #region Nested type: Direct3D9EndScene
