@@ -44,7 +44,7 @@ namespace IceFlake.Client
 
         public string GetTilePath(int x, int y)
         {
-            return string.Format(@"Meshes\{0}_{1}_{2}.mesh", this.Continent, x, y);
+            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, string.Format(@"Meshes\{0}_{1}_{2}.mesh", this.Continent, x, y));
         }
 
         public void GetTileByLocation(Vector3 loc, out int x, out int y)
@@ -70,38 +70,63 @@ namespace IceFlake.Client
                 {
                     if (!File.Exists(GetTilePath(x, y)))
                         continue;
-
                     LoadTile(x, y);
                 }
             }
         }
 
-        public void LoadAround(Vector3 loc, int extent)
+        public bool LoadAppropriateTiles(Vector3 start, Vector3 end)
         {
+            const int extent = 1;
+
+            bool failed = false;
             int tx, ty;
-            GetTileByLocation(loc, out tx, out ty);
+            // Start
+            GetTileByLocation(start, out tx, out ty);
             for (int y = ty - extent; y <= ty + extent; y++)
             {
                 for (int x = tx - extent; x <= tx + extent; x++)
                 {
-                    LoadTile(x, y);
+                    if (!LoadTile(x, y))
+                        failed = true;
+                    //Log.WriteLine("{0},{1}: {2}", x, y, failed);
                 }
             }
+
+            // End
+            GetTileByLocation(end, out tx, out ty);
+            for (int y = ty - extent; y <= ty + extent; y++)
+            {
+                for (int x = tx - extent; x <= tx + extent; x++)
+                {
+                    if (!LoadTile(x, y))
+                        failed = true;
+                    //Log.WriteLine("{0},{1}: {2}", x, y, failed);
+                }
+            }
+
+            return !failed;
+        }
+
+        public bool LoadTile(int x, int y, byte[] data, out MeshTile tile)
+        {
+            // Tile already loaded?
+            if ((tile = DetourMesh.GetTileAt(x, y)) != null)
+                return true;
+            bool ret = DetourMesh.AddTileAt(x, y, data);
+            AddMemoryPressure(data.Length);
+            tile = DetourMesh.GetTileAt(x, y);
+            return ret && tile != null;
         }
 
         public bool LoadTile(int x, int y, byte[] data)
         {
-            if (!DetourMesh.AddTileAt(x, y, data))
-                return false;
-            AddMemoryPressure(data.Length);
-            //HandleConnections(tile);
-            return true;
+            MeshTile tile;
+            return LoadTile(x, y, data, out tile);
         }
 
         public bool LoadTile(int x, int y)
-        {
-            if (DetourMesh.GetTileAt(x, y) != null)
-                return true;
+        {            
             var path = GetTilePath(x, y);
             if (!File.Exists(path))
                 return false;
@@ -125,113 +150,67 @@ namespace IceFlake.Client
 
         public IEnumerable<Vector3> FindPath(Location start, Location end, bool hardFail)
         {
-            return FindPath(start.ToVector3(), end.ToVector3());
+            return FindPath(start.ToVector3(), end.ToVector3(), this.Filter, hardFail);
         }
 
-        public List<Vector3> FindPath(Vector3 startVec, Vector3 endVec)
+        public IEnumerable<Vector3> FindPath(Vector3 start, Vector3 end, QueryFilter filter, bool hardFail)
         {
-            var extents = new Vector3(2.5f, 2.5f, 2.5f).ToFloatArray();
-            var start = startVec.ToRecast().ToFloatArray();
-            var end = endVec.ToRecast().ToFloatArray();
+            if (!LoadAppropriateTiles(start, end))
+                throw new Exception("Correct tiles were not loaded!");
 
-            LoadAllTiles();
+            float[] extents = new[] { 0.5f, 0.5f, 0.5f };
+            PolygonReference startRef, endRef;
 
-            var startRef = DetourMesh.FindNearestPolygon(start, extents, Filter);
-            if (startRef.PolyIndex == 0)
-                throw new Exception("No polyref found for start");
+            float[] transformedStart = start.ToFloatArray();
+            float[] transformedEnd = end.ToFloatArray();
 
-            var endRef = DetourMesh.FindNearestPolygon(end, extents, Filter);
-            if (endRef.PolyIndex == 0)
-                throw new Exception("No polyref found for end");
+            RecastManaged.Helper.Transform(ref transformedStart);
+            RecastManaged.Helper.Transform(ref transformedEnd);
 
-            var status = DetourMesh.FindPath(startRef, endRef, start, end, Filter);
-            if (status.Length == 0)
-                throw new Exception("FindPath failed, start: " + startRef + " end: " + endRef);
-
-            //if (status.HasFlag(DetourStatus.PartialResult))
-            //    Console.WriteLine("Warning, partial result: " + status);
-
-            StraightPathFlags[] pathFlags;
-            PolygonReference[] pathRefs;
-            var path = DetourMesh.FindStraightPath(start, end, status, out pathFlags, out pathRefs);
-            if (path.Length == 0 || (pathFlags == null || pathRefs == null))
-                throw new Exception("FindStraightPath failed, refs in corridor: " + path.Length);
-
-            var ret = new List<Vector3>(path.Length / 3);
-            for (int i = 0; i < (path.Length / 3); i++)
+            while ((startRef = DetourMesh.FindNearestPolygon(transformedStart, extents, filter)).PolyIndex == 0)
             {
-                ret.Add(new Vector3(path[(i * 3) + 0], path[(i * 3) + 1], path[(i * 3) + 2]).ToWoW());
+                if (extents[0] > 100.0f)
+                    throw new Exception("Extents got too huge");
+
+                extents[0] += 0.5f;
+                extents[1] += 0.5f;
+                extents[2] += 0.5f;
             }
+
+            extents = new[] { 0.5f, 0.5f, 0.5f };
+            while ((endRef = DetourMesh.FindNearestPolygon(transformedEnd, extents, filter)).PolyIndex == 0)
+            {
+                if (extents[0] > 100.0f)
+                    throw new Exception("Extents got too huge");
+
+                extents[0] += 0.5f;
+                extents[1] += 0.5f;
+                extents[2] += 0.5f;
+            }
+            var path = DetourMesh.FindPath(startRef, endRef, transformedStart, transformedEnd, filter);
+
+            if (path.Length <= 0)
+                return null;
+
+            // if the last poly in the path is not the end poly, a path was not found
+            if (hardFail && path[path.Length - 1].PolyIndex != endRef.PolyIndex)
+                return null;
+
+            StraightPathFlags[] flags;
+            PolygonReference[] straightPathRefs;
+            var straightPath = DetourMesh.FindStraightPath(transformedStart, transformedEnd, path, out flags, out straightPathRefs);
+
+            RecastManaged.Helper.InverseTransform(ref straightPath);
+
+            List<Vector3> ret = new List<Vector3>(straightPath.Length / 3);
+            for (int i = 0; i < straightPath.Length / 3; i++)
+                ret.Add(new Vector3(straightPath[i * 3 + 0], straightPath[i * 3 + 1], straightPath[i * 3 + 2]));
+
+            //for (int i = 0; i < straightPath.Length / 3; i++)
+            //    yield return new Vector3(straightPath[i * 3 + 0], straightPath[i * 3 + 1], straightPath[i * 3 + 2]);
 
             return ret;
         }
-
-        //public IEnumerable<Vector3> FindPath(Vector3 start, Vector3 end, bool hardFail)
-        //{
-        //    //LoadAllTiles();
-        //    LoadAround(start, 1);
-        //    LoadAround(end, 1);
-        //    return FindPath(start.ToFloatArray(), end.ToFloatArray(), hardFail); // .ToRecast() ?
-        //}
-
-        //public IEnumerable<Vector3> FindPath(float[] start, float[] end, bool hardFail)
-        //{
-        //    return FindPath(start, end, QueryFilter.Default, hardFail);
-        //}
-
-        //public IEnumerable<Vector3> FindPath(float[] start, float[] end, QueryFilter filter, bool hardFail)
-        //{
-        //    float[] extents = new[] { 0.5f, 0.5f, 0.5f };
-        //    PolygonReference startRef, endRef;
-
-
-        //    float[] transformedStart = new[] { start[0], start[1], start[2] };
-        //    float[] transformedEnd = new[] { end[0], end[1], end[2] };
-
-        //    RecastManaged.Helper.Transform(ref transformedStart);
-        //    RecastManaged.Helper.Transform(ref transformedEnd);
-
-        //    while ((startRef = DetourMesh.FindNearestPolygon(transformedStart, extents, filter)).PolyIndex == 0)
-        //    {
-        //        if (extents[0] > 100.0f)
-        //            throw new Exception("Extents got too huge");
-
-        //        extents[0] += 0.5f;
-        //        extents[1] += 0.5f;
-        //        extents[2] += 0.5f;
-        //    }
-
-        //    extents = new[] { 0.5f, 0.5f, 0.5f };
-        //    while ((endRef = DetourMesh.FindNearestPolygon(transformedEnd, extents, filter)).PolyIndex == 0)
-        //    {
-        //        if (extents[0] > 100.0f)
-        //            throw new Exception("Extents got too huge");
-
-        //        extents[0] += 0.5f;
-        //        extents[1] += 0.5f;
-        //        extents[2] += 0.5f;
-        //    }
-        //    var path = DetourMesh.FindPath(startRef, endRef, transformedStart, transformedEnd, filter);
-
-        //    if (path.Length <= 0)
-        //        return null;
-
-        //    // if the last poly in the path is not the end poly, a path was not found
-        //    if (hardFail && path[path.Length - 1].PolyIndex != endRef.PolyIndex)
-        //        return null;
-
-        //    StraightPathFlags[] flags;
-        //    PolygonReference[] straightPathRefs;
-        //    var straightPath = DetourMesh.FindStraightPath(transformedStart, transformedEnd, path, out flags, out straightPathRefs);
-
-        //    RecastManaged.Helper.InverseTransform(ref straightPath);
-
-        //    List<Vector3> ret = new List<Vector3>(straightPath.Length / 3);
-        //    for (int i = 0; i < straightPath.Length / 3; i++)
-        //        ret.Add(new Vector3(straightPath[i * 3 + 0], straightPath[i * 3 + 1], straightPath[i * 3 + 2]));
-
-        //    return ret;
-        //}
 
         #endregion
     }

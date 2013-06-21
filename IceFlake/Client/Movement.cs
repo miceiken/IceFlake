@@ -5,6 +5,7 @@ using System.Text;
 using IceFlake.Runtime;
 using IceFlake.Client.Objects;
 using IceFlake.DirectX;
+//using meshPather;
 
 namespace IceFlake.Client
 {
@@ -65,6 +66,7 @@ namespace IceFlake.Client
 
             Destination = pos;
             var path = PatherInstance.FindPath(Manager.LocalPlayer.Location, pos, false);
+            //var path = PatherInstance.FindPath(Manager.LocalPlayer.Location, pos.ToVector3());
             if (path == null)
             {
                 Log.WriteLine("Could not path to {0}", pos);
@@ -81,7 +83,8 @@ namespace IceFlake.Client
         {
             generatedPath = new Queue<Location>();
             foreach (var spot in Path)
-                generatedPath.Enqueue(spot);
+                Log.WriteLine("\t{0}", spot);
+                //generatedPath.Enqueue(spot);
         }
 
         public void Stop()

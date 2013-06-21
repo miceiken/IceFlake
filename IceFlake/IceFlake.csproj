@@ -70,7 +70,9 @@
     <Compile Include="Client\API\Taxi.cs" />
     <Compile Include="Client\API\TradeSkill.cs" />
     <Compile Include="Client\API\Trainer.cs" />
-    <Compile Include="Client\Pather.cs" />
+    <Compile Include="Client\Pather.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Client\Routines\Combat\HarmfulSpellRoutine.cs" />
     <Compile Include="Client\Routines\Combat\HelpfulSpellRoutine.cs" />
     <Compile Include="Client\Routines\Combat\SpellRoutine.cs" />
