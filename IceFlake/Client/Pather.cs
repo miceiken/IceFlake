@@ -21,6 +21,7 @@ namespace IceFlake.Client
 
             DetourMesh = new NavMesh();
             DetourMesh.Init(Origin, TileSize, TileSize, 2048, 16384, 4194304);
+            Filter = QueryFilter.Default;
         }
 
         public string Continent { get; private set; }
@@ -48,7 +49,7 @@ namespace IceFlake.Client
 
         public void GetTileByLocation(Vector3 loc, out int x, out int y)
         {
-            var input = loc.ToRecast().ToFloatArray();
+            var input = loc.ToFloatArray();
             float fx, fy;
             GetTileByLocation(input, out fx, out fy);
             x = (int)Math.Floor(fx);
@@ -58,7 +59,7 @@ namespace IceFlake.Client
         public static void GetTileByLocation(float[] loc, out float x, out float y)
         {
             x = (loc[0] - Origin[0]) / TileSize;
-            y = (loc[1] - Origin[1]) / TileSize;
+            y = (loc[1] - Origin[0]) / TileSize;
         }
 
         public void LoadAllTiles()
@@ -124,74 +125,113 @@ namespace IceFlake.Client
 
         public IEnumerable<Vector3> FindPath(Location start, Location end, bool hardFail)
         {
-            return FindPath(start.ToVector3(), end.ToVector3(), hardFail);
+            return FindPath(start.ToVector3(), end.ToVector3());
         }
 
-        public IEnumerable<Vector3> FindPath(Vector3 start, Vector3 end, bool hardFail)
+        public List<Vector3> FindPath(Vector3 startVec, Vector3 endVec)
         {
+            var extents = new Vector3(2.5f, 2.5f, 2.5f).ToFloatArray();
+            var start = startVec.ToRecast().ToFloatArray();
+            var end = endVec.ToRecast().ToFloatArray();
+
             LoadAllTiles();
-            return FindPath(start.ToFloatArray(), end.ToFloatArray(), hardFail); // .ToRecast() ?
-        }
 
-        public IEnumerable<Vector3> FindPath(float[] start, float[] end, bool hardFail)
-        {
-            return FindPath(start, end, QueryFilter.Default, hardFail);
-        }
+            var startRef = DetourMesh.FindNearestPolygon(start, extents, Filter);
+            if (startRef.PolyIndex == 0)
+                throw new Exception("No polyref found for start");
 
-        public IEnumerable<Vector3> FindPath(float[] start, float[] end, QueryFilter filter, bool hardFail)
-        {
-            float[] extents = new[] { 0.5f, 0.5f, 0.5f };
-            PolygonReference startRef, endRef;
+            var endRef = DetourMesh.FindNearestPolygon(end, extents, Filter);
+            if (endRef.PolyIndex == 0)
+                throw new Exception("No polyref found for end");
 
+            var status = DetourMesh.FindPath(startRef, endRef, start, end, Filter);
+            if (status.Length == 0)
+                throw new Exception("FindPath failed, start: " + startRef + " end: " + endRef);
 
-            float[] transformedStart = new[] { start[0], start[1], start[2] };
-            float[] transformedEnd = new[] { end[0], end[1], end[2] };
+            //if (status.HasFlag(DetourStatus.PartialResult))
+            //    Console.WriteLine("Warning, partial result: " + status);
 
-            RecastManaged.Helper.Transform(ref transformedStart);
-            RecastManaged.Helper.Transform(ref transformedEnd);
+            StraightPathFlags[] pathFlags;
+            PolygonReference[] pathRefs;
+            var path = DetourMesh.FindStraightPath(start, end, status, out pathFlags, out pathRefs);
+            if (path.Length == 0 || (pathFlags == null || pathRefs == null))
+                throw new Exception("FindStraightPath failed, refs in corridor: " + path.Length);
 
-            while ((startRef = DetourMesh.FindNearestPolygon(transformedStart, extents, filter)).PolyIndex == 0)
+            var ret = new List<Vector3>(path.Length / 3);
+            for (int i = 0; i < (path.Length / 3); i++)
             {
-                if (extents[0] > 100.0f)
-                    throw new Exception("Extents got too huge");
-
-                extents[0] += 0.5f;
-                extents[1] += 0.5f;
-                extents[2] += 0.5f;
+                ret.Add(new Vector3(path[(i * 3) + 0], path[(i * 3) + 1], path[(i * 3) + 2]).ToWoW());
             }
-
-            extents = new[] { 0.5f, 0.5f, 0.5f };
-            while ((endRef = DetourMesh.FindNearestPolygon(transformedEnd, extents, filter)).PolyIndex == 0)
-            {
-                if (extents[0] > 100.0f)
-                    throw new Exception("Extents got too huge");
-
-                extents[0] += 0.5f;
-                extents[1] += 0.5f;
-                extents[2] += 0.5f;
-            }
-
-            var path = DetourMesh.FindPath(startRef, endRef, transformedStart, transformedEnd, filter);
-
-            if (path.Length <= 0)
-                return null;
-
-            // if the last poly in the path is not the end poly, a path was not found
-            if (hardFail && path[path.Length - 1].PolyIndex != endRef.PolyIndex)
-                return null;
-
-            StraightPathFlags[] flags;
-            PolygonReference[] straightPathRefs;
-            var straightPath = DetourMesh.FindStraightPath(transformedStart, transformedEnd, path, out flags, out straightPathRefs);
-
-            RecastManaged.Helper.InverseTransform(ref straightPath);
-
-            List<Vector3> ret = new List<Vector3>(straightPath.Length / 3);
-            for (int i = 0; i < straightPath.Length / 3; i++)
-                ret.Add(new Vector3(straightPath[i * 3 + 0], straightPath[i * 3 + 1], straightPath[i * 3 + 2]));
 
             return ret;
         }
+
+        //public IEnumerable<Vector3> FindPath(Vector3 start, Vector3 end, bool hardFail)
+        //{
+        //    //LoadAllTiles();
+        //    LoadAround(start, 1);
+        //    LoadAround(end, 1);
+        //    return FindPath(start.ToFloatArray(), end.ToFloatArray(), hardFail); // .ToRecast() ?
+        //}
+
+        //public IEnumerable<Vector3> FindPath(float[] start, float[] end, bool hardFail)
+        //{
+        //    return FindPath(start, end, QueryFilter.Default, hardFail);
+        //}
+
+        //public IEnumerable<Vector3> FindPath(float[] start, float[] end, QueryFilter filter, bool hardFail)
+        //{
+        //    float[] extents = new[] { 0.5f, 0.5f, 0.5f };
+        //    PolygonReference startRef, endRef;
+
+
+        //    float[] transformedStart = new[] { start[0], start[1], start[2] };
+        //    float[] transformedEnd = new[] { end[0], end[1], end[2] };
+
+        //    RecastManaged.Helper.Transform(ref transformedStart);
+        //    RecastManaged.Helper.Transform(ref transformedEnd);
+
+        //    while ((startRef = DetourMesh.FindNearestPolygon(transformedStart, extents, filter)).PolyIndex == 0)
+        //    {
+        //        if (extents[0] > 100.0f)
+        //            throw new Exception("Extents got too huge");
+
+        //        extents[0] += 0.5f;
+        //        extents[1] += 0.5f;
+        //        extents[2] += 0.5f;
+        //    }
+
+        //    extents = new[] { 0.5f, 0.5f, 0.5f };
+        //    while ((endRef = DetourMesh.FindNearestPolygon(transformedEnd, extents, filter)).PolyIndex == 0)
+        //    {
+        //        if (extents[0] > 100.0f)
+        //            throw new Exception("Extents got too huge");
+
+        //        extents[0] += 0.5f;
+        //        extents[1] += 0.5f;
+        //        extents[2] += 0.5f;
+        //    }
+        //    var path = DetourMesh.FindPath(startRef, endRef, transformedStart, transformedEnd, filter);
+
+        //    if (path.Length <= 0)
+        //        return null;
+
+        //    // if the last poly in the path is not the end poly, a path was not found
+        //    if (hardFail && path[path.Length - 1].PolyIndex != endRef.PolyIndex)
+        //        return null;
+
+        //    StraightPathFlags[] flags;
+        //    PolygonReference[] straightPathRefs;
+        //    var straightPath = DetourMesh.FindStraightPath(transformedStart, transformedEnd, path, out flags, out straightPathRefs);
+
+        //    RecastManaged.Helper.InverseTransform(ref straightPath);
+
+        //    List<Vector3> ret = new List<Vector3>(straightPath.Length / 3);
+        //    for (int i = 0; i < straightPath.Length / 3; i++)
+        //        ret.Add(new Vector3(straightPath[i * 3 + 0], straightPath[i * 3 + 1], straightPath[i * 3 + 2]));
+
+        //    return ret;
+        //}
 
         #endregion
     }

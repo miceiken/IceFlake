@@ -127,7 +127,7 @@ namespace IceFlake.Client.Routines
             AlternativeHelpfulTarget = HelpfulTargets.ElementAtOrDefault(1);
         }
 
-        [EndSceneHandler]
+        //[EndSceneHandler]
         public void Direct3D_EndScene()
         {
             if (!Manager.ObjectManager.IsInGame)
