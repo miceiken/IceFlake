@@ -53,7 +53,7 @@ namespace IceFlake.Client
 
         public bool PlayerHasCompletedQuest
         {
-            get { return Manager.Quests.CompletedQuests.Count(x => x == this.ID) > 0; }
+            get { return Manager.Quests.CompletedQuestIds.Count(x => x == this.ID) > 0; }
         }
 
         public bool PlayerIsSuitableForQuest

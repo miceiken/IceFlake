@@ -39,11 +39,9 @@ namespace IceFlake.Runtime
             {
                 if (item is EndSceneHandler)
                 {
-                    object target = null;
-                    if (info is Type)
-                        target = GetTarget((Type)info);
-                    else
-                        target = GetTarget(info.DeclaringType);
+                    object target = info is Type ? GetTarget(info as Type) : GetTarget(info.DeclaringType);
+                    if (target == null)
+                        continue;
 
                     Direct3D.CallbackManager.Register(
                         (EndSceneCallback)Delegate.CreateDelegate(typeof(EndSceneCallback), target, info.Name));

@@ -20,6 +20,7 @@ namespace IceFlake.Client.Routines.Combat
         public void ExecuteOnUnit(WoWUnit unit)
         {
             Print("Casting {0} on {1}", SpellName, unit.Name);
+            Manager.LocalPlayer.LookAt(unit.Location);
             Spell.Cast();
             Sleep(1000);
         }

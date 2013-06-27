@@ -77,7 +77,7 @@ namespace IceFlake.Client
 
         public bool LoadAppropriateTiles(Vector3 start, Vector3 end)
         {
-            const int extent = 1;
+            const int extent = 3;
 
             bool failed = false;
             int tx, ty;
@@ -157,6 +157,8 @@ namespace IceFlake.Client
         {
             if (!LoadAppropriateTiles(start, end))
                 throw new Exception("Correct tiles were not loaded!");
+
+            //LoadAllTiles();
 
             float[] extents = new[] { 0.5f, 0.5f, 0.5f };
             PolygonReference startRef, endRef;

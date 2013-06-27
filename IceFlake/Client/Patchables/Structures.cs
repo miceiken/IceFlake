@@ -900,7 +900,18 @@ namespace IceFlake.Client.Patchables
         public ulong GUID;
         public Location Position;
         [MarshalAs(UnmanagedType.U4)]
-        public uint unk0;
+        public MouseButton Button;
+    }
+
+    [Flags]
+    public enum MouseButton : uint
+    {
+        Left = 1,
+        Middle = 2,
+        None = 0,
+        Right = 4,
+        XButton1 = 8,
+        XButton2 = 0x10
     }
 
     #endregion

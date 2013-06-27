@@ -113,7 +113,8 @@
         // 3.3.5a: 12340
         internal class World
         {
-            internal static uint Traceline = 0x007A3B70;
+            internal static uint Traceline = 0x0077F310;
+            internal static uint HandleTerrainClick = 0x00527830;
             internal static uint CurrentMapId = 0x00AB63BC;
             internal static uint InternalMapName = 0x00CE06D0;
             internal static uint ZoneID = 0x00BD080C;

@@ -8,17 +8,17 @@ namespace IceFlake.Client
     {
         private static TracelineDelegate _traceline;
 
-        //[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        //private delegate bool HandleTerrainClickDelegate(TerrainClickEvent terrainClickArgs);
-        //private static HandleTerrainClickDelegate _handleTerrainClick;
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate bool HandleTerrainClickDelegate(TerrainClickEvent terrainClickArgs);
+        private static HandleTerrainClickDelegate _handleTerrainClick;
 
-        //public static bool HandleTerrainClick(Location loc)
-        //{
-        //    if (_handleTerrainClick == null)
-        //        _handleTerrainClick = Core.Memory.RegisterDelegate<HandleTerrainClickDelegate>((IntPtr)Pointers.World.HandleTerrainClick, true);
+        public static bool HandleTerrainClick(Location loc)
+        {
+            if (_handleTerrainClick == null)
+                _handleTerrainClick = Manager.Memory.RegisterDelegate<HandleTerrainClickDelegate>((IntPtr)Pointers.World.HandleTerrainClick, true);
 
-        //    return _handleTerrainClick(new TerrainClickEvent { Position = loc });
-        //}        
+            return _handleTerrainClick(new TerrainClickEvent { GUID = 0ul, Position = loc, Button = MouseButton.None | MouseButton.Left });
+        }
 
         public static int CurrentMapId
         {
@@ -60,7 +60,7 @@ namespace IceFlake.Client
 
         public static TracelineResult Traceline(Location start, Location end)
         {
-            return Traceline(start, end, (uint)TraceLineHitFlags.HitTestLOS);
+            return Traceline(start, end, 0x120111 /*(uint)TraceLineHitFlags.HitTestLOS*/);
         }
 
         public static TracelineResult LineOfSightTest(Location start, Location end)

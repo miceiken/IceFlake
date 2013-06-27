@@ -219,5 +219,52 @@ namespace IceFlake
                     Log.WriteLine("\t[{0}] = \"{1}\"", i, ret[i]);
             });
         }
+
+
+        private Location
+            _pos1 = default(Location),
+            _pos2 = default(Location);
+        private void lblPos1_Click(object sender, EventArgs e)
+        {
+            if (!Manager.ObjectManager.IsInGame)
+                return;
+            _pos1 = Manager.LocalPlayer.Location;
+            lblPos1.Text = _pos1.ToString();
+        }
+
+        private void lblPos2_Click(object sender, EventArgs e)
+        {
+            if (!Manager.ObjectManager.IsInGame)
+                return;
+            _pos2 = Manager.LocalPlayer.Location;
+            lblPos2.Text = _pos2.ToString();
+        }
+
+        private void btnGenPath_Click(object sender, EventArgs e)
+        {
+            if (!Manager.ObjectManager.IsInGame)
+                return;
+
+            if (_pos1 == default(Location) || _pos2 == default(Location))
+                return;
+
+            try
+            {
+                var map = World.CurrentMap;
+                Log.WriteLine("Generate path from {0} to {1} in {2}", _pos1, _pos2, map);
+                var pathInstance = new Pather(map);
+                var path = pathInstance.FindPath(_pos1, _pos2, false);
+                if (path != null && path.Count() > 0)
+                {
+                    Log.WriteLine("NavMesh generated waypoints:");
+                    foreach (var pt in path)
+                        Log.WriteLine("\t{0}", pt);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.WriteLine("NavMesh: {0}", ex.Message);
+            }
+        }
     }
 }

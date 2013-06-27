@@ -22,7 +22,6 @@ namespace IceFlake.Routines
 
         protected override void OnAfterAction(RoutineAction action)
         {
-            throw new NotImplementedException();
         }
     }
 }

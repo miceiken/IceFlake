@@ -12,26 +12,26 @@ using D3D = IceFlake.DirectX.Direct3D;
 
 namespace IceFlake.Scripts
 {
+    [StructLayout(LayoutKind.Sequential)]
+    public struct PositionColored
+    {
+        public static readonly VertexFormat FVF = VertexFormat.Position | VertexFormat.Diffuse;
+        public static readonly int Stride = Vector3.SizeInBytes + sizeof(int);
+
+        public Vector3 Position;
+        public int Color;
+
+        public PositionColored(Vector3 pos, int col)
+        {
+            Position = pos;
+            Color = col;
+        }
+    }
+
     #region DrawUnitsScript
 
     public class DrawUnitsScript : Script
     {
-        [StructLayout(LayoutKind.Sequential)]
-        public struct PositionColored
-        {
-            public static readonly VertexFormat FVF = VertexFormat.Position | VertexFormat.Diffuse;
-            public static readonly int Stride = Vector3.SizeInBytes + sizeof(int);
-
-            public Vector3 Position;
-            public int Color;
-
-            public PositionColored(Vector3 pos, int col)
-            {
-                Position = pos;
-                Color = col;
-            }
-        }
-
         public DrawUnitsScript()
             : base("Draw Units", "Test")
         {

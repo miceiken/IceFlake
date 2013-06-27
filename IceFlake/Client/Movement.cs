@@ -26,7 +26,7 @@ namespace IceFlake.Client
             set;
         }
 
-        private Pather PatherInstance
+        public Pather PatherInstance
         {
             get;
             set;
@@ -78,7 +78,7 @@ namespace IceFlake.Client
             return true;
         }
 
-        private Queue<Location> generatedPath;
+        public Queue<Location> generatedPath;
         public void FollowPath(IEnumerable<Location> Path)
         {
             generatedPath = new Queue<Location>();

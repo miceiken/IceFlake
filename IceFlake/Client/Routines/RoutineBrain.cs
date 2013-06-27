@@ -10,6 +10,8 @@ namespace IceFlake.Client.Routines
 {
     public abstract class RoutineBrain
     {
+        private EndSceneCallback esHandler;
+
         public RoutineBrain()
         {
             Actions = new List<RoutineAction>();
@@ -19,7 +21,23 @@ namespace IceFlake.Client.Routines
 
             HarmfulTargetsSelector = DefaultHarmfulTargetsSelector;
             HelpfulTargetsSelector = DefaultHelpfulTargetsSelector;
+
+            Direct3D.CallbackManager.Register(esHandler = new EndSceneCallback(Direct3D_EndScene));
         }
+
+        ~RoutineBrain()
+        {
+            Direct3D.CallbackManager.Remove(esHandler);
+        }
+
+        public bool IsRunning
+        {
+            get;
+            private set;
+        }
+
+        public void Start() { IsRunning = true; }
+        public void Stop() { IsRunning = false; }
 
         private List<RoutineAction> Actions
         {
@@ -127,9 +145,11 @@ namespace IceFlake.Client.Routines
             AlternativeHelpfulTarget = HelpfulTargets.ElementAtOrDefault(1);
         }
 
-        //[EndSceneHandler]
         public void Direct3D_EndScene()
         {
+            if (!IsRunning)
+                return;
+
             if (!Manager.ObjectManager.IsInGame)
                 return;
 

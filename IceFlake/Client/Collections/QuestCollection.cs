@@ -8,6 +8,13 @@ namespace IceFlake.Client.Collections
 {
     public class QuestCollection
     {
+        public QuestCollection()
+        {
+            Manager.Events.Register("QUEST_QUERY_COMPLETE", (string ev, List<string> args) => { LastCompletedQuestsQuery = DateTime.Now; });
+        }
+
+        private DateTime LastCompletedQuestsQuery { get; set; }
+
         public IEnumerable<QuestLogEntry> QuestLog
         {
             get
@@ -22,11 +29,18 @@ namespace IceFlake.Client.Collections
             }
         }
 
-        // TODO: Fix this
-        public IEnumerable<int> CompletedQuests
+        // Remember to run QueryQuestsCompleted() before using this.
+        public IEnumerable<int> CompletedQuestIds
         {
             get
             {
+                // We probably haven't asked for an update in a while...
+                if (DateTime.Now.Subtract(LastCompletedQuestsQuery).TotalMinutes > 2)
+                {
+                    Manager.ExecutionQueue.AddExececution(() => { WoWScript.ExecuteNoResults("QueryQuestsCompleted()"); });
+                    yield break;
+                }
+
                 var currentQuest = Manager.Memory.Read<uint>((IntPtr)Pointers.LocalPlayer.CompletedQuests);
                 while ((currentQuest & 1) == 0 && currentQuest > 0)
                 {

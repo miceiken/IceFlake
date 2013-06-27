@@ -16,18 +16,21 @@ namespace IceFlake.Runtime
 
         public void Register(T callback)
         {
-            _callbacks.Add(callback);
+            lock (_callbacks)
+                _callbacks.Add(callback);
         }
 
         public void Remove(T callback)
         {
-            _callbacks.Remove(callback);
+            lock (_callbacks)
+                _callbacks.Remove(callback);
         }
 
         public void Invoke(params object[] args)
         {
-            foreach (T callback in _callbacks)
-                ((Delegate)(object)callback).DynamicInvoke(args);
+            lock (_callbacks)
+                foreach (T callback in _callbacks)
+                    ((Delegate)(object)callback).DynamicInvoke(args);
         }
     }
 }

@@ -257,9 +257,10 @@ namespace IceFlake.Scripts
                 return;
 
             Print("Completed Quests:");
-            foreach (var q in Manager.Quests.CompletedQuests)
+            foreach (var q in Manager.Quests.CompletedQuestIds)
                 Print("\t{0}", q);
 
+            /*
             var quests = Manager.Quests.QuestLog;
             Print("QuestLog:");
             foreach (var q in quests)
@@ -304,6 +305,7 @@ namespace IceFlake.Scripts
                 //    Print("\t\t{0}", o);
                 //Print("\tTime: {0}", q.Time);
             }
+            */
 
             Stop();
         }
