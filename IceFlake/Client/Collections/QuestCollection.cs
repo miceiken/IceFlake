@@ -37,7 +37,7 @@ namespace IceFlake.Client.Collections
                 // We probably haven't asked for an update in a while...
                 if (DateTime.Now.Subtract(LastCompletedQuestsQuery).TotalMinutes > 2)
                 {
-                    Manager.ExecutionQueue.AddExececution(() => { WoWScript.ExecuteNoResults("QueryQuestsCompleted()"); });
+                    QueryQuestsCompleted();
                     yield break;
                 }
 
@@ -48,6 +48,14 @@ namespace IceFlake.Client.Collections
                     currentQuest = Manager.Memory.Read<uint>(new IntPtr(currentQuest + 4));
                 }
             }
+        }
+
+        public void QueryQuestsCompleted()
+        {
+            Manager.ExecutionQueue.AddExececution(() =>
+            {
+                WoWScript.ExecuteNoResults("QueryQuestsCompleted()");
+            });
         }
 
         public WoWQuest this[int id]

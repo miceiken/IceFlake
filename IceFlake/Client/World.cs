@@ -67,7 +67,7 @@ namespace IceFlake.Client
         {
             start.Z += 1.3f;
             end.Z += 1.3f;
-            return Traceline(start, end, 0x120171);
+            return Traceline(start, end, 0x120111);
         }
 
         #region Nested type: TracelineDelegate

@@ -147,7 +147,7 @@
         // 3.3.5a: 12340
         internal class Events
         {
-            internal static uint EventVictim = 0x004DDBD0;
+            internal static uint EventVictim = 0x00511C40;
         }
 
         #endregion

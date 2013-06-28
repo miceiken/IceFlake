@@ -29,21 +29,20 @@ namespace IceFlake
         {
             Stopwatch sw = Stopwatch.StartNew();
 
-            AssemblyAnalyzer.RegisterTargets(
+            Direct3D.RegisterCallbacks(
                 ObjectManager = new ObjectManager(),
                 ExecutionQueue = new EndSceneExecute(),
                 Movement = new Movement(),
-                Events = new Events(),
+                Events = new WoWEvents(),
                 Spellbook = new SpellCollection(),
                 Scripts = new ScriptManager()
                 );
-            AssemblyAnalyzer.Analyze(Assembly.GetExecutingAssembly());
 
             Helper.Initialize();
             DBC = new WoWDB();
             Quests = new QuestCollection();
             Inventory = new WoWInventory();
-            Camera = new WoWCamera();            
+            Camera = new WoWCamera();
 
             sw.Stop();
             Log.WriteLine("Initialization took {0} ms", sw.ElapsedMilliseconds);
@@ -77,7 +76,7 @@ namespace IceFlake
         internal static QuestCollection Quests { get; private set; }
         internal static WoWInventory Inventory { get; private set; }
         internal static WoWCamera Camera { get; private set; }
-        internal static Events Events { get; private set; }
+        internal static WoWEvents Events { get; private set; }
         internal static ScriptManager Scripts { get; private set; }
 
         internal static WoWLocalPlayer LocalPlayer

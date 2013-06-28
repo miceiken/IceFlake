@@ -10,7 +10,7 @@ using IceFlake.DirectX;
 
 namespace IceFlake.Client.Scripts
 {
-    public class ScriptManager
+    public class ScriptManager : IPulsable
     {
         public ScriptManager()
         {
@@ -38,7 +38,6 @@ namespace IceFlake.Client.Scripts
             set;
         }
 
-        [EndSceneHandler]
         public void Direct3D_EndScene()
         {
             foreach (var script in Scripts)

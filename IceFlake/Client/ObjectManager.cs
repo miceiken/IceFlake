@@ -8,7 +8,7 @@ using IceFlake.DirectX;
 
 namespace IceFlake.Client
 {
-    public class ObjectManager
+    public class ObjectManager : IPulsable
     {
         private static EnumVisibleObjectsDelegate _enumVisibleObjects;
         private static IntPtr _ourCallback;
@@ -50,7 +50,6 @@ namespace IceFlake.Client
             get { return LocalPlayer != null; }
         }
 
-        [EndSceneHandler]
         public void Direct3D_EndScene()
         {
             ulong localPlayerGuid = _getLocalPlayer();

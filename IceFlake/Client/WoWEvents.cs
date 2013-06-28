@@ -7,13 +7,13 @@ using GreyMagic.Internals;
 
 namespace IceFlake.Client
 {
-    public class Events
+    public class WoWEvents : IPulsable
     {
-        public Events()
+        public WoWEvents()
         {
             var eventVictim = Manager.Memory.RegisterDelegate<LuaFunctionDelegate>(
                 (IntPtr)Pointers.Events.EventVictim);
-            if (_eventDetour == null)
+            if (_eventDetour == null || !_eventDetour.IsApplied)
                 _eventDetour = Manager.Memory.Detours.CreateAndApply(eventVictim, new LuaFunctionDelegate(HandleVictimCall),
                                                                      "EventVictim");
         }
@@ -28,7 +28,6 @@ namespace IceFlake.Client
             }
         }
 
-        [EndSceneHandler]
         public void Direct3D_EndScene()
         {
             if ((DateTime.Now - _lastRegisterCheck).TotalMilliseconds >= RegisterCheckWait)

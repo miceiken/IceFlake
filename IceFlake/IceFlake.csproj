@@ -81,7 +81,7 @@
     <Compile Include="Client\Collections\SpellCollection.cs" />
     <Compile Include="Client\WoWConsole.cs" />
     <Compile Include="Client\EndSceneExecute.cs" />
-    <Compile Include="Client\Events.cs" />
+    <Compile Include="Client\WoWEvents.cs" />
     <Compile Include="Client\Helper.cs" />
     <Compile Include="Client\WoWInventory.cs" />
     <Compile Include="Client\Location.cs" />
@@ -110,6 +110,7 @@
     <Compile Include="Client\Scripts\Script.cs" />
     <Compile Include="Client\Scripts\ScriptManager.cs" />
     <Compile Include="Client\Scripts\ScriptThread.cs" />
+    <Compile Include="DirectX\IPulsable.cs" />
     <Compile Include="Routines\TestRoutineBrain.cs" />
     <Compile Include="Runtime\SleepException.cs" />
     <Compile Include="Client\Scripts\TerminateException.cs" />
@@ -121,7 +122,6 @@
     <Compile Include="DirectX\IResource.cs" />
     <Compile Include="Manager.cs" />
     <Compile Include="DirectX\Direct3D.cs" />
-    <Compile Include="DirectX\EndSceneHandler.cs" />
     <Compile Include="FileLogger.cs" />
     <Compile Include="IceForm.cs">
       <SubType>Form</SubType>
@@ -132,8 +132,6 @@
     <Compile Include="Log.cs" />
     <Compile Include="EntryPoint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Runtime\AseemblyAnalyzer.cs" />
-    <Compile Include="Runtime\CallbackManager.cs" />
     <Compile Include="Runtime\Extensions.cs" />
     <Compile Include="Scripts\ChatScript.cs" />
     <Compile Include="Scripts\DebugScript.cs" />
@@ -143,6 +141,7 @@
     <Compile Include="Scripts\GuildRecruitScript.cs" />
     <Compile Include="Scripts\HackScripts.cs" />
     <Compile Include="Scripts\LoginScript.cs" />
+    <Compile Include="Scripts\RoutineScript.cs" />
     <Compile Include="Scripts\TalentScript.cs" />
     <Compile Include="Scripts\UITestScript.cs" />
     <Compile Include="Scripts\VendorScript.cs" />

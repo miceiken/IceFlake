@@ -9,7 +9,7 @@ using IceFlake.DirectX;
 
 namespace IceFlake.Client.Collections
 {
-    public sealed class SpellCollection : IEnumerable<WoWSpell>
+    public sealed class SpellCollection : IEnumerable<WoWSpell>, IPulsable
     {
         //[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         //private delegate IntPtr GetSpellEffectRec(uint spellId, int effectIdx);
@@ -57,7 +57,6 @@ namespace IceFlake.Client.Collections
 
         #endregion
 
-        [EndSceneHandler]
         public void Direct3D_EndScene()
         {
             if (!Manager.ObjectManager.IsInGame)

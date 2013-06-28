@@ -9,7 +9,7 @@ using IceFlake.DirectX;
 
 namespace IceFlake.Client
 {
-    public class Movement
+    public class Movement : IPulsable
     {
         public Movement()
         {
@@ -94,7 +94,6 @@ namespace IceFlake.Client
             Manager.LocalPlayer.StopCTM();
         }
 
-        [EndSceneHandler]
         public void Direct3D_EndScene()
         {
             if (!Manager.ObjectManager.IsInGame)

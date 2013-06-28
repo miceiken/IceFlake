@@ -1,21 +1,18 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using System.Threading;
+﻿using GreyMagic.Internals;
 using IceFlake.Runtime;
-using GreyMagic.Internals;
 using SlimDX;
 using SlimDX.Direct3D9;
+using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace IceFlake.DirectX
 {
-    public delegate void EndSceneCallback();
-
     public static class Direct3D
     {
         private const int VMT_ENDSCENE = 42;
         private const int VMT_RESET = 16;
-
-        public static CallbackManager<EndSceneCallback> CallbackManager = new CallbackManager<EndSceneCallback>();
 
         private static Direct3D9EndScene _endSceneDelegate;
         private static Detour _endSceneHook;
@@ -50,7 +47,11 @@ namespace IceFlake.DirectX
                             OnFirstFrame(null, new EventArgs());
 
                     PrepareRenderState();
-                    CallbackManager.Invoke();
+                    lock (_pulsables)
+                    {
+                        foreach (var pulsable in _pulsables)
+                            pulsable.Direct3D_EndScene();
+                    }
                 }
             }
             catch (Exception e)
@@ -141,6 +142,26 @@ namespace IceFlake.DirectX
             Device.SetRenderState(RenderState.CullMode, Cull.None);
 
             //preRenderState.Apply();
+        }
+
+        private static LinkedList<IPulsable> _pulsables = new LinkedList<IPulsable>();
+        public static void RegisterCallback(IPulsable pulsable)
+        {
+            lock (_pulsables)
+                _pulsables.AddLast(pulsable);
+        }
+
+        public static void RegisterCallbacks(params IPulsable[] pulsables)
+        {
+            foreach (var pulsable in pulsables)
+                RegisterCallback(pulsable);
+        }
+
+        public static void RemoveCallback(IPulsable pulsable)
+        {
+            lock (_pulsables)
+                if (_pulsables.Contains(pulsable))
+                    _pulsables.Remove(pulsable);
         }
 
         #region Nested type: Direct3D9EndScene

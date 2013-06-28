@@ -8,10 +8,8 @@ using IceFlake.Client.Objects;
 
 namespace IceFlake.Client.Routines
 {
-    public abstract class RoutineBrain
+    public abstract class RoutineBrain : IPulsable
     {
-        private EndSceneCallback esHandler;
-
         public RoutineBrain()
         {
             Actions = new List<RoutineAction>();
@@ -22,12 +20,12 @@ namespace IceFlake.Client.Routines
             HarmfulTargetsSelector = DefaultHarmfulTargetsSelector;
             HelpfulTargetsSelector = DefaultHelpfulTargetsSelector;
 
-            Direct3D.CallbackManager.Register(esHandler = new EndSceneCallback(Direct3D_EndScene));
+            Direct3D.RegisterCallback(this);
         }
 
         ~RoutineBrain()
         {
-            Direct3D.CallbackManager.Remove(esHandler);
+            Direct3D.RemoveCallback(this);
         }
 
         public bool IsRunning
