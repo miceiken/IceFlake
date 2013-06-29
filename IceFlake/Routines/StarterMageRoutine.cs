@@ -9,9 +9,9 @@ using IceFlake.Client.Routines.Combat;
 
 namespace IceFlake.Routines
 {
-    public class TestRoutineBrain : RoutineBrain
+    public class StarterMageRoutine : RoutineBrain
     {
-        public TestRoutineBrain()
+        public StarterMageRoutine()
         {
             AddAction(new HarmfulSpellRoutine(this, 1, "Fireball", 15f));
         }

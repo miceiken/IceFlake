@@ -15,22 +15,23 @@ namespace IceFlake.Scripts
     public class RoutineScript : Script
     {
         public RoutineScript()
-            : base("Test", "Routine")
-        { }
+            : base("Starter Mage", "Routine")
+        {
+            routine = new StarterMageRoutine();
+        }
 
         private RoutineBrain routine;
 
         public override void OnStart()
         {
-            routine = new TestRoutineBrain();
             routine.Start();
         }
 
-        public override void OnTerminate()
+        public override void OnTick()
         {
         }
 
-        public override void OnTick()
+        public override void OnTerminate()
         {
             routine.Stop();
         }

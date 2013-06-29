@@ -103,7 +103,7 @@ namespace IceFlake.Client.Routines
             get
             {
                 return () =>
-                    from u in Party.Members
+                    from u in WoWParty.Members
                     where u.IsValid
                     && u.Distance < 40
                     && !u.IsDead

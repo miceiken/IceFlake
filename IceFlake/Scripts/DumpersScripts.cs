@@ -77,7 +77,7 @@ namespace IceFlake.Scripts
             if (!Manager.ObjectManager.IsInGame)
                 return;
 
-            foreach (var p in Party.Members)
+            foreach (var p in WoWParty.Members)
             {
                 Print("-- {0}", p.Name);
                 Print("\tGUID: 0x{0}", p.Guid.ToString("X8"));
@@ -111,11 +111,11 @@ namespace IceFlake.Scripts
                 return;
 
             Print("--- [ RAID ] ---");
-            Print("\tInstance Difficulty: {0}", Raid.Difficulty);
-            Print("\tRaid Members: {0}", Raid.NumRaidMembers);
+            Print("\tInstance Difficulty: {0}", WoWRaid.Difficulty);
+            Print("\tRaid Members: {0}", WoWRaid.NumRaidMembers);
             Print("----------------");
 
-            foreach (var p in Raid.Members)
+            foreach (var p in WoWRaid.Members)
             {
                 Print("-- {0}", p.Name);
                 Print("\tGUID: 0x{0}", p.Guid.ToString("X8"));

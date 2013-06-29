@@ -5,7 +5,7 @@ using IceFlake.Client.Patchables;
 
 namespace IceFlake.Client
 {
-    public static class Raid
+    public static class WoWRaid
     {
         public static int NumRaidMembers
         {

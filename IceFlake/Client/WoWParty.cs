@@ -5,10 +5,8 @@ using IceFlake.Client.Patchables;
 
 namespace IceFlake.Client
 {
-    public static class Party
+    public static class WoWParty
     {
-        // Party Leader GUID BD1968
-        // Party Difficulty BD0898  BD1978
         public static int NumPartyMembers
         {
             get

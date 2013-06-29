@@ -47,11 +47,9 @@ namespace IceFlake.DirectX
                             OnFirstFrame(null, new EventArgs());
 
                     PrepareRenderState();
-                    lock (_pulsables)
-                    {
-                        foreach (var pulsable in _pulsables)
-                            pulsable.Direct3D_EndScene();
-                    }
+
+                    foreach (var pulsable in _pulsables)
+                        pulsable.Direct3D_EndScene();
                 }
             }
             catch (Exception e)
@@ -147,8 +145,7 @@ namespace IceFlake.DirectX
         private static LinkedList<IPulsable> _pulsables = new LinkedList<IPulsable>();
         public static void RegisterCallback(IPulsable pulsable)
         {
-            lock (_pulsables)
-                _pulsables.AddLast(pulsable);
+            _pulsables.AddLast(pulsable);
         }
 
         public static void RegisterCallbacks(params IPulsable[] pulsables)
@@ -159,9 +156,8 @@ namespace IceFlake.DirectX
 
         public static void RemoveCallback(IPulsable pulsable)
         {
-            lock (_pulsables)
-                if (_pulsables.Contains(pulsable))
-                    _pulsables.Remove(pulsable);
+            if (_pulsables.Contains(pulsable))
+                _pulsables.Remove(pulsable);
         }
 
         #region Nested type: Direct3D9EndScene

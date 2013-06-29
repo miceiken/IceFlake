@@ -6,6 +6,10 @@ namespace IceFlake.Client
 {
     public static class World
     {
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate bool TracelineDelegate(
+            ref Location start, ref Location end, out Location result, ref float distanceTravelled, uint flags,
+            uint zero);
         private static TracelineDelegate _traceline;
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -60,23 +64,14 @@ namespace IceFlake.Client
 
         public static TracelineResult Traceline(Location start, Location end)
         {
-            return Traceline(start, end, 0x120111 /*(uint)TraceLineHitFlags.HitTestLOS*/);
+            return Traceline(start, end, (uint)TraceLineHitFlags.HitTestLOS);
         }
 
         public static TracelineResult LineOfSightTest(Location start, Location end)
         {
             start.Z += 1.3f;
             end.Z += 1.3f;
-            return Traceline(start, end, 0x120111);
+            return Traceline(start, end, 0x100171);
         }
-
-        #region Nested type: TracelineDelegate
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        private delegate bool TracelineDelegate(
-            ref Location start, ref Location end, out Location result, ref float distanceTravelled, uint flags,
-            uint zero);
-
-        #endregion
     }
 }
