@@ -57,8 +57,8 @@
         internal class Unit
         {
             internal static uint FishChanneledCasting = 0xD70;
-            internal static uint ChanneledCastingId = 0xC20;
-            internal static uint CastingId = 0xc08;
+            internal static uint ChanneledCastingId = 0xA80;
+            internal static uint CastingId = 0xA6C;
 
             internal static uint UpdateDisplayInfo = 0x73e410; // TODO: IMPLEMENT
             internal static uint UnitReaction = 0x007251C0;
@@ -101,9 +101,9 @@
             internal static uint SpellCount = 0x00BE8D9C;
             internal static uint SpellBook = 0x00BE5D88;
             internal static uint CastSpell = 0x0080DA40;
-            internal static uint GetSpellCooldown = 0x00807980;
+            internal static uint GetSpellCooldown = 0x00809000;
 
-            internal static uint FirstActionBarSpellId = 0xC1E358; // Don't really need this unless we want to auto-set up actionbars?
+            internal static uint FirstActionBarSpellId = 0x00C1E358; // Don't really need this unless we want to auto-set up actionbars?
         }
 
         #endregion

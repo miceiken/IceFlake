@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-using IceFlake.Client;
-using IceFlake.Client.Objects;
+﻿using IceFlake.Client;
 using IceFlake.Client.Patchables;
 using IceFlake.Client.Scripts;
 using IceFlake.DirectX;
+using System;
+using System.Diagnostics;
+using System.Drawing;
+using System.Linq;
+using System.Threading;
+using System.Windows.Forms;
 
 namespace IceFlake
 {
@@ -64,8 +61,13 @@ namespace IceFlake
 
         private void IceForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            Log.RemoveReader(this);
+
             foreach (var s in Manager.Scripts.Scripts.Where(x => x.IsRunning))
                 s.Stop();
+
+            // Let's give us a chance to undo some damage.
+            ThreadPool.QueueUserWorkItem((state) => Direct3D.Shutdown());
         }
 
         #region Scripts tab
@@ -81,7 +83,7 @@ namespace IceFlake
             }
 
             lstScripts.DataSource = Manager.Scripts.Scripts.OrderBy(x => x.Category).ToList();
-            Log.WriteLine(LogType.Information, "Loaded {0} scripts.", Manager.Scripts.Scripts.Count);            
+            Log.WriteLine(LogType.Information, "Loaded {0} scripts.", Manager.Scripts.Scripts.Count);
         }
 
         private Script SelectedScript;

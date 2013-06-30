@@ -31,9 +31,8 @@ namespace IceFlake
 
         private static void OnApplicationExit(object sender, EventArgs e)
         {
-            if (AppForm != null)
-                Log.RemoveReader(AppForm);
-            Direct3D.Shutdown();
+            if (Direct3D.FrameCount > -1)
+                Direct3D.Shutdown();
         }
 
         private static void LogUnhandledException(object sender, UnhandledExceptionEventArgs e)

@@ -186,6 +186,11 @@ namespace IceFlake.Client.Routines
         public virtual void OnEnterCombat() { }
         public virtual void OnExitCombat() { }
 
+        public void Sleep(int ms)
+        {
+            throw new SleepException(ms);
+        }
+
         public void Print(string text, params object[] args)
         {
             Log.WriteLine(text, args);

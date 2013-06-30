@@ -21,7 +21,7 @@ namespace IceFlake.Client.Routines.Combat
         {
             Print("Casting {0} on {1}", SpellName, unit.Name);
             Manager.LocalPlayer.LookAt(unit.Location);
-            Spell.Cast();
+            Spell.Cast(unit);
             Sleep(1000);
         }
 

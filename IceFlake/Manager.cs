@@ -64,7 +64,7 @@ namespace IceFlake
             Memory = null;
 
             GC.Collect();
-            AppDomain.Unload(AppDomain.CurrentDomain);
+            // We need something clever here...
         }
 
         internal static InProcessMemoryReader Memory { get; private set; }
