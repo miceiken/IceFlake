@@ -27,7 +27,7 @@ namespace IceFlake.Client.Routines.Combat
 
         public override bool IsWanted
         {
-            get { return base.IsWanted && (Brain.HarmfulTarget != null && Brain.HarmfulTarget.IsValid) /*&& Brain.HarmfulTarget.InLoS*/; }
+            get { return base.IsWanted && (Brain.HarmfulTarget != null && Brain.HarmfulTarget.IsValid) && Brain.HarmfulTarget.InLoS; }
         }
     }
 }

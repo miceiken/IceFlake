@@ -58,7 +58,7 @@ namespace IceFlake.Scripts
         public override void OnTick()
         {
             if (Manager.Movement.PatherInstance == null)
-                Manager.Movement.PatherInstance = new Pather(World.CurrentMap);
+                Manager.Movement.PatherInstance = new Pather(WoWWorld.CurrentMap);
 
             if (_path == null || _path.Count() == 0)
                 _path = Manager.Movement.PatherInstance.FindPath(loc1, loc2, false);

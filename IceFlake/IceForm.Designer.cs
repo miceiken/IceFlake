@@ -50,16 +50,17 @@
             this.tabDebug = new System.Windows.Forms.TabPage();
             this.btnExecute = new System.Windows.Forms.Button();
             this.tbLUA = new System.Windows.Forms.TextBox();
-            this.btnDump = new System.Windows.Forms.Button();
-            this.GUITimer = new System.Windows.Forms.Timer(this.components);
+            this.btnSpellCast = new System.Windows.Forms.Button();
             this.tabPath = new System.Windows.Forms.TabPage();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.btnGenPath = new System.Windows.Forms.Button();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.label2 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.lblPos1 = new System.Windows.Forms.Label();
             this.lblPos2 = new System.Windows.Forms.Label();
+            this.btnGenPath = new System.Windows.Forms.Button();
+            this.GUITimer = new System.Windows.Forms.Timer(this.components);
+            this.btnLoSTest = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabStatus.SuspendLayout();
             this.gbPlayer.SuspendLayout();
@@ -75,6 +76,7 @@
             // 
             this.rbLogBox.Cursor = System.Windows.Forms.Cursors.Default;
             this.rbLogBox.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.rbLogBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rbLogBox.Location = new System.Drawing.Point(0, 213);
             this.rbLogBox.Name = "rbLogBox";
             this.rbLogBox.ReadOnly = true;
@@ -275,9 +277,10 @@
             // 
             // tabDebug
             // 
+            this.tabDebug.Controls.Add(this.btnLoSTest);
             this.tabDebug.Controls.Add(this.btnExecute);
             this.tabDebug.Controls.Add(this.tbLUA);
-            this.tabDebug.Controls.Add(this.btnDump);
+            this.tabDebug.Controls.Add(this.btnSpellCast);
             this.tabDebug.Location = new System.Drawing.Point(4, 22);
             this.tabDebug.Name = "tabDebug";
             this.tabDebug.Padding = new System.Windows.Forms.Padding(3);
@@ -303,21 +306,15 @@
             this.tbLUA.Size = new System.Drawing.Size(167, 20);
             this.tbLUA.TabIndex = 1;
             // 
-            // btnDump
+            // btnSpellCast
             // 
-            this.btnDump.Location = new System.Drawing.Point(8, 7);
-            this.btnDump.Name = "btnDump";
-            this.btnDump.Size = new System.Drawing.Size(75, 23);
-            this.btnDump.TabIndex = 0;
-            this.btnDump.Text = "Dump";
-            this.btnDump.UseVisualStyleBackColor = true;
-            this.btnDump.Click += new System.EventHandler(this.btnDump_Click);
-            // 
-            // GUITimer
-            // 
-            this.GUITimer.Enabled = true;
-            this.GUITimer.Interval = 500;
-            this.GUITimer.Tick += new System.EventHandler(this.GUITimer_Tick);
+            this.btnSpellCast.Location = new System.Drawing.Point(8, 7);
+            this.btnSpellCast.Name = "btnSpellCast";
+            this.btnSpellCast.Size = new System.Drawing.Size(75, 23);
+            this.btnSpellCast.TabIndex = 0;
+            this.btnSpellCast.Text = "SpellCast";
+            this.btnSpellCast.UseVisualStyleBackColor = true;
+            this.btnSpellCast.Click += new System.EventHandler(this.btnSpellCast_Click);
             // 
             // tabPath
             // 
@@ -340,17 +337,6 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Generate Path";
-            // 
-            // btnGenPath
-            // 
-            this.btnGenPath.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.btnGenPath.Location = new System.Drawing.Point(3, 74);
-            this.btnGenPath.Name = "btnGenPath";
-            this.btnGenPath.Size = new System.Drawing.Size(194, 23);
-            this.btnGenPath.TabIndex = 0;
-            this.btnGenPath.Text = "Generate";
-            this.btnGenPath.UseVisualStyleBackColor = true;
-            this.btnGenPath.Click += new System.EventHandler(this.btnGenPath_Click);
             // 
             // tableLayoutPanel2
             // 
@@ -408,6 +394,33 @@
             this.lblPos2.Text = "<click me>";
             this.lblPos2.Click += new System.EventHandler(this.lblPos2_Click);
             // 
+            // btnGenPath
+            // 
+            this.btnGenPath.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.btnGenPath.Location = new System.Drawing.Point(3, 74);
+            this.btnGenPath.Name = "btnGenPath";
+            this.btnGenPath.Size = new System.Drawing.Size(194, 23);
+            this.btnGenPath.TabIndex = 0;
+            this.btnGenPath.Text = "Generate";
+            this.btnGenPath.UseVisualStyleBackColor = true;
+            this.btnGenPath.Click += new System.EventHandler(this.btnGenPath_Click);
+            // 
+            // GUITimer
+            // 
+            this.GUITimer.Enabled = true;
+            this.GUITimer.Interval = 500;
+            this.GUITimer.Tick += new System.EventHandler(this.GUITimer_Tick);
+            // 
+            // btnLoSTest
+            // 
+            this.btnLoSTest.Location = new System.Drawing.Point(8, 36);
+            this.btnLoSTest.Name = "btnLoSTest";
+            this.btnLoSTest.Size = new System.Drawing.Size(75, 23);
+            this.btnLoSTest.TabIndex = 3;
+            this.btnLoSTest.Text = "LoSTest";
+            this.btnLoSTest.UseVisualStyleBackColor = true;
+            this.btnLoSTest.Click += new System.EventHandler(this.btnLoSTest_Click);
+            // 
             // IceForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -447,7 +460,7 @@
         private System.Windows.Forms.Button btnScriptStop;
         private System.Windows.Forms.Button btnScriptStart;
         private System.Windows.Forms.TabPage tabDebug;
-        private System.Windows.Forms.Button btnDump;
+        private System.Windows.Forms.Button btnSpellCast;
         private System.Windows.Forms.CheckedListBox lstScripts;
         private System.Windows.Forms.Timer GUITimer;
         private System.Windows.Forms.Button btnExecute;
@@ -471,6 +484,7 @@
         private System.Windows.Forms.Label lblPos1;
         private System.Windows.Forms.Label lblPos2;
         private System.Windows.Forms.Button btnGenPath;
+        private System.Windows.Forms.Button btnLoSTest;
     }
 }
 

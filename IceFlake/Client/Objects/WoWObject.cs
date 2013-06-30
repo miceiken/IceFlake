@@ -67,8 +67,8 @@ namespace IceFlake.Client.Objects
         {
             get
             {
-                return World.LineOfSightTest(Location, Manager.ObjectManager.LocalPlayer.Location) ==
-                       TracelineResult.NoCollision;
+                Location result;
+                return (WoWWorld.LineOfSightTest(Location, Manager.ObjectManager.LocalPlayer.Location) & 0xFF) == 0;
             }
         }
 

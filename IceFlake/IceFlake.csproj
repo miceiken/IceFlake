@@ -114,7 +114,7 @@
     <Compile Include="Routines\StarterMageRoutine.cs" />
     <Compile Include="Runtime\SleepException.cs" />
     <Compile Include="Client\Scripts\TerminateException.cs" />
-    <Compile Include="Client\World.cs" />
+    <Compile Include="Client\WoWWorld.cs" />
     <Compile Include="Client\WoWDB.cs" />
     <Compile Include="Client\WoWQuest.cs" />
     <Compile Include="Client\WoWScript.cs" />

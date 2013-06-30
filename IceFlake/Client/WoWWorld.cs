@@ -4,10 +4,10 @@ using IceFlake.Client.Patchables;
 
 namespace IceFlake.Client
 {
-    public static class World
+    public static class WoWWorld
     {
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        private delegate bool TracelineDelegate(
+        private delegate int TracelineDelegate(
             ref Location start, ref Location end, out Location result, ref float distanceTravelled, uint flags,
             uint zero);
         private static TracelineDelegate _traceline;
@@ -15,14 +15,6 @@ namespace IceFlake.Client
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate bool HandleTerrainClickDelegate(TerrainClickEvent terrainClickArgs);
         private static HandleTerrainClickDelegate _handleTerrainClick;
-
-        public static bool HandleTerrainClick(Location loc)
-        {
-            if (_handleTerrainClick == null)
-                _handleTerrainClick = Manager.Memory.RegisterDelegate<HandleTerrainClickDelegate>((IntPtr)Pointers.World.HandleTerrainClick, true);
-
-            return _handleTerrainClick(new TerrainClickEvent { GUID = 0ul, Position = loc, Button = MouseButton.None | MouseButton.Left });
-        }
 
         public static int CurrentMapId
         {
@@ -50,28 +42,35 @@ namespace IceFlake.Client
             get { return Manager.Memory.Read<uint>((IntPtr)Pointers.World.ZoneID); }
         }
 
-        public static TracelineResult Traceline(Location start, Location end, uint flags)
+        public static bool HandleTerrainClick(Location loc)
+        {
+            if (_handleTerrainClick == null)
+                _handleTerrainClick = Manager.Memory.RegisterDelegate<HandleTerrainClickDelegate>((IntPtr)Pointers.World.HandleTerrainClick, true);
+
+            return _handleTerrainClick(new TerrainClickEvent { GUID = 0ul, Position = loc, Button = MouseButton.None | MouseButton.Left });
+        }
+
+        public static int Traceline(Location start, Location end, out Location result, uint flags)
         {
             if (_traceline == null)
                 _traceline = Manager.Memory.RegisterDelegate<TracelineDelegate>((IntPtr)Pointers.World.Traceline);
 
             float dist = 1.0f;
-            Location result;
-            return _traceline(ref start, ref end, out result, ref dist, flags, 0)
-                       ? TracelineResult.Collided
-                       : TracelineResult.NoCollision;
+            return _traceline(ref start, ref end, out result, ref dist, flags, 0);
         }
 
-        public static TracelineResult Traceline(Location start, Location end)
+        public static int Traceline(Location start, Location end)
         {
-            return Traceline(start, end, (uint)TraceLineHitFlags.HitTestLOS);
+            Location result;
+            return Traceline(start, end, out result, 0x120171);
         }
 
-        public static TracelineResult LineOfSightTest(Location start, Location end)
+        public static int LineOfSightTest(Location start, Location end)
         {
             start.Z += 1.3f;
             end.Z += 1.3f;
-            return Traceline(start, end, 0x100171);
+            Location result;
+            return Traceline(start, end, out result, 0x120171); // 0x100121
         }
     }
 }

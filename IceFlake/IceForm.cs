@@ -59,30 +59,13 @@ namespace IceFlake
         private void IceForm_Load(object sender, EventArgs e)
         {
             Log.AddReader(this);
-            Log.WriteLine("CoreForm loaded");
+            Log.WriteLine(LogType.Good, "CoreForm loaded");
         }
 
         private void IceForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             foreach (var s in Manager.Scripts.Scripts.Where(x => x.IsRunning))
                 s.Stop();
-        }
-
-        private void btnDump_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (Manager.LocalPlayer.Class != WoWClass.Shaman)
-                    return;
-                var healingWave = Manager.Spellbook["Healing Wave"];
-                if (healingWave == null || !healingWave.IsValid)
-                    return;
-                Manager.ExecutionQueue.AddExececution(() =>
-                {
-                    healingWave.Cast();
-                });
-            }
-            catch { }
         }
 
         #region Scripts tab
@@ -201,10 +184,12 @@ namespace IceFlake
                 lblPowerText.Text = string.Format("{0}:", lp.PowerType);
                 lblPower.Text = string.Format("{0}/{1} ({2:0}%)", lp.Power, lp.MaxPower, lp.PowerPercentage);
                 lblLevel.Text = string.Format("{0}", lp.Level);
-                lblZone.Text = string.Format("{0} ({1})", World.CurrentZone ?? "<unknown>", World.CurrentSubZone ?? "<unknown>");
+                lblZone.Text = string.Format("{0} ({1})", WoWWorld.CurrentZone ?? "<unknown>", WoWWorld.CurrentSubZone ?? "<unknown>");
             }
             catch { }
         }
+
+        #region Debug tab
 
         private void btnExecute_Click(object sender, EventArgs e)
         {
@@ -220,6 +205,22 @@ namespace IceFlake
             });
         }
 
+        private void btnSpellCast_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (Manager.LocalPlayer.Class != WoWClass.Shaman)
+                    return;
+                var healingWave = Manager.Spellbook["Healing Wave"];
+                if (healingWave == null || !healingWave.IsValid)
+                    return;
+                Manager.ExecutionQueue.AddExececution(() =>
+                {
+                    healingWave.Cast();
+                });
+            }
+            catch { }
+        }
 
         private Location
             _pos1 = default(Location),
@@ -250,7 +251,7 @@ namespace IceFlake
 
             try
             {
-                var map = World.CurrentMap;
+                var map = WoWWorld.CurrentMap;
                 Log.WriteLine("Generate path from {0} to {1} in {2}", _pos1, _pos2, map);
                 var pathInstance = new Pather(map);
                 var path = pathInstance.FindPath(_pos1, _pos2, false);
@@ -266,5 +267,32 @@ namespace IceFlake
                 Log.WriteLine("NavMesh: {0}", ex.Message);
             }
         }
+
+        private void btnLoSTest_Click(object sender, EventArgs e)
+        {
+            const uint flags = 0x120171;
+
+            var me = Manager.LocalPlayer;
+            if (me == null || !me.IsValid)
+                return;
+            var start = me.Location;
+
+            var target = me.Target;
+            if (target == null || !target.IsValid)
+                return;
+            var end = target.Location;
+
+            start.Z += 1.3f;
+            end.Z += 1.3f;
+
+            Manager.ExecutionQueue.AddExececution(() =>
+            {
+                Location result;
+                var los = (WoWWorld.Traceline(start, end, out result, flags) & 0xFF) == 0;
+                Log.WriteLine("LoSTest: {0} -> {1} = {2} @ {3}", me.Location, target.Location, los, result);
+            });
+        }
+
+        #endregion
     }
 }

@@ -19,7 +19,7 @@ namespace IceFlake
         public static void Main(string args)
         {
             FileLogger.Instance = new FileLogger();
-            Log.WriteLine("Initializing IceFlake");
+            Log.WriteLine(LogType.Information, "Initializing IceFlake");
             Application.ApplicationExit += OnApplicationExit;
             AppDomain.CurrentDomain.UnhandledException += LogUnhandledException;
             Manager.Initialize();
@@ -33,7 +33,6 @@ namespace IceFlake
         {
             if (AppForm != null)
                 Log.RemoveReader(AppForm);
-            Log.WriteLine("Shutting down IceFlake");
             Direct3D.Shutdown();
         }
 

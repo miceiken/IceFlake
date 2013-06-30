@@ -16,7 +16,7 @@ namespace IceFlake.Client
             if (!Manager.ObjectManager.IsInGame)
                 return;
 
-            CurrentMap = World.CurrentMap;
+            CurrentMap = WoWWorld.CurrentMap;
             PatherInstance = new Pather(CurrentMap);
         }
 
@@ -55,9 +55,9 @@ namespace IceFlake.Client
             if (!Manager.ObjectManager.IsInGame)
                 return false;
 
-            if (CurrentMap != World.CurrentMap)
+            if (CurrentMap != WoWWorld.CurrentMap)
             {
-                CurrentMap = World.CurrentMap;
+                CurrentMap = WoWWorld.CurrentMap;
                 PatherInstance = new Pather(CurrentMap);
             }
 

@@ -45,12 +45,12 @@ namespace IceFlake
             Camera = new WoWCamera();
 
             sw.Stop();
-            Log.WriteLine("Initialization took {0} ms", sw.ElapsedMilliseconds);
+            Log.WriteLine(LogType.Good, "Initialization took {0} ms", sw.ElapsedMilliseconds);
         }
 
         internal static void Stop(object sender, EventArgs e)
         {
-            Log.WriteLine("Shutting down IceFlake");
+            Log.WriteLine(LogType.Information, "Shutting down IceFlake");
             Events = null;
             Spellbook = null;
             Movement = null;
@@ -64,7 +64,7 @@ namespace IceFlake
             Memory = null;
 
             GC.Collect();
-            //Environment.Exit(1);
+            AppDomain.Unload(AppDomain.CurrentDomain);
         }
 
         internal static InProcessMemoryReader Memory { get; private set; }
