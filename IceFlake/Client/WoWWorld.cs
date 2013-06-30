@@ -6,6 +6,8 @@ namespace IceFlake.Client
 {
     public static class WoWWorld
     {
+        #region Typedefs & Delegates
+
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate int TracelineDelegate(
             ref Location start, ref Location end, out Location result, ref float distanceTravelled, uint flags,
@@ -15,6 +17,8 @@ namespace IceFlake.Client
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate bool HandleTerrainClickDelegate(TerrainClickEvent terrainClickArgs);
         private static HandleTerrainClickDelegate _handleTerrainClick;
+
+        #endregion
 
         public static int CurrentMapId
         {

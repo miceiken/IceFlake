@@ -7,6 +7,8 @@ namespace IceFlake.Client.Objects
 {
     public class WoWItem : WoWObject
     {
+        #region Typedefs & Delegates
+
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         private delegate void UseItemDelegate(IntPtr thisObj, ref ulong guid, int unkZero);
         private static UseItemDelegate _useItem;
@@ -14,6 +16,8 @@ namespace IceFlake.Client.Objects
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         private delegate IntPtr GetItemInfoBlockByIdDelegate(IntPtr instance, uint id, ref ulong guid, int a4 = 0, int a5 = 0, int a6 = 0);
         private static GetItemInfoBlockByIdDelegate _getItemInfoBlockById;
+
+        #endregion
 
         public WoWItem(IntPtr pointer)
             : base(pointer)

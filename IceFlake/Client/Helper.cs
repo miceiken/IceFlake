@@ -54,7 +54,7 @@ namespace IceFlake.Client
 
         #endregion
 
-        #region Nested type: PerformanceCounterDelegate
+        #region Typedefs & Delegates
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate uint PerformanceCounterDelegate();

@@ -22,7 +22,7 @@ namespace IceFlake.Client
                 Manager.Memory.RegisterDelegate<LuaLoadBufferDelegate>((IntPtr)Pointers.LuaInterface.LuaLoadBuffer);
         }
 
-        #region Delegates
+        #region Typedefs & Delegates
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int LuaGetTopDelegate(IntPtr luaState);

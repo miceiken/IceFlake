@@ -23,6 +23,8 @@ namespace IceFlake.Client
 
         public bool IsValid { get { return Pointer != IntPtr.Zero; } }
 
+        #region Typedefs & Delegates
+
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         public delegate Vector3* ForwardDelegate(IntPtr ptr, Vector3* vecOut);
         private ForwardDelegate _Forward;
@@ -34,6 +36,8 @@ namespace IceFlake.Client
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         public delegate Vector3* UpDelegate(IntPtr ptr, Vector3* vecOut);
         private UpDelegate _Up;
+
+        #endregion
 
         public Vector3 Forward
         {

@@ -6,11 +6,15 @@ namespace IceFlake.Client.Objects
 {
     public class WoWObject
     {
+        #region Typedefs & Delegates
+
         private static SelectObjectDelegate _selectObject;
         private readonly GetObjectFacingDelegate _getObjectFacing;
         private readonly GetObjectLocationDelegate _getObjectLocation;
         private readonly GetObjectNameDelegate _getObjectName;
         private readonly InteractDelegate _interact;
+
+        #endregion
 
         public WoWObject(IntPtr pointer)
         {

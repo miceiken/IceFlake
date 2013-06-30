@@ -6,7 +6,6 @@ using IceFlake.Client.Patchables;
 
 namespace IceFlake.Client
 {
-
     public class WoWQuest
     {
         public WoWQuest(int id)

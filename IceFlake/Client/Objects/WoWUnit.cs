@@ -7,6 +7,7 @@ namespace IceFlake.Client.Objects
 {
     public class WoWUnit : WoWObject
     {
+        #region Typedefs & Delegates
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         private delegate int CreatureTypeDelegate(IntPtr thisObj);
@@ -41,6 +42,8 @@ namespace IceFlake.Client.Objects
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         private delegate bool HasAuraDelegate(IntPtr thisObj, int spellId);
         private static HasAuraDelegate _hasAura;
+
+        #endregion
 
         private readonly AuraCollection _auras;
 

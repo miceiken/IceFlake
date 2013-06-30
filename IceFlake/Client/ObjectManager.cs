@@ -118,28 +118,16 @@ namespace IceFlake.Client
             return 1;
         }
 
-        #region Nested type: EnumVisibleObjectsCallback
+        #region Typedefs & Delegates
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate int EnumVisibleObjectsCallback(ulong guid, uint filter);
 
-        #endregion
-
-        #region Nested type: EnumVisibleObjectsDelegate
-
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate uint EnumVisibleObjectsDelegate(IntPtr callback, int filter);
 
-        #endregion
-
-        #region Nested type: GetLocalPlayerDelegate
-
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate ulong GetLocalPlayerDelegate();
-
-        #endregion
-
-        #region Nested type: GetObjectByGuidDelegate
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate IntPtr GetObjectByGuidDelegate(ulong guid, int filter);

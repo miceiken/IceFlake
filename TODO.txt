@@ -40,15 +40,8 @@ Low priority:
 	If it should be needed (see ClientServices.cs)
 
 - Refactor the DBC reader?
-- Improve World functions
-	Referring to World.cs
-- Add a proper plugin/scripting system
+- Improve plugin/scripting system
 - Double check and verify the structures and constants we have
 
-
-************************************************************************************************************
-
-PPather needs a proper implementation and optimization.
-The project shut down in WotLK so it shouldn't be that much of a hassle.
 
 ************************************************************************************************************

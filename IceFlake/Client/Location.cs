@@ -4,8 +4,6 @@ using System.Runtime.InteropServices;
 using System.Xml.Linq;
 using SlimDX;
 
-//using Microsoft.Xna.Framework;
-
 namespace IceFlake.Client
 {
     [StructLayout(LayoutKind.Sequential)]

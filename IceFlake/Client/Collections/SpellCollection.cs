@@ -11,13 +11,23 @@ namespace IceFlake.Client.Collections
 {
     public sealed class SpellCollection : IEnumerable<WoWSpell>, IPulsable
     {
+        #region Typedefs & Delegates
+
         //[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         //private delegate IntPtr GetSpellEffectRec(uint spellId, int effectIdx);
         //private static GetSpellEffectRec _getSpellEffectRec;
 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate int CastSpellDelegate(
+            uint spellId, int itemId = 0, ulong guid = 0ul, int isTrade = 0, int a6 = 0, int a7 = 0, int a8 = 0);
         private static CastSpellDelegate _castSpell;
 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate bool GetSpellCooldownDelegate(
+            uint spellId, bool isPet, ref int duration, ref int start, ref bool isEnabled, ref int unk0);        
         private static GetSpellCooldownDelegate _getSpellCooldown;
+
+        #endregion
 
         public SpellCollection()
         {
@@ -99,21 +109,5 @@ namespace IceFlake.Client.Collections
             int result = start + duration - (int)Helper.PerformanceCount;
             return isReady ? (result > 0 ? result / 1000f : 0f) : float.MaxValue;
         }
-
-        #region Nested type: CastSpellDelegate
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        private delegate int CastSpellDelegate(
-            uint spellId, int itemId = 0, ulong guid = 0ul, int isTrade = 0, int a6 = 0, int a7 = 0, int a8 = 0);
-
-        #endregion
-
-        #region Nested type: GetSpellCooldownDelegate
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        private delegate bool GetSpellCooldownDelegate(
-            uint spellId, bool isPet, ref int duration, ref int start, ref bool isEnabled, ref int unk0);
-
-        #endregion
     }
 }

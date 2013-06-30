@@ -56,7 +56,6 @@
         // 3.3.5a: 12340
         internal class Unit
         {
-            internal static uint FishChanneledCasting = 0xD70;
             internal static uint ChanneledCastingId = 0xA80;
             internal static uint CastingId = 0xA6C;
 

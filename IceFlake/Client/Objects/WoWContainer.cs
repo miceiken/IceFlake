@@ -9,7 +9,13 @@ namespace IceFlake.Client.Objects
 {
     public class WoWContainer : WoWItem
     {
+        #region Typedefs & Delegates
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate ulong GetBagAtIndexDelegate(int index);
         private static GetBagAtIndexDelegate GetBagAtIndex;
+
+        #endregion        
 
         public WoWContainer(IntPtr pointer)
             : base(pointer)
@@ -28,13 +34,6 @@ namespace IceFlake.Client.Objects
                     Manager.Memory.RegisterDelegate<GetBagAtIndexDelegate>((IntPtr)Pointers.Container.GetBagAtIndex);
             return Manager.ObjectManager.GetObjectByGuid(GetBagAtIndex(slot)) as WoWContainer;
         }
-
-        #region Nested type: GetBagAtIndexDelegate
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        private delegate ulong GetBagAtIndexDelegate(int index);
-
-        #endregion
 
         public ulong GetItemGuid(int index)
         {
