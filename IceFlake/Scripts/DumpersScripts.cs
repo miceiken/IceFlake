@@ -55,7 +55,7 @@ namespace IceFlake.Scripts
                 Print("\tGUID: 0x{0}", p.Guid.ToString("X8"));
                 Print("\tLevel {0} {1} {2}", p.Level, p.Race, p.Class);
                 Print("\tHealth: {0}/{1} ({2}%)", p.Health, p.MaxHealth, (int)p.HealthPercentage);
-                Print("\tHealth: {0}/{1} ({2}%)", p.Power, p.MaxPower, (int)p.PowerPercentage);
+                Print("\t{0}: {1}/{2} ({3}%)", p.PowerType, p.Power, p.MaxPower, (int)p.PowerPercentage);
                 Print("\tPosition: {0}", p.Location);
             }
 
