@@ -13,8 +13,7 @@ namespace IceFlake.Client
         private WoWLocalPlayer Me { get { return Manager.ObjectManager.LocalPlayer; } }
 
         public WoWInventory()
-        {
-        }
+        { }
 
         #region Items
 

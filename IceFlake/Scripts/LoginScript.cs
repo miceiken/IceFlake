@@ -14,37 +14,37 @@ namespace IceFlake.Scripts
             : base("Login", "Uncatalogued")
         { }
 
+        const string
+            EMAIL = "E-Mail",
+            PASSWORD = "Password",
+            ACCOUNT = "WoW1",
+            REALM = "Realm",
+            CHARACTER = "Character";
+
         public override void OnTick()
         {
-            if (Manager.ObjectManager.IsInGame)
-                return;
+            Frame.Hide("ScriptErrorsFrame");
 
-            ////var s = Program.CharacterSettings;
-            ////if (s == null || Extensions.IsAnyNull(s.WoWAccount, s.WoWEmail, s.WoWPassword))
-            ////    return;
+            if (API.Login.AccountSelectVisible)
+            {
+                API.Login.SelectGameAccount(ACCOUNT);
+            }
+            else if (API.Login.LoginScreenVisible)
+            {
+                API.Login.DoLogin(EMAIL, PASSWORD);
+            }
+            else if (API.Login.RealmFrameVisible)
+            {
+                API.Login.SelectRealm(REALM);
+            }
+            else if (API.Login.CharSelectVisible)
+            {
+                API.Login.SelectCharacter(CHARACTER);
+                API.Login.EnterWorld();
+                Stop();
+            }
 
-            //Frame.Hide("ScriptErrorsFrame");
-
-            //if (API.Login.AccountSelectVisible)
-            //{
-            //    API.Login.SelectGameAccount(s.WoWAccount);
-            //}
-            //else if (API.Login.LoginScreenVisible)
-            //{
-            //    API.Login.DoLogin(s.WoWEmail, s.WoWPassword);
-            //}
-            //else if (API.Login.RealmFrameVisible)
-            //{
-            //    API.Login.SelectRealm(s.Realm);
-            //}
-            //else if (API.Login.CharSelectVisible)
-            //{
-            //    API.Login.SelectCharacter(s.Character);
-            //    API.Login.EnterWorld();
-            //    Stop();
-            //}
-
-            //Sleep(10000);
+            Sleep(2000);
         }
     }
 }

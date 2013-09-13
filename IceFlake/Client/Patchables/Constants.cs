@@ -2915,5 +2915,12 @@ namespace IceFlake.Client.Patchables
         Raid_25
     }
 
+    public enum QuestObjectiveType
+    {
+        Item = 0,
+        Creature = 1,
+        GameObject = 2
+    }
+
     #endregion
 }

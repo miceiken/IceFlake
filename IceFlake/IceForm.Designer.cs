@@ -48,6 +48,7 @@
             this.btnScriptStop = new System.Windows.Forms.Button();
             this.btnScriptStart = new System.Windows.Forms.Button();
             this.tabDebug = new System.Windows.Forms.TabPage();
+            this.btnLoSTest = new System.Windows.Forms.Button();
             this.btnExecute = new System.Windows.Forms.Button();
             this.tbLUA = new System.Windows.Forms.TextBox();
             this.btnSpellCast = new System.Windows.Forms.Button();
@@ -60,7 +61,7 @@
             this.lblPos2 = new System.Windows.Forms.Label();
             this.btnGenPath = new System.Windows.Forms.Button();
             this.GUITimer = new System.Windows.Forms.Timer(this.components);
-            this.btnLoSTest = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabStatus.SuspendLayout();
             this.gbPlayer.SuspendLayout();
@@ -277,6 +278,7 @@
             // 
             // tabDebug
             // 
+            this.tabDebug.Controls.Add(this.button1);
             this.tabDebug.Controls.Add(this.btnLoSTest);
             this.tabDebug.Controls.Add(this.btnExecute);
             this.tabDebug.Controls.Add(this.tbLUA);
@@ -288,6 +290,16 @@
             this.tabDebug.TabIndex = 1;
             this.tabDebug.Text = "Debug";
             this.tabDebug.UseVisualStyleBackColor = true;
+            // 
+            // btnLoSTest
+            // 
+            this.btnLoSTest.Location = new System.Drawing.Point(8, 36);
+            this.btnLoSTest.Name = "btnLoSTest";
+            this.btnLoSTest.Size = new System.Drawing.Size(75, 23);
+            this.btnLoSTest.TabIndex = 3;
+            this.btnLoSTest.Text = "LoSTest";
+            this.btnLoSTest.UseVisualStyleBackColor = true;
+            this.btnLoSTest.Click += new System.EventHandler(this.btnLoSTest_Click);
             // 
             // btnExecute
             // 
@@ -411,15 +423,15 @@
             this.GUITimer.Interval = 500;
             this.GUITimer.Tick += new System.EventHandler(this.GUITimer_Tick);
             // 
-            // btnLoSTest
+            // button1
             // 
-            this.btnLoSTest.Location = new System.Drawing.Point(8, 36);
-            this.btnLoSTest.Name = "btnLoSTest";
-            this.btnLoSTest.Size = new System.Drawing.Size(75, 23);
-            this.btnLoSTest.TabIndex = 3;
-            this.btnLoSTest.Text = "LoSTest";
-            this.btnLoSTest.UseVisualStyleBackColor = true;
-            this.btnLoSTest.Click += new System.EventHandler(this.btnLoSTest_Click);
+            this.button1.Location = new System.Drawing.Point(262, 158);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(83, 23);
+            this.button1.TabIndex = 4;
+            this.button1.Text = "DebugWnd...";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // IceForm
             // 
@@ -485,6 +497,7 @@
         private System.Windows.Forms.Label lblPos2;
         private System.Windows.Forms.Button btnGenPath;
         private System.Windows.Forms.Button btnLoSTest;
+        private System.Windows.Forms.Button button1;
     }
 }
 

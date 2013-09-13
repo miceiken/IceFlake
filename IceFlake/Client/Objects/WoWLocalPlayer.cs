@@ -227,6 +227,15 @@ namespace IceFlake.Client.Objects
             return Manager.Memory.Read<QuestCacheRecord>(recPtr);
         }
 
+        public QuestCache GetQuestRecord2FromId(int id)
+        {
+            if (_getQuestInfoBlockById == null)
+                _getQuestInfoBlockById = Manager.Memory.RegisterDelegate<GetQuestInfoBlockByIdDelegate>((IntPtr)Pointers.WDB.DbQuestCache_GetInfoBlockByID);
+
+            var recPtr = _getQuestInfoBlockById((IntPtr)Pointers.WDB.WdbQuestCache, id, ref id);
+            return Manager.Memory.Read<QuestCache>(recPtr);
+        }
+
         #endregion
 
         #region LUA Helpers

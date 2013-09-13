@@ -3,6 +3,7 @@ using IceFlake.Client.Objects;
 using IceFlake.Client.Patchables;
 using IceFlake.Client.Routines;
 using IceFlake.Client.Scripts;
+using IceFlake.Runtime;
 using IceFlake.Routines;
 using SlimDX;
 using SlimDX.Direct3D9;
@@ -25,10 +26,17 @@ namespace IceFlake.Scripts
         {
             if (!Manager.ObjectManager.IsInGame)
                 return;
+            foreach (var q in Manager.Quests.QuestLog)
+            {
+                var qcr = Manager.LocalPlayer.GetQuestRecord2FromId(q.ID);
+                qcr.DumpProperties();
+            }
+            Stop();
         }
 
         public override void OnTick()
         {
+
         }
 
         public override void OnTerminate()

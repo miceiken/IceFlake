@@ -256,9 +256,17 @@ namespace IceFlake.Scripts
         {
             if (!Manager.ObjectManager.IsInGame)
                 return;
+            
+            var completedQuests = Manager.Quests.CompletedQuestIds;
+            if (completedQuests.Count() == 0)
+            {
+                Print("Querying server for data... Please run again.");
+                Stop();
+                return;
+            }
 
             Print("Completed Quests:");
-            foreach (var q in Manager.Quests.CompletedQuestIds)
+            foreach (var q in completedQuests)
                 Print("\t{0}", q);
 
             Stop();

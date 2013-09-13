@@ -17,7 +17,7 @@ namespace IceFlake.Client
                 return;
 
             CurrentMap = WoWWorld.CurrentMap;
-            PatherInstance = new Pather(CurrentMap);
+            //PatherInstance = new Pather(CurrentMap);
         }
 
         private string CurrentMap
@@ -26,11 +26,11 @@ namespace IceFlake.Client
             set;
         }
 
-        public Pather PatherInstance
-        {
-            get;
-            set;
-        }
+        //public Pather PatherInstance
+        //{
+        //    get;
+        //    set;
+        //}
 
         private DateTime SleepTime
         {
@@ -55,25 +55,25 @@ namespace IceFlake.Client
             if (!Manager.ObjectManager.IsInGame)
                 return false;
 
-            if (CurrentMap != WoWWorld.CurrentMap)
-            {
-                CurrentMap = WoWWorld.CurrentMap;
-                PatherInstance = new Pather(CurrentMap);
-            }
+            //if (CurrentMap != WoWWorld.CurrentMap)
+            //{
+            //    CurrentMap = WoWWorld.CurrentMap;
+            //    PatherInstance = new Pather(CurrentMap);
+            //}
 
-            if (PatherInstance == null)
-                return false;
+            //if (PatherInstance == null)
+            //    return false;
 
-            Destination = pos;
-            var path = PatherInstance.FindPath(Manager.LocalPlayer.Location, pos, false);
-            //var path = PatherInstance.FindPath(Manager.LocalPlayer.Location, pos.ToVector3());
-            if (path == null)
-            {
-                Log.WriteLine("Could not path to {0}", pos);
-                return false;
-            }
+            //Destination = pos;
+            //var path = PatherInstance.FindPath(Manager.LocalPlayer.Location, pos, false);
+            ////var path = PatherInstance.FindPath(Manager.LocalPlayer.Location, pos.ToVector3());
+            //if (path == null)
+            //{
+            //    Log.WriteLine("Could not path to {0}", pos);
+            //    return false;
+            //}
 
-            FollowPath(path.ToLocation());
+            //FollowPath(path.ToLocation());
 
             return true;
         }

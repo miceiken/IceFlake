@@ -129,32 +129,23 @@ namespace IceFlake
 
         private void OnScriptRegisteredEvent(object sender, EventArgs e)
         {
-            Invoke((Action)(() =>
-            {
-                var script = (Script)sender;
-                script.OnStartedEvent += new EventHandler(OnScriptStartedEvent);
-                script.OnStoppedEvent += new EventHandler(OnScriptStoppedEvent);
-                lstScripts.DataSource = Manager.Scripts.Scripts.OrderBy(x => x.Category).ToList();
-            }));
+            var script = sender as Script;
+            script.OnStartedEvent += OnScriptStartedEvent;
+            script.OnStoppedEvent += OnScriptStoppedEvent;
+            lstScripts.DataSource = Manager.Scripts.Scripts.OrderBy(x => x.Category).ToList();
             lstScripts.Invalidate();
         }
 
         private void OnScriptStartedEvent(object sender, EventArgs e)
         {
-            Invoke((Action)(() =>
-            {
-                var idx = lstScripts.Items.IndexOf(sender);
-                lstScripts.SetItemCheckState(idx, CheckState.Checked);
-            }));
+            var idx = lstScripts.Items.IndexOf(sender);
+            lstScripts.SetItemCheckState(idx, CheckState.Checked);
         }
 
         private void OnScriptStoppedEvent(object sender, EventArgs e)
         {
-            Invoke((Action)(() =>
-            {
-                var idx = lstScripts.Items.IndexOf(sender);
-                lstScripts.SetItemCheckState(idx, CheckState.Unchecked);
-            }));
+            var idx = lstScripts.Items.IndexOf(sender);
+            lstScripts.SetItemCheckState(idx, CheckState.Unchecked);
         }
 
         #endregion
@@ -251,23 +242,23 @@ namespace IceFlake
             if (_pos1 == default(Location) || _pos2 == default(Location))
                 return;
 
-            try
-            {
-                var map = WoWWorld.CurrentMap;
-                Log.WriteLine("Generate path from {0} to {1} in {2}", _pos1, _pos2, map);
-                var pathInstance = new Pather(map);
-                var path = pathInstance.FindPath(_pos1, _pos2, false);
-                if (path != null && path.Count() > 0)
-                {
-                    Log.WriteLine("NavMesh generated waypoints:");
-                    foreach (var pt in path)
-                        Log.WriteLine("\t{0}", pt);
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.WriteLine("NavMesh: {0}", ex.Message);
-            }
+            //try
+            //{
+            //    var map = WoWWorld.CurrentMap;
+            //    Log.WriteLine("Generate path from {0} to {1} in {2}", _pos1, _pos2, map);
+            //    var pathInstance = new Pather(map);
+            //    var path = pathInstance.FindPath(_pos1, _pos2, false);
+            //    if (path != null && path.Count() > 0)
+            //    {
+            //        Log.WriteLine("NavMesh generated waypoints:");
+            //        foreach (var pt in path)
+            //            Log.WriteLine("\t{0}", pt);
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    Log.WriteLine("NavMesh: {0}", ex.Message);
+            //}
         }
 
         private void btnLoSTest_Click(object sender, EventArgs e)
@@ -296,5 +287,11 @@ namespace IceFlake
         }
 
         #endregion
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            var dbg = new IceDebug();
+            dbg.Show();
+        }
     }
 }

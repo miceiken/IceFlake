@@ -192,15 +192,16 @@
 
         #region Nested type: Other
 
+        // 3.3.5a: 12340
         internal class Other
         {
             internal static uint PerformanceCounter = 0x0086AE20;
             internal static uint LastHardwareAction = 0x00B499A4;
             internal static uint IsBobbing = 0xBC;
-            // TODO: IMPLEMENT
+
+            internal static uint WorldLoading = 0x00B6AA38;
             internal static uint WorldLoaded = 0x00BEBA40;
             internal static uint GameState = 0x00B6A9E0;
-            internal static uint IsLoading = 0x00B6AA38;
             internal static uint RealmName = 0x00C79B9E;
 
             // TODO: IMPLEMENT

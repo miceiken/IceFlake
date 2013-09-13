@@ -14,9 +14,9 @@ using System.Collections.Generic;
 
 namespace IceFlake
 {
-    internal static class Manager
+    public static class Manager
     {
-        internal static void Initialize()
+        public static void Initialize()
         {
             Memory = new InProcessMemoryReader(Process.GetCurrentProcess());
 
@@ -25,7 +25,7 @@ namespace IceFlake
             Direct3D.Initialize();
         }
 
-        internal static void Start(object sender, EventArgs e)
+        public static void Start(object sender, EventArgs e)
         {
             Stopwatch sw = Stopwatch.StartNew();
 
@@ -48,7 +48,7 @@ namespace IceFlake
             Log.WriteLine(LogType.Good, "Initialization took {0} ms", sw.ElapsedMilliseconds);
         }
 
-        internal static void Stop(object sender, EventArgs e)
+        public static void Stop(object sender, EventArgs e)
         {
             Log.WriteLine(LogType.Information, "Shutting down IceFlake");
             Events = null;
@@ -67,21 +67,26 @@ namespace IceFlake
             // We need something clever here...
         }
 
-        internal static InProcessMemoryReader Memory { get; private set; }
-        internal static ObjectManager ObjectManager { get; private set; }
-        internal static EndSceneExecute ExecutionQueue { get; private set; }
-        internal static WoWDB DBC { get; private set; }
-        internal static Movement Movement { get; private set; }
-        internal static SpellCollection Spellbook { get; private set; }
-        internal static QuestCollection Quests { get; private set; }
-        internal static WoWInventory Inventory { get; private set; }
-        internal static WoWCamera Camera { get; private set; }
-        internal static WoWEvents Events { get; private set; }
-        internal static ScriptManager Scripts { get; private set; }
+        public static InProcessMemoryReader Memory { get; private set; }
+        public static ObjectManager ObjectManager { get; private set; }
+        public static EndSceneExecute ExecutionQueue { get; private set; }
+        public static WoWDB DBC { get; private set; }
+        public static Movement Movement { get; private set; }
+        public static SpellCollection Spellbook { get; private set; }
+        public static QuestCollection Quests { get; private set; }
+        public static WoWInventory Inventory { get; private set; }
+        public static WoWCamera Camera { get; private set; }
+        public static WoWEvents Events { get; private set; }
+        public static ScriptManager Scripts { get; private set; }
 
-        internal static WoWLocalPlayer LocalPlayer
+        public static WoWLocalPlayer LocalPlayer
         {
             get { return ObjectManager.LocalPlayer; }
+        }
+
+        public static void InvokeGUIThread(Action action)
+        {
+            EntryPoint.AppForm.Invoke(action);
         }
     }
 }

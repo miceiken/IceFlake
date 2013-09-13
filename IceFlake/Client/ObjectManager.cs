@@ -27,6 +27,26 @@ namespace IceFlake.Client
         public WoWLocalPlayer LocalPlayer { get; private set; }
         public List<WoWObject> Objects { get; private set; }
 
+        public GameState GameState
+        {
+            get { return Manager.Memory.Read<GameState>((IntPtr)Pointers.Other.GameState); }
+        }
+
+        public bool IsLoading
+        {
+            get { return Manager.Memory.Read<bool>((IntPtr)Pointers.Other.WorldLoading); }
+        }
+
+        public bool IsLoaded
+        {
+            get { return Manager.Memory.Read<bool>((IntPtr)Pointers.Other.WorldLoaded); }
+        }
+
+        public string RealmName
+        {
+            get { return Manager.Memory.ReadString((IntPtr)Pointers.Other.RealmName); }
+        }
+
         #endregion
 
         public ObjectManager()

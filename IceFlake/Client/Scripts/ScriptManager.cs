@@ -86,8 +86,8 @@ namespace IceFlake.Client.Scripts
                     OutputAssembly = "Scripts"
                 };
 
-                parameters.ReferencedAssemblies.Add("System.dll");
-                parameters.ReferencedAssemblies.Add("System.Core.dll");
+                var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic).Select(a => a.Location);
+                parameters.ReferencedAssemblies.AddRange(assemblies.ToArray());
                 parameters.ReferencedAssemblies.Add(Assembly.GetExecutingAssembly().Location);
 
                 var provider = new CSharpCodeProvider(new Dictionary<string, string>() { { "CompilerVersion", "v4.0" } });
@@ -137,7 +137,7 @@ namespace IceFlake.Client.Scripts
             {
                 if (!type.IsClass || !type.IsSubclassOf(typeof(Script)))
                 {
-                    Log.WriteLine("Ignoring {0}", type.Name);
+                    //Log.WriteLine("Ignoring {0}", type.Name);
                     continue;
                 }
 

@@ -36,9 +36,6 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="RecastManaged">
-      <HintPath>..\Libs\RecastManaged.dll</HintPath>
-    </Reference>
     <Reference Include="SlimDX, Version=4.0.13.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=x86" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -67,6 +64,9 @@
     <Compile Include="Client\API\Taxi.cs" />
     <Compile Include="Client\API\TradeSkill.cs" />
     <Compile Include="Client\API\Trainer.cs" />
+    <Compile Include="Client\Miscellaneous\Blp.cs" />
+    <Compile Include="Client\Miscellaneous\MinimapImage.cs" />
+    <Compile Include="Client\MPQ.cs" />
     <Compile Include="Client\Pather.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -111,6 +111,12 @@
     <Compile Include="Client\Scripts\ScriptManager.cs" />
     <Compile Include="Client\Scripts\ScriptThread.cs" />
     <Compile Include="DirectX\IPulsable.cs" />
+    <Compile Include="IceDebug.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="IceDebug.Designer.cs">
+      <DependentUpon>IceDebug.cs</DependentUpon>
+    </Compile>
     <Compile Include="Routines\StarterMageRoutine.cs" />
     <Compile Include="Runtime\SleepException.cs" />
     <Compile Include="Client\Scripts\TerminateException.cs" />
@@ -135,6 +141,7 @@
     <Compile Include="Runtime\Extensions.cs" />
     <Compile Include="Scripts\ChatScript.cs" />
     <Compile Include="Scripts\DebugScript.cs" />
+    <Compile Include="Scripts\QuestHelperScript.cs" />
     <Compile Include="Scripts\RenderingScripts.cs" />
     <Compile Include="Scripts\DumpersScripts.cs" />
     <Compile Include="Scripts\FishingScript.cs" />
@@ -145,6 +152,9 @@
     <Compile Include="Scripts\TalentScript.cs" />
     <Compile Include="Scripts\UITestScript.cs" />
     <Compile Include="Scripts\VendorScript.cs" />
+    <EmbeddedResource Include="IceDebug.resx">
+      <DependentUpon>IceDebug.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="IceForm.resx">
       <DependentUpon>IceForm.cs</DependentUpon>
       <SubType>Designer</SubType>
