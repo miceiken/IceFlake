@@ -23,7 +23,7 @@ namespace IceFlake
 
         public void WriteLine(LogEntry entry)
         {
-            sw.WriteLine("[" + entry.Type.ToString().ToUpper() + "] " + entry.FormattedMessage);
+            sw.WriteLine("[" + entry.Type.ToString().ToUpper()[0] + "] " + entry.FormattedMessage);
         }
 
         #endregion
