@@ -121,6 +121,7 @@
       <DependentUpon>IceDebug.cs</DependentUpon>
     </Compile>
     <Compile Include="Routines\StarterMageRoutine.cs" />
+    <Compile Include="Runtime\PulseSynchronizer.cs" />
     <Compile Include="Runtime\SleepException.cs" />
     <Compile Include="Client\Scripts\TerminateException.cs" />
     <Compile Include="Client\WoWWorld.cs" />
@@ -142,6 +143,7 @@
     <Compile Include="EntryPoint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Runtime\Extensions.cs" />
+    <Compile Include="Scripts\AwaitScript.cs" />
     <Compile Include="Scripts\ChatScript.cs" />
     <Compile Include="Scripts\DebugScript.cs" />
     <Compile Include="Scripts\QuestHelperScript.cs" />
