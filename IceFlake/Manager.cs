@@ -51,20 +51,6 @@ namespace IceFlake
         public static void Stop(object sender, EventArgs e)
         {
             Log.WriteLine(LogType.Information, "Shutting down IceFlake");
-            Events = null;
-            Spellbook = null;
-            Movement = null;
-            DBC = null;
-            ObjectManager = null;
-            ExecutionQueue = null;
-
-            Memory.Detours.RemoveAll();
-            Memory.Patches.RemoveAll();
-
-            Memory = null;
-
-            GC.Collect();
-            // We need something clever here...
         }
 
         public static InProcessMemoryReader Memory { get; private set; }

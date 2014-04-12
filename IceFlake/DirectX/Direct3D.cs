@@ -17,6 +17,8 @@ namespace IceFlake.DirectX
         private static Direct3D9EndScene _endSceneDelegate;
         private static Detour _endSceneHook;
 
+        private static ManualResetEventSlim FrameQueueFinalized;
+
         private static Direct3D9Reset _resetDelegate;
         private static Detour _resetHook;
 
@@ -25,7 +27,7 @@ namespace IceFlake.DirectX
         public static int FrameCount { get; private set; }
 
         public static event EventHandler OnFirstFrame;
-        public static event EventHandler OnLastFrame;
+        public static event EventHandler OnLastFrame = (sender, e) => FrameQueueFinalized.Set();
 
         private static int EndSceneHook(IntPtr device)
         {
@@ -85,6 +87,7 @@ namespace IceFlake.DirectX
                 }
             }
 
+            FrameQueueFinalized = new ManualResetEventSlim(false);
             _endSceneDelegate = Manager.Memory.RegisterDelegate<Direct3D9EndScene>(endScenePointer);
             _endSceneHook = Manager.Memory.Detours.CreateAndApply(_endSceneDelegate, new Direct3D9EndScene(EndSceneHook), "D9EndScene");
 
@@ -101,12 +104,13 @@ namespace IceFlake.DirectX
             if (Device == null)
                 return;
 
-            if (FrameCount > 0)
-            {
-                FrameCount = -1;
-                while (Device != null)
-                    Thread.Sleep(0);
-            }
+            _pulsables.Clear();
+
+            FrameCount = -1;
+            FrameQueueFinalized.Wait();
+
+            Manager.Memory.Detours.RemoveAll();
+            Manager.Memory.Patches.RemoveAll();
         }
 
         private static void PrepareRenderState()

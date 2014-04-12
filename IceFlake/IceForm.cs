@@ -67,7 +67,7 @@ namespace IceFlake
                 s.Stop();
 
             // Let's give us a chance to undo some damage.
-            ThreadPool.QueueUserWorkItem((state) => Direct3D.Shutdown());
+            Direct3D.Shutdown();
         }
 
         #region Scripts tab
