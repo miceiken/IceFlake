@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 
 namespace IceFlake.Client.Patchables
 {
-
     #region Game related
 
     public enum GlueScreen
