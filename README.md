@@ -13,7 +13,7 @@ This is a small project aimed to provide a simple memory editing framework for t
 
 ## Requirements
 * WoW 3.3.5a
-* [SlimDX](http://slimdx.org/)
+* [SlimDX](http://slimdx.org/) (actually optional \o/)
 * An injector
 * Programming knowledge
 
