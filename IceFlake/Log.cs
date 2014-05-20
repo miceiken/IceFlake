@@ -26,6 +26,11 @@ namespace IceFlake
                 LogReader.WriteLine(entry);
         }
 
+        public static void LogException(Exception ex)
+        {
+            WriteLine(LogType.Error, "Exception ({0}):\r\n  {1}\r\n{2}", ex.GetType(), ex.Message, ex.StackTrace);
+        }
+
         public static void AddReader(ILog LogReader)
         {
             LogReaders.AddLast(LogReader);

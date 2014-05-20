@@ -16,7 +16,7 @@ namespace IceFlake
         }
 
         [STAThread]
-        public static void Main(string args)
+        public static void Main(string[] args)
         {
             FileLogger.Instance = new FileLogger();
             Log.WriteLine(LogType.Information, "Initializing IceFlake");

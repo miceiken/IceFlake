@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using IceFlake.Client.Patchables;
 using IceFlake.DirectX;
 using GreyMagic.Internals;
+using IceFlake.Runtime;
 
 namespace IceFlake.Client
 {
@@ -56,10 +57,17 @@ namespace IceFlake.Client
         {
             string eventName = args[0];
             args.RemoveAt(0);
-            if (_eventHandler.ContainsKey(eventName))
+            if (_eventHandler.ContainsKey(eventName)) // First check for absolute matches
             {
                 foreach (EventHandler handler in _eventHandler[eventName])
                     handler(eventName, args);
+            }
+            else // Then check for wildcard matches
+            {
+                foreach (var kv in _eventHandler)
+                    if (eventName.WildcardMatch(kv.Key))
+                        foreach (EventHandler handler in kv.Value)
+                            handler(eventName, args);
             }
         }
 

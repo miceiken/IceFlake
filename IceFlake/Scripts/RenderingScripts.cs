@@ -1,4 +1,5 @@
-﻿using IceFlake.Client;
+﻿#if SLIMDX
+using IceFlake.Client;
 using IceFlake.Client.Objects;
 using IceFlake.Client.Scripts;
 using SlimDX;
@@ -138,3 +139,4 @@ namespace IceFlake.Scripts
 
     #endregion
 }
+#endif

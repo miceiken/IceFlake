@@ -2,9 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+#if SLIMDX
 using SlimDX;
+#else
+using IceFlake.DirectX;
+#endif
 using IceFlake.Client;
 using IceFlake.Client.Patchables;
+using System.Text.RegularExpressions;
 
 namespace IceFlake.Runtime
 {
@@ -50,6 +55,11 @@ namespace IceFlake.Runtime
             return new Vector3(-v.Y, v.Z, -v.X);
         }
 
+        public static IntPtr ToPointer(this uint u)
+        {
+            return new IntPtr(u);
+        }
+
         public static void DumpProperties(this object o)
         {
             var t = o.GetType();
@@ -73,6 +83,12 @@ namespace IceFlake.Runtime
                 }
                 catch { Log.WriteLine("\t{0} = null?", p.Name); }
             }
+        }
+
+        public static bool WildcardMatch(this string s, string pattern)
+        {
+            var regex = new Regex("^" + Regex.Escape(pattern).Replace(@"\*", ".*").Replace(@"\?", ".") + "$");
+            return regex.IsMatch(s);
         }
     }
 }

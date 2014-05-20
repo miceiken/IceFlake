@@ -27,7 +27,7 @@ namespace IceFlake
 
         public static void Start(object sender, EventArgs e)
         {
-            Stopwatch sw = Stopwatch.StartNew();
+            var sw = Stopwatch.StartNew();
 
             Direct3D.RegisterCallbacks(
                 ObjectManager = new ObjectManager(),

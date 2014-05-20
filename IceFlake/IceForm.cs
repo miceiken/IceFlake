@@ -132,20 +132,23 @@ namespace IceFlake
             var script = sender as Script;
             script.OnStartedEvent += OnScriptStartedEvent;
             script.OnStoppedEvent += OnScriptStoppedEvent;
-            lstScripts.DataSource = Manager.Scripts.Scripts.OrderBy(x => x.Category).ToList();
-            lstScripts.Invalidate();
+            lstScripts.Invoke((Action)(() =>
+            {
+                lstScripts.DataSource = Manager.Scripts.Scripts.OrderBy(x => x.Category).ToList();
+                lstScripts.Invalidate();
+            }));
         }
 
         private void OnScriptStartedEvent(object sender, EventArgs e)
         {
             var idx = lstScripts.Items.IndexOf(sender);
-            lstScripts.SetItemCheckState(idx, CheckState.Checked);
+            lstScripts.Invoke((Action)(() => lstScripts.SetItemCheckState(idx, CheckState.Checked) ));
         }
 
         private void OnScriptStoppedEvent(object sender, EventArgs e)
         {
             var idx = lstScripts.Items.IndexOf(sender);
-            lstScripts.SetItemCheckState(idx, CheckState.Unchecked);
+            lstScripts.Invoke((Action)(() => lstScripts.SetItemCheckState(idx, CheckState.Unchecked) ));
         }
 
         #endregion
@@ -290,8 +293,8 @@ namespace IceFlake
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var dbg = new IceDebug();
-            dbg.Show();
+            //var dbg = new IceDebug();
+            //dbg.Show();
         }
     }
 }

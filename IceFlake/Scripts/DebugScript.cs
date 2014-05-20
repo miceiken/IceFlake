@@ -5,8 +5,12 @@ using IceFlake.Client.Routines;
 using IceFlake.Client.Scripts;
 using IceFlake.Runtime;
 using IceFlake.Routines;
+#if SLIMDX
 using SlimDX;
 using SlimDX.Direct3D9;
+#else
+using IceFlake.DirectX;
+#endif
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -43,6 +47,7 @@ namespace IceFlake.Scripts
         {
         }
 
+#if SLIMDX
         private void DrawLine(Vector3 from, Vector3 to, Color color)
         {
             var vertices = new List<PositionColored>();
@@ -62,5 +67,6 @@ namespace IceFlake.Scripts
             var worldMatrix = Matrix.Translation(target) * Matrix.RotationYawPitchRoll(yaw, pitch, roll);
             D3D.Device.SetTransform(TransformState.World, worldMatrix);
         }
+#endif
     }
 }

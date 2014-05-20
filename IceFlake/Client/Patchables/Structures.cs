@@ -1072,7 +1072,11 @@ namespace IceFlake.Client.Patchables
     public unsafe struct CameraInfo
     {
         fixed int unk0[2];
+#if SLIMDX
         public SlimDX.Vector3 Position;
+#else
+        public IceFlake.DirectX.Vector3 Position;
+#endif
         public fixed float Facing[9];
         public float NearPlane;
         public float FarPlane;

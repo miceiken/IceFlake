@@ -18,7 +18,7 @@ namespace IceFlake.Scripts
 
         public override void OnStart()
         {
-            base.OnStart();
+            Manager.Events.Register("CHAT_MSG_*", HandleChatEvents);
         }
 
         public override void OnTick()
@@ -28,11 +28,12 @@ namespace IceFlake.Scripts
 
         public override void OnTerminate()
         {
-            base.OnTerminate();
+            Manager.Events.Remove("CHAT_MSG_*", HandleChatEvents);
         }
 
         private void HandleChatEvents(string ev, List<string> args)
         {
+            Print("[{0}] {1}: {2}", ev.Substring(9), args[1], args[0]);
         }
     }
 }

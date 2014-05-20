@@ -4,7 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
 using IceFlake.Client.Patchables;
+#if SLIMDX
 using SlimDX;
+#else
+using IceFlake.DirectX;
+#endif
 
 namespace IceFlake.Client
 {
@@ -39,6 +43,7 @@ namespace IceFlake.Client
 
         #endregion
 
+        // TODO: Implement these
         public Vector3 Forward
         {
             get
