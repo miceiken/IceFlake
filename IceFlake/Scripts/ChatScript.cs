@@ -23,7 +23,6 @@ namespace IceFlake.Scripts
 
         public override void OnTick()
         {
-            base.OnTick();
         }
 
         public override void OnTerminate()

@@ -12,9 +12,9 @@ using IceFlake.Routines;
 
 namespace IceFlake.Scripts
 {
-    public class RoutineScript : Script
+    public class StarterMageRoutineScript : Script
     {
-        public RoutineScript()
+        public StarterMageRoutineScript()
             : base("Starter Mage", "Routine")
         {
             routine = new StarterMageRoutine();
@@ -24,6 +24,35 @@ namespace IceFlake.Scripts
 
         public override void OnStart()
         {
+            if (Manager.LocalPlayer.Class != WoWClass.Mage)
+                Stop();
+            routine.Start();
+        }
+
+        public override void OnTick()
+        {
+        }
+
+        public override void OnTerminate()
+        {
+            routine.Stop();
+        }
+    }
+
+    public class ElementalShamanRoutineScript : Script
+    {
+        public ElementalShamanRoutineScript()
+            : base("Elemental Shaman", "Routine")
+        {
+            routine = new ElementalShamanRoutine();
+        }
+
+        private RoutineBrain routine;
+
+        public override void OnStart()
+        {
+            if (Manager.LocalPlayer.Class != WoWClass.Mage)
+                Stop();
             routine.Start();
         }
 

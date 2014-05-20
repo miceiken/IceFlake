@@ -110,7 +110,9 @@
     <Compile Include="DirectX\IPulsable.cs" />
     <Compile Include="DirectX\Matrix.cs" />
     <Compile Include="DirectX\Vector3.cs" />
+    <Compile Include="Routines\ElementalShamanRoutine.cs" />
     <Compile Include="Routines\StarterMageRoutine.cs" />
+    <Compile Include="Routines\TotemHelper.cs" />
     <Compile Include="Runtime\SleepException.cs" />
     <Compile Include="Client\Scripts\TerminateException.cs" />
     <Compile Include="Client\WoWWorld.cs" />
