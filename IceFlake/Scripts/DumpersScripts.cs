@@ -209,7 +209,7 @@ namespace IceFlake.Scripts
                     Print("\t\t{0}: {1}", pair.Key, pair.Value);
                 Print("\tEnchants:");
                 foreach (var e in item.Enchants)
-                    Print("\t\t{0} {1} {2}", e.Id, e.Charges, e.Duration);
+                    Print("\t\t#{0}: {1} {2} {3}", e.Id, e.SpellItemEnchantment.Name, e.Charges, e.Duration);
                 Print("\tFits in:");
                 foreach (var s in WoWItem.GetInventorySlotsByEquipSlot(itemInfo.InventoryType))
                     Print("\t\t{0}", s);

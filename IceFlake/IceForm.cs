@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using MeshGenLib;
 
 namespace IceFlake
 {
@@ -245,23 +246,20 @@ namespace IceFlake
             if (_pos1 == default(Location) || _pos2 == default(Location))
                 return;
 
-            //try
-            //{
-            //    var map = WoWWorld.CurrentMap;
-            //    Log.WriteLine("Generate path from {0} to {1} in {2}", _pos1, _pos2, map);
-            //    var pathInstance = new Pather(map);
-            //    var path = pathInstance.FindPath(_pos1, _pos2, false);
-            //    if (path != null && path.Count() > 0)
-            //    {
-            //        Log.WriteLine("NavMesh generated waypoints:");
-            //        foreach (var pt in path)
-            //            Log.WriteLine("\t{0}", pt);
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    Log.WriteLine("NavMesh: {0}", ex.Message);
-            //}
+            try
+            {
+                var map = WoWWorld.CurrentMap;
+                Log.WriteLine("Generate path from {0} to {1} in {2}", _pos1, _pos2, map);
+                var mesh = new Pather("Kalimdor");
+                mesh.LoadAppropriateTiles(_pos1.ToVector3(), _pos2.ToVector3());
+                var path = mesh.DetourMesh.FindPath(_pos1.ToFloatArray(), _pos2.ToFloatArray(), false);
+                foreach (var point in path)
+                    Log.WriteLine("[{0}]", point.ToString());
+            }
+            catch (Exception ex)
+            {
+                Log.WriteLine("NavMesh: {0}", ex.Message);
+            }
         }
 
         private void btnLoSTest_Click(object sender, EventArgs e)

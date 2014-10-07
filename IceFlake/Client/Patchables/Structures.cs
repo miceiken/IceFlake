@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
+using IceFlake.Client.Collections;
 
 namespace IceFlake.Client.Patchables
 {
@@ -641,7 +642,7 @@ namespace IceFlake.Client.Patchables
 
                 for (var i = 0; i < MAX_SPELL_EFFECTS; i++)
                 {
-                    //var effect = WoWSpellCollection.GetSpellEffectRecord(SpellId[0], i);
+                    //var effect = SpellCollection.GetSpellEffectRecord(SpellId[0], i);
                     //var auraType = (AuraType)effect.EffectAura;
                     //if (auraType == AuraType.OBS_MOD_HEALTH || auraType == AuraType.MOD_REGEN)
                     //    return true;
@@ -700,9 +701,33 @@ namespace IceFlake.Client.Patchables
         public int Id;
         public int Duration;
         public int Charges;
+
+        public SpellItemEnchantmentRec SpellItemEnchantment
+        {
+            get { return Manager.DBC[ClientDB.SpellItemEnchantment].GetLocalizedRow(Id).GetStruct<SpellItemEnchantmentRec>(); }
+        }
     }
 
     #endregion
+
+    enum EnchantmentSlot : int
+    {
+        PERM_ENCHANTMENT_SLOT = 0,
+        TEMP_ENCHANTMENT_SLOT = 1,
+        SOCK_ENCHANTMENT_SLOT = 2,
+        SOCK_ENCHANTMENT_SLOT_2 = 3,
+        SOCK_ENCHANTMENT_SLOT_3 = 4,
+        BONUS_ENCHANTMENT_SLOT = 5,
+        PRISMATIC_ENCHANTMENT_SLOT = 6, // added at apply special permanent enchantment
+        MAX_INSPECTED_ENCHANTMENT_SLOT = 7,
+
+        PROP_ENCHANTMENT_SLOT_0 = 7, // used with RandomSuffix
+        PROP_ENCHANTMENT_SLOT_1 = 8, // used with RandomSuffix
+        PROP_ENCHANTMENT_SLOT_2 = 9, // used with RandomSuffix and RandomProperty
+        PROP_ENCHANTMENT_SLOT_3 = 10, // used with RandomProperty
+        PROP_ENCHANTMENT_SLOT_4 = 11, // used with RandomProperty
+        MAX_ENCHANTMENT_SLOT = 12
+    };
 
     #region MapRec
 
