@@ -1,22 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using IceFlake.Client;
+﻿using System.Linq;
 using IceFlake.Client.API;
-using IceFlake.Client.Patchables;
 using IceFlake.Client.Objects;
+using IceFlake.Client.Patchables;
 using IceFlake.Client.Scripts;
 
 namespace IceFlake.Scripts
 {
     public class VendorScript : Script
     {
+        private WoWUnit Vendor;
+
         public VendorScript()
             : base("Vendor", "Uncatalogued")
-        { }
-
-        private WoWUnit Vendor = null;
+        {
+        }
 
         public override void OnStart()
         {
@@ -58,7 +55,7 @@ namespace IceFlake.Scripts
 
             if (API.Gossip.IsShown)
             {
-                var opt = API.Gossip.Options.FirstOrDefault(x => x.Gossip == GossipType.Vendor);
+                GossipOption opt = API.Gossip.Options.FirstOrDefault(x => x.Gossip == GossipType.Vendor);
                 if (opt == null) // Vendor doesn't have repairer gossip?
                     Stop();
                 opt.Select();

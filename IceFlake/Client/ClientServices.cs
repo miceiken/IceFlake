@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Runtime.InteropServices;
-using IceFlake.Client.Patchables;
-
-namespace IceFlake.Client
+﻿namespace IceFlake.Client
 {
     //public class ClientServices
     //{

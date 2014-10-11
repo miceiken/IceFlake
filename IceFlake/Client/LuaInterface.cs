@@ -7,19 +7,28 @@ namespace IceFlake.Client
 {
     internal class LuaInterface
     {
+        public LuaGetTopDelegate GetTop;
+        public LuaLoadBufferDelegate LoadBuffer;
+        public LuaPCallDelegate PCall;
+        public LuaSetTopDelegate SetTop;
+        public LuaToBooleanDelegate ToBoolean;
+        public LuaToLStringDelegate ToLString;
+        public LuaToNumberDelegate ToNumber;
+        public LuaTypeDelegate Type;
+
         internal LuaInterface()
         {
-            GetTop = Manager.Memory.RegisterDelegate<LuaGetTopDelegate>((IntPtr)Pointers.LuaInterface.LuaGetTop);
-            SetTop = Manager.Memory.RegisterDelegate<LuaSetTopDelegate>((IntPtr)Pointers.LuaInterface.LuaSetTop);
-            Type = Manager.Memory.RegisterDelegate<LuaTypeDelegate>((IntPtr)Pointers.LuaInterface.LuaType);
+            GetTop = Manager.Memory.RegisterDelegate<LuaGetTopDelegate>((IntPtr) Pointers.LuaInterface.LuaGetTop);
+            SetTop = Manager.Memory.RegisterDelegate<LuaSetTopDelegate>((IntPtr) Pointers.LuaInterface.LuaSetTop);
+            Type = Manager.Memory.RegisterDelegate<LuaTypeDelegate>((IntPtr) Pointers.LuaInterface.LuaType);
             ToLString =
-                Manager.Memory.RegisterDelegate<LuaToLStringDelegate>((IntPtr)Pointers.LuaInterface.LuaToLString);
+                Manager.Memory.RegisterDelegate<LuaToLStringDelegate>((IntPtr) Pointers.LuaInterface.LuaToLString);
             ToBoolean =
-                Manager.Memory.RegisterDelegate<LuaToBooleanDelegate>((IntPtr)Pointers.LuaInterface.LuaToBoolean);
-            ToNumber = Manager.Memory.RegisterDelegate<LuaToNumberDelegate>((IntPtr)Pointers.LuaInterface.LuaToNumber);
-            PCall = Manager.Memory.RegisterDelegate<LuaPCallDelegate>((IntPtr)Pointers.LuaInterface.LuaPCall);
+                Manager.Memory.RegisterDelegate<LuaToBooleanDelegate>((IntPtr) Pointers.LuaInterface.LuaToBoolean);
+            ToNumber = Manager.Memory.RegisterDelegate<LuaToNumberDelegate>((IntPtr) Pointers.LuaInterface.LuaToNumber);
+            PCall = Manager.Memory.RegisterDelegate<LuaPCallDelegate>((IntPtr) Pointers.LuaInterface.LuaPCall);
             LoadBuffer =
-                Manager.Memory.RegisterDelegate<LuaLoadBufferDelegate>((IntPtr)Pointers.LuaInterface.LuaLoadBuffer);
+                Manager.Memory.RegisterDelegate<LuaLoadBufferDelegate>((IntPtr) Pointers.LuaInterface.LuaLoadBuffer);
         }
 
         #region Typedefs & Delegates
@@ -65,17 +74,9 @@ namespace IceFlake.Client
 
         #endregion
 
-        public LuaGetTopDelegate GetTop;
-        public LuaSetTopDelegate SetTop;
-        public LuaTypeDelegate Type;
-        public LuaToLStringDelegate ToLString;
-        public LuaToBooleanDelegate ToBoolean;
-        public LuaToNumberDelegate ToNumber;
-        public LuaPCallDelegate PCall;
-        public LuaLoadBufferDelegate LoadBuffer;
         public IntPtr LuaState
         {
-            get { return Manager.Memory.Read<IntPtr>((IntPtr)Pointers.LuaInterface.LuaState); }
+            get { return Manager.Memory.Read<IntPtr>((IntPtr) Pointers.LuaInterface.LuaState); }
         }
 
         public void Pop(IntPtr state, int n)
@@ -85,7 +86,7 @@ namespace IceFlake.Client
 
         public string StackObjectToString(IntPtr state, int index)
         {
-            var ltype = (LuaConstant)Type(state, index);
+            var ltype = (LuaConstant) Type(state, index);
 
             switch (ltype)
             {

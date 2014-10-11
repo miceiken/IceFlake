@@ -122,10 +122,10 @@ namespace IceFlake.Client.API
                 {
                     string ht = tools[i + 1];
                     yield return new TradeSkillTool
-                                {
-                                    Name = tools[i],
-                                    HasTool = !(ht == "false" || ht == "0" || ht == "nil")
-                                };
+                    {
+                        Name = tools[i],
+                        HasTool = !(ht == "false" || ht == "0" || ht == "nil")
+                    };
                 }
             }
         }

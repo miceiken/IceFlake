@@ -1,20 +1,11 @@
-﻿using IceFlake.Client;
-using IceFlake.Client.Objects;
-using IceFlake.Client.Patchables;
-using IceFlake.Client.Routines;
-using IceFlake.Client.Scripts;
-using IceFlake.Runtime;
-using IceFlake.Routines;
-#if SLIMDX
+﻿#if SLIMDX
 using SlimDX;
 using SlimDX.Direct3D9;
 #else
-using IceFlake.DirectX;
 #endif
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
+using IceFlake.Client.Patchables;
+using IceFlake.Client.Scripts;
+using IceFlake.Runtime;
 using D3D = IceFlake.DirectX.Direct3D;
 
 namespace IceFlake.Scripts
@@ -30,9 +21,9 @@ namespace IceFlake.Scripts
         {
             if (!Manager.ObjectManager.IsInGame)
                 return;
-            foreach (var q in Manager.Quests.QuestLog)
+            foreach (QuestLogEntry q in Manager.Quests.QuestLog)
             {
-                var qcr = Manager.LocalPlayer.GetQuestRecord2FromId(q.ID);
+                QuestCache qcr = Manager.LocalPlayer.GetQuestRecord2FromId(q.ID);
                 qcr.DumpProperties();
             }
             Stop();
@@ -40,7 +31,6 @@ namespace IceFlake.Scripts
 
         public override void OnTick()
         {
-
         }
 
         public override void OnTerminate()

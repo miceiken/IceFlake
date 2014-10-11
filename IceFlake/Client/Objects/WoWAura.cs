@@ -77,7 +77,7 @@ namespace IceFlake.Client.Objects
             ID = Entry.AuraId;
             try
             {
-                var spellRow = Manager.DBC[ClientDB.Spell].GetLocalizedRow((int)Entry.AuraId).GetStruct<SpellRec>();
+                var spellRow = Manager.DBC[ClientDB.Spell].GetLocalizedRow((int) Entry.AuraId).GetStruct<SpellRec>();
                 Name = spellRow.SpellName;
             }
             catch

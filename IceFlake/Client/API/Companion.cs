@@ -6,8 +6,8 @@ namespace IceFlake.Client.API
 {
     public class Companion : Frame
     {
-        private List<WoWCompanion> CachedCritters = new List<WoWCompanion>();
-        private List<WoWCompanion> CachedMounts = new List<WoWCompanion>();
+        private List<WoWCompanion> _cachedCritters = new List<WoWCompanion>();
+        private List<WoWCompanion> _cachedMounts = new List<WoWCompanion>();
 
         public Companion()
             : base("PetPaperDollFrameCompanionFrame")
@@ -28,10 +28,10 @@ namespace IceFlake.Client.API
         {
             get
             {
-                if (CachedMounts.Count > 0)
-                    return CachedMounts;
-                CachedMounts = Enumerable.Range(1, NumMounts).Select(i => new WoWCompanion("MOUNT", i)).ToList();
-                return CachedMounts;
+                if (_cachedMounts.Count > 0)
+                    return _cachedMounts;
+                _cachedMounts = Enumerable.Range(1, NumMounts).Select(i => new WoWCompanion("MOUNT", i)).ToList();
+                return _cachedMounts;
             }
         }
 
@@ -44,10 +44,10 @@ namespace IceFlake.Client.API
         {
             get
             {
-                if (CachedCritters.Count > 0)
-                    return CachedCritters;
-                CachedCritters = Enumerable.Range(1, NumCritters).Select(i => new WoWCompanion("CRITTER", i)).ToList();
-                return CachedCritters;
+                if (_cachedCritters.Count > 0)
+                    return _cachedCritters;
+                _cachedCritters = Enumerable.Range(1, NumCritters).Select(i => new WoWCompanion("CRITTER", i)).ToList();
+                return _cachedCritters;
             }
         }
 
@@ -84,8 +84,8 @@ namespace IceFlake.Client.API
 
         public void ClearCache()
         {
-            CachedMounts.Clear();
-            CachedCritters.Clear();
+            _cachedMounts.Clear();
+            _cachedCritters.Clear();
         }
     }
 
@@ -93,7 +93,7 @@ namespace IceFlake.Client.API
     {
         public WoWCompanion(string type, int index)
         {
-            var ret = WoWScript.Execute("GetCompanionInfo(\"" + type + "\", " + index + ")");
+            List<string> ret = WoWScript.Execute("GetCompanionInfo(\"" + type + "\", " + index + ")");
             Type = type;
             Index = index;
 

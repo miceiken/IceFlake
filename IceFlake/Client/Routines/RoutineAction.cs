@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using IceFlake.Runtime;
+﻿using IceFlake.Runtime;
 
 namespace IceFlake.Client.Routines
 {
@@ -10,21 +6,13 @@ namespace IceFlake.Client.Routines
     {
         public RoutineAction(RoutineBrain brain, int priority)
         {
-            this.Brain = brain;
-            this.Priority = priority;
+            Brain = brain;
+            Priority = priority;
         }
 
-        public RoutineBrain Brain
-        {
-            get;
-            private set;
-        }
+        public RoutineBrain Brain { get; private set; }
 
-        public virtual int Priority
-        {
-            get;
-            private set;
-        }
+        public virtual int Priority { get; private set; }
 
         public virtual bool IsWanted
         {

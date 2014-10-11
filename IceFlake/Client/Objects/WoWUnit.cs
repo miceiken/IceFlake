@@ -9,39 +9,46 @@ namespace IceFlake.Client.Objects
     {
         #region Typedefs & Delegates
 
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate int CreatureTypeDelegate(IntPtr thisObj);
         private static CreatureTypeDelegate _creatureType;
+
+        private static CreatureRankDelegate _creatureRank;
+
+        private static GetShapeshiftFormIdDelegate _getShapeshiftFormId;
+
+        private static UnitReactionDelegate _unitReaction;
+
+        private static UnitThreatInfoDelegate _unitThreatInfo;
+
+        private static GetAuraCountDelegate _getAuraCount;
+        private static GetAuraDelegate _getAura;
+
+        private static HasAuraDelegate _hasAura;
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         private delegate int CreatureRankDelegate(IntPtr thisObj);
-        private static CreatureRankDelegate _creatureRank;
+
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+        private delegate int CreatureTypeDelegate(IntPtr thisObj);
+
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+        private delegate int GetAuraCountDelegate(IntPtr thisObj);
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         private delegate IntPtr GetAuraDelegate(IntPtr thisObj, int index);
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         private delegate int GetShapeshiftFormIdDelegate(IntPtr thisObj);
-        private static GetShapeshiftFormIdDelegate _getShapeshiftFormId;
+
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+        private delegate bool HasAuraDelegate(IntPtr thisObj, int spellId);
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         private delegate int UnitReactionDelegate(IntPtr thisObj, IntPtr unitToCompare);
-        private static UnitReactionDelegate _unitReaction;
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         private delegate int UnitThreatInfoDelegate(
             IntPtr pThis, IntPtr guid, ref IntPtr threatStatus, ref IntPtr threatPct, ref IntPtr rawPct,
             ref int threatValue);
-        private static UnitThreatInfoDelegate _unitThreatInfo;
-
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate int GetAuraCountDelegate(IntPtr thisObj);
-        private static GetAuraCountDelegate _getAuraCount;
-        private static GetAuraDelegate _getAura;
-
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate bool HasAuraDelegate(IntPtr thisObj, int spellId);
-        private static HasAuraDelegate _hasAura;
 
         #endregion
 
@@ -59,14 +66,14 @@ namespace IceFlake.Client.Objects
             {
                 if (_unitReaction == null)
                     _unitReaction =
-                        Manager.Memory.RegisterDelegate<UnitReactionDelegate>((IntPtr)Pointers.Unit.UnitReaction);
-                return (UnitReaction)_unitReaction(Pointer, Manager.LocalPlayer.Pointer);
+                        Manager.Memory.RegisterDelegate<UnitReactionDelegate>((IntPtr) Pointers.Unit.UnitReaction);
+                return (UnitReaction) _unitReaction(Pointer, Manager.LocalPlayer.Pointer);
             }
         }
 
         public bool IsFriendly
         {
-            get { return (int)Reaction > (int)UnitReaction.Neutral; }
+            get { return (int) Reaction > (int) UnitReaction.Neutral; }
         }
 
         public bool IsNeutral
@@ -76,7 +83,7 @@ namespace IceFlake.Client.Objects
 
         public bool IsHostile
         {
-            get { return (int)Reaction < (int)UnitReaction.Neutral; }
+            get { return (int) Reaction < (int) UnitReaction.Neutral; }
         }
 
         public ulong TargetGuid
@@ -116,22 +123,22 @@ namespace IceFlake.Client.Objects
 
         public WoWRace Race
         {
-            get { return (WoWRace)UnitBytes0[0]; }
+            get { return (WoWRace) UnitBytes0[0]; }
         }
 
         public WoWClass Class
         {
-            get { return (WoWClass)UnitBytes0[1]; }
+            get { return (WoWClass) UnitBytes0[1]; }
         }
 
         public WoWGender Gender
         {
-            get { return (WoWGender)UnitBytes0[2]; }
+            get { return (WoWGender) UnitBytes0[2]; }
         }
 
         public WoWPowerType PowerType
         {
-            get { return (WoWPowerType)UnitBytes0[3]; }
+            get { return (WoWPowerType) UnitBytes0[3]; }
         }
 
         public bool IsLootable
@@ -171,7 +178,7 @@ namespace IceFlake.Client.Objects
 
         public double HealthPercentage
         {
-            get { return (Health / (double)MaxHealth) * 100; }
+            get { return (Health/(double) MaxHealth)*100; }
         }
 
         public uint Level
@@ -181,7 +188,7 @@ namespace IceFlake.Client.Objects
 
         public UnitFlags Flags
         {
-            get { return (UnitFlags)GetDescriptor<uint>(WoWUnitFields.UNIT_FIELD_FLAGS); }
+            get { return (UnitFlags) GetDescriptor<uint>(WoWUnitFields.UNIT_FIELD_FLAGS); }
         }
 
         public UnitFlags2 Flags2
@@ -334,6 +341,130 @@ namespace IceFlake.Client.Objects
             get { return GetDescriptor<uint>(WoWUnitFields.UNIT_FIELD_MAXRANGEDDAMAGE); }
         }
 
+        public uint Power
+        {
+            get { return GetPowerByType(PowerType); }
+        }
+
+        public uint MaxPower
+        {
+            get { return GetMaxPowerByType(PowerType); }
+        }
+
+        public double PowerPercentage
+        {
+            get { return (Power/(double) MaxPower)*100; }
+        }
+
+        public ulong SummonedBy
+        {
+            get { return GetDescriptor<ulong>(WoWUnitFields.UNIT_FIELD_SUMMONEDBY); }
+        }
+
+        public ulong CreatedBy
+        {
+            get { return GetDescriptor<ulong>(WoWUnitFields.UNIT_FIELD_CREATEDBY); }
+        }
+
+        public uint ChanneledCastingId
+        {
+            get { return Manager.Memory.Read<uint>(new IntPtr(Pointer.ToInt64() + Pointers.Unit.ChanneledCastingId)); }
+        }
+
+        public uint CastingId
+        {
+            get { return Manager.Memory.Read<uint>(new IntPtr(Pointer.ToInt64() + Pointers.Unit.CastingId)); }
+        }
+
+        public bool IsCasting
+        {
+            get { return (ChanneledCastingId != 0 || CastingId != 0); }
+        }
+
+        public int GetAuraCount
+        {
+            get
+            {
+                if (_getAuraCount == null)
+                    _getAuraCount =
+                        Manager.Memory.RegisterDelegate<GetAuraCountDelegate>((IntPtr) Pointers.Unit.GetAuraCount);
+                return _getAuraCount(Pointer);
+            }
+        }
+
+        public AuraCollection Auras
+        {
+            get
+            {
+                _auras.Update();
+                return _auras;
+            }
+        }
+
+        public UnitClassificationType Classification
+        {
+            get
+            {
+                if (_creatureRank == null)
+                    _creatureRank =
+                        Manager.Memory.RegisterDelegate<CreatureRankDelegate>((IntPtr) Pointers.Unit.GetCreatureRank);
+                return (UnitClassificationType) _creatureRank(Pointer);
+            }
+        }
+
+        public CreatureType CreatureType
+        {
+            get
+            {
+                if (_creatureType == null)
+                    _creatureType =
+                        Manager.Memory.RegisterDelegate<CreatureTypeDelegate>((IntPtr) Pointers.Unit.GetCreatureType);
+                return (CreatureType) _creatureType(Pointer);
+            }
+        }
+
+        public ShapeshiftForm Shapeshift
+        {
+            get
+            {
+                if (_getShapeshiftFormId == null)
+                    _getShapeshiftFormId =
+                        Manager.Memory.RegisterDelegate<GetShapeshiftFormIdDelegate>(
+                            (IntPtr) Pointers.Unit.ShapeshiftFormId);
+                return (ShapeshiftForm) _getShapeshiftFormId(Pointer);
+            }
+        }
+
+        public bool IsStealthed
+        {
+            get { return Shapeshift == ShapeshiftForm.Stealth; }
+        }
+
+        public bool IsTotem
+        {
+            get { return CreatureType == CreatureType.Totem; }
+        }
+
+        public int CalculateThreat
+        {
+            get
+            {
+                if (_unitThreatInfo == null)
+                    _unitThreatInfo =
+                        Manager.Memory.RegisterDelegate<UnitThreatInfoDelegate>((IntPtr) Pointers.Unit.CalculateThreat);
+
+                var threatStatus = new IntPtr();
+                var threatPct = new IntPtr();
+                var threatRawPct = new IntPtr();
+                int threatValue = 0;
+                var storageField = Manager.Memory.Read<IntPtr>(Manager.LocalPlayer.Pointer + 0x08);
+                _unitThreatInfo(Pointer, storageField, ref threatStatus, ref threatPct, ref threatRawPct,
+                    ref threatValue);
+
+                return (int) threatStatus;
+            }
+        }
+
         private uint GetPowerByType(WoWPowerType power)
         {
             switch (power)
@@ -376,141 +507,17 @@ namespace IceFlake.Client.Objects
             }
         }
 
-        public uint Power
-        {
-            get { return GetPowerByType(PowerType); }
-        }
-
-        public uint MaxPower
-        {
-            get { return GetMaxPowerByType(PowerType); }
-        }
-
-        public double PowerPercentage
-        {
-            get { return (Power / (double)MaxPower) * 100; }
-        }
-
-        public ulong SummonedBy
-        {
-            get { return GetDescriptor<ulong>(WoWUnitFields.UNIT_FIELD_SUMMONEDBY); }
-        }
-
-        public ulong CreatedBy
-        {
-            get { return GetDescriptor<ulong>(WoWUnitFields.UNIT_FIELD_CREATEDBY); }
-        }
-
-        public uint ChanneledCastingId
-        {
-            get { return Manager.Memory.Read<uint>(new IntPtr(Pointer.ToInt64() + Pointers.Unit.ChanneledCastingId)); }
-        }
-
-        public uint CastingId
-        {
-            get { return Manager.Memory.Read<uint>(new IntPtr(Pointer.ToInt64() + Pointers.Unit.CastingId)); }
-        }
-
-        public bool IsCasting
-        {
-            get { return (ChanneledCastingId != 0 || CastingId != 0); }
-        }
-
-        public int GetAuraCount
-        {
-            get
-            {
-                if (_getAuraCount == null)
-                    _getAuraCount =
-                        Manager.Memory.RegisterDelegate<GetAuraCountDelegate>((IntPtr)Pointers.Unit.GetAuraCount);
-                return _getAuraCount(Pointer);
-            }
-        }
-
-        public AuraCollection Auras
-        {
-            get
-            {
-                _auras.Update();
-                return _auras;
-            }
-        }
-
-        public UnitClassificationType Classification
-        {
-            get
-            {
-                if (_creatureRank == null)
-                    _creatureRank =
-                        Manager.Memory.RegisterDelegate<CreatureRankDelegate>((IntPtr)Pointers.Unit.GetCreatureRank);
-                return (UnitClassificationType)_creatureRank(Pointer);
-            }
-        }
-
-        public CreatureType CreatureType
-        {
-            get
-            {
-                if (_creatureType == null)
-                    _creatureType =
-                        Manager.Memory.RegisterDelegate<CreatureTypeDelegate>((IntPtr)Pointers.Unit.GetCreatureType);
-                return (CreatureType)_creatureType(Pointer);
-            }
-        }
-
-        public ShapeshiftForm Shapeshift
-        {
-            get
-            {
-                if (_getShapeshiftFormId == null)
-                    _getShapeshiftFormId =
-                        Manager.Memory.RegisterDelegate<GetShapeshiftFormIdDelegate>(
-                            (IntPtr)Pointers.Unit.ShapeshiftFormId);
-                return (ShapeshiftForm)_getShapeshiftFormId(Pointer);
-            }
-        }
-
-        public bool IsStealthed
-        {
-            get { return Shapeshift == ShapeshiftForm.Stealth; }
-        }
-
-        public bool IsTotem
-        {
-            get { return CreatureType == CreatureType.Totem; }
-        }
-
-        public int CalculateThreat
-        {
-            get
-            {
-                if (_unitThreatInfo == null)
-                    _unitThreatInfo =
-                        Manager.Memory.RegisterDelegate<UnitThreatInfoDelegate>((IntPtr)Pointers.Unit.CalculateThreat);
-
-                var threatStatus = new IntPtr();
-                var threatPct = new IntPtr();
-                var threatRawPct = new IntPtr();
-                int threatValue = 0;
-                var storageField = Manager.Memory.Read<IntPtr>(Manager.LocalPlayer.Pointer + 0x08);
-                _unitThreatInfo(Pointer, storageField, ref threatStatus, ref threatPct, ref threatRawPct,
-                                ref threatValue);
-
-                return (int)threatStatus;
-            }
-        }
-
         public bool HasAura(int spellId)
         {
             if (_hasAura == null)
-                _hasAura = Manager.Memory.RegisterDelegate<HasAuraDelegate>((IntPtr)Pointers.Unit.HasAuraBySpellId);
+                _hasAura = Manager.Memory.RegisterDelegate<HasAuraDelegate>((IntPtr) Pointers.Unit.HasAuraBySpellId);
             return _hasAura(Pointer, spellId);
         }
 
         public IntPtr GetAuraPointer(int index)
         {
             if (_getAura == null)
-                _getAura = Manager.Memory.RegisterDelegate<GetAuraDelegate>((IntPtr)Pointers.Unit.GetAura);
+                _getAura = Manager.Memory.RegisterDelegate<GetAuraDelegate>((IntPtr) Pointers.Unit.GetAura);
             return _getAura(Pointer, index);
         }
 

@@ -11,29 +11,13 @@ namespace IceFlake.Client.Scripts
             Action = action;
         }
 
-        public bool IsAlive
-        {
-            get;
-            private set;
-        }
+        public bool IsAlive { get; private set; }
 
-        public string ExitReason
-        {
-            get;
-            private set;
-        }
+        public string ExitReason { get; private set; }
 
-        private Action Action
-        {
-            get;
-            set;
-        }
+        private Action Action { get; set; }
 
-        private DateTime SleepTime
-        {
-            get;
-            set;
-        }
+        private DateTime SleepTime { get; set; }
 
         internal void Tick()
         {
@@ -43,9 +27,13 @@ namespace IceFlake.Client.Scripts
             if (IsAlive)
             {
                 try
-                { Action(); }
+                {
+                    Action();
+                }
                 catch (SleepException ex)
-                { SleepTime = DateTime.Now + ex.Time; }
+                {
+                    SleepTime = DateTime.Now + ex.Time;
+                }
                 catch (TerminateException ex)
                 {
                     IsAlive = false;

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using IceFlake.Client;
 using IceFlake.Client.Scripts;
 
@@ -9,33 +7,20 @@ namespace IceFlake.Scripts
 {
     public class GuildRecruitmentScript : Script
     {
-        public GuildRecruitmentScript()
-            : base("Recruitment", "Guild")
-        { }
-
-        public Dictionary<string, WhoCharacterInfo> InvitedCharacters = new Dictionary<string, WhoCharacterInfo>();
-        //public List<string> Classes = new List<string>
-        //{
-        //    "Warrior",
-        //    "Warlock",
-        //    "Hunter",
-        //    "Druid",
-        //    "Rogue",
-        //    "Priest",
-        //    "Shaman",
-        //    "Paladin",
-        //    "Death Knight",
-        //    "Mage"
-        //};
-
-        private int TotalSearches;
+        private const bool SendMessage = false;
         private int CurrentLevelSearch;
 
         private GRState CurrentState;
+        public Dictionary<string, WhoCharacterInfo> InvitedCharacters = new Dictionary<string, WhoCharacterInfo>();
         private DateTime LastSearch;
 
-        private const bool SendMessage = false;
         private string RecruitMessage = "";
+        private int TotalSearches;
+
+        public GuildRecruitmentScript()
+            : base("Recruitment", "Guild")
+        {
+        }
 
         public override void OnStart()
         {
@@ -66,24 +51,25 @@ namespace IceFlake.Scripts
                     break;
 
                 case GRState.Searching:
-                    var span = DateTime.Now - LastSearch;
+                    TimeSpan span = DateTime.Now - LastSearch;
                     if (span.TotalSeconds > 5)
                     {
-                        Print("Last search didn't give any match after 5 seconds, maybe there are no characters in this level?");
+                        Print(
+                            "Last search didn't give any match after 5 seconds, maybe there are no characters in this level?");
                         CurrentLevelSearch++;
                         CurrentState = GRState.Search;
                     }
                     break;
 
                 case GRState.Invite:
-                    var searchResult = WoWScript.Execute("GetNumWhoResults()");
-                    var shownResults = int.Parse(searchResult[0]);
-                    var totalResults = int.Parse(searchResult[1]);
+                    List<string> searchResult = WoWScript.Execute("GetNumWhoResults()");
+                    int shownResults = int.Parse(searchResult[0]);
+                    int totalResults = int.Parse(searchResult[1]);
                     Print("Search returned {0} visible matches out of a total {1}", shownResults, totalResults);
                     for (int i = 1; i <= shownResults; i++)
                     {
-                        var searchInfo = WoWScript.Execute("GetWhoInfo(" + i + ")");
-                        var charInfo = new WhoCharacterInfo()
+                        List<string> searchInfo = WoWScript.Execute("GetWhoInfo(" + i + ")");
+                        var charInfo = new WhoCharacterInfo
                         {
                             Name = searchInfo[0],
                             Guild = searchInfo[1],
@@ -95,9 +81,11 @@ namespace IceFlake.Scripts
 
                         if (string.IsNullOrEmpty(charInfo.Guild) && !InvitedCharacters.ContainsKey(charInfo.Name))
                         {
-                            Print("Inviting {0} (Level {1} {2} {3})", charInfo.Name, charInfo.Level, charInfo.Race, charInfo.Class);
+                            Print("Inviting {0} (Level {1} {2} {3})", charInfo.Name, charInfo.Level, charInfo.Race,
+                                charInfo.Class);
                             if (SendMessage)
-                                WoWScript.ExecuteNoResults("SendChatMessage(\"" + RecruitMessage + "\", \"WHISPER\", nil, \"" + charInfo.Name + "\")");
+                                WoWScript.ExecuteNoResults("SendChatMessage(\"" + RecruitMessage +
+                                                           "\", \"WHISPER\", nil, \"" + charInfo.Name + "\")");
                             WoWScript.ExecuteNoResults("GuildInvite(\"" + charInfo.Name + "\")");
                             InvitedCharacters.Add(charInfo.Name, charInfo);
                         }
@@ -127,22 +115,22 @@ namespace IceFlake.Scripts
             CurrentLevelSearch++;
         }
 
-        public class WhoCharacterInfo
-        {
-            public string Name;
-            public string Guild;
-            public int Level;
-            public string Race;
-            public string Class;
-            public string Zone;
-        }
-
-        enum GRState
+        private enum GRState
         {
             Search,
             Searching,
             Invite,
             Completed
+        }
+
+        public class WhoCharacterInfo
+        {
+            public string Class;
+            public string Guild;
+            public int Level;
+            public string Name;
+            public string Race;
+            public string Zone;
         }
     }
 }

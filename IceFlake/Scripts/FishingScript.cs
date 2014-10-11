@@ -1,29 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using IceFlake.Client;
-using IceFlake.Client.Scripts;
-using IceFlake.Client.Objects;
 using IceFlake.Client.API;
+using IceFlake.Client.Objects;
 using IceFlake.Client.Patchables;
+using IceFlake.Client.Scripts;
 
 namespace IceFlake.Scripts
 {
     public class FishingBot : Script
     {
-        public FishingBot()
-            : base("Fishing", "Script")
-        { }
-
-        private int Fishes;
-        private WoWUnit Trainer;
-        private WoWSpell Fishing;
-        private DateTime LootTimer;
-        private DateTime CombatTimer;
-        private DateTime SleepTimer = DateTime.MinValue;
-
-        private List<string> EventSubscription = new List<string>
+        private readonly List<string> EventSubscription = new List<string>
         {
             "LOOT_OPENED",
             "LOOT_SLOT_CLEARED",
@@ -33,11 +21,20 @@ namespace IceFlake.Scripts
             "PLAYER_REGEN_ENABLED"
         };
 
-        private FishingState CurrentState
+        private DateTime CombatTimer;
+
+        private int Fishes;
+        private WoWSpell Fishing;
+        private DateTime LootTimer;
+        private DateTime SleepTimer = DateTime.MinValue;
+        private WoWUnit Trainer;
+
+        public FishingBot()
+            : base("Fishing", "Script")
         {
-            get;
-            set;
         }
+
+        private FishingState CurrentState { get; set; }
 
         public override void OnStart()
         {
@@ -54,13 +51,13 @@ namespace IceFlake.Scripts
                 Stop();
             }
 
-            foreach (var ev in EventSubscription)
+            foreach (string ev in EventSubscription)
                 Manager.Events.Register(ev, HandleFishingEvents);
         }
 
         public override void OnTerminate()
         {
-            foreach (var ev in EventSubscription)
+            foreach (string ev in EventSubscription)
                 Manager.Events.Remove(ev, HandleFishingEvents);
 
             CurrentState = FishingState.Lure;
@@ -84,7 +81,7 @@ namespace IceFlake.Scripts
                     //{
                     //    // Implement applying lure
                     //}
-                    var fish = API.Profession.Fishing;
+                    ProfessionInfo fish = API.Profession.Fishing;
                     if (fish != null)
                     {
                         if (fish.Level >= (fish.MaxLevel - 25) && fish.MaxLevel < 450)
@@ -120,7 +117,7 @@ namespace IceFlake.Scripts
                     break;
 
                 case FishingState.Looting:
-                    var span = DateTime.Now - LootTimer;
+                    TimeSpan span = DateTime.Now - LootTimer;
                     if (span.TotalSeconds > 3)
                     {
                         Print("No loot? Back to fishing then!");
@@ -128,11 +125,15 @@ namespace IceFlake.Scripts
                     }
                     break;
 
-                // TODO: Clean up, add dynamic fishing trainer locator.
+                    // TODO: Clean up, add dynamic fishing trainer locator.
                 case FishingState.Training:
                     if (Trainer == null || !Trainer.IsValid)
-                    { // Marcia Chase, Dalaran - Neutral.
-                        Trainer = Manager.ObjectManager.Objects.Where(x => x.IsValid && x.IsUnit).OfType<WoWUnit>().FirstOrDefault(u => u.Entry == 28742);
+                    {
+                        // Marcia Chase, Dalaran - Neutral.
+                        Trainer =
+                            Manager.ObjectManager.Objects.Where(x => x.IsValid && x.IsUnit)
+                                .OfType<WoWUnit>()
+                                .FirstOrDefault(u => u.Entry == 28742);
                         return;
                     }
 
@@ -152,7 +153,7 @@ namespace IceFlake.Scripts
 
                     if (API.Gossip.IsShown)
                     {
-                        var opt = API.Gossip.Options.FirstOrDefault(g => g.Gossip == GossipType.Trainer);
+                        GossipOption opt = API.Gossip.Options.FirstOrDefault(g => g.Gossip == GossipType.Trainer);
                         if (opt != null)
                             opt.Select();
                         return;
@@ -170,7 +171,6 @@ namespace IceFlake.Scripts
                     CurrentState = FishingState.Lure;
 
                     break;
-
             }
         }
 
@@ -233,7 +233,12 @@ namespace IceFlake.Scripts
 
         private bool IsBobbing
         {
-            get { return (Bobber.IsValid ? Manager.Memory.Read<byte>(new IntPtr(Bobber.Pointer.ToInt64() + Pointers.Other.IsBobbing)) == 1 : false); }
+            get
+            {
+                return (Bobber.IsValid
+                    ? Manager.Memory.Read<byte>(new IntPtr(Bobber.Pointer.ToInt64() + Pointers.Other.IsBobbing)) == 1
+                    : false);
+            }
         }
 
         private bool IsFishing
@@ -250,7 +255,7 @@ namespace IceFlake.Scripts
 
         #region FishingState enum
 
-        enum FishingState
+        private enum FishingState
         {
             Lure,
             Cast,

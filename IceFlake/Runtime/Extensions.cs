@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using IceFlake.Client;
 #if SLIMDX
 using SlimDX;
 #else
 using IceFlake.DirectX;
 #endif
-using IceFlake.Client;
-using IceFlake.Client.Patchables;
-using System.Text.RegularExpressions;
 
 namespace IceFlake.Runtime
 {
@@ -32,7 +31,7 @@ namespace IceFlake.Runtime
 
         public static float[] ToFloatArray(this Vector3 v)
         {
-            return new[] { v.X, v.Y, v.Z };
+            return new[] {v.X, v.Y, v.Z};
         }
 
         public static IEnumerable<Location> ToLocation(this IEnumerable<Vector3> v)
@@ -62,26 +61,32 @@ namespace IceFlake.Runtime
 
         public static void DumpProperties(this object o)
         {
-            var t = o.GetType();
+            Type t = o.GetType();
             Log.WriteLine("Dumping Properties of {0} (Type = {1})", t.Name, t);
-            foreach (var p in t.GetProperties())
+            foreach (PropertyInfo p in t.GetProperties())
             {
                 try
                 {
                     Log.WriteLine("\t{0} = {1}", p.Name, p.GetValue(o, null));
                 }
-                catch { Log.WriteLine("\t{0} = null?", p.Name); }
+                catch
+                {
+                    Log.WriteLine("\t{0} = null?", p.Name);
+                }
             }
-            foreach (var p in t.GetFields())
+            foreach (FieldInfo p in t.GetFields())
             {
                 try
                 {
                     Log.WriteLine("\t{0} = {1}", p.Name, p.GetValue(o));
                     if (p.FieldType.IsArray)
-                        foreach (var pe in (Array)p.GetValue(o))
+                        foreach (object pe in (Array) p.GetValue(o))
                             Log.WriteLine("\t\t{0}", pe);
                 }
-                catch { Log.WriteLine("\t{0} = null?", p.Name); }
+                catch
+                {
+                    Log.WriteLine("\t{0} = null?", p.Name);
+                }
             }
         }
 

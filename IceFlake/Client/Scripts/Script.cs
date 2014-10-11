@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using IceFlake.Runtime;
 
 namespace IceFlake.Client.Scripts
@@ -13,39 +12,19 @@ namespace IceFlake.Client.Scripts
             Name = name;
             Category = category;
             IsRunning = false;
-            ThreadPool = new List<ScriptThread>();            
+            ThreadPool = new List<ScriptThread>();
             MainThread = null;
         }
 
-        public string Name
-        {
-            get;
-            private set;
-        }
+        public string Name { get; private set; }
 
-        public string Category
-        {
-            get;
-            private set;
-        }
+        public string Category { get; private set; }
 
-        public bool IsRunning
-        {
-            get;
-            private set;
-        }
+        public bool IsRunning { get; private set; }
 
-        public List<ScriptThread> ThreadPool
-        {
-            get;
-            private set;
-        }
+        public List<ScriptThread> ThreadPool { get; private set; }
 
-        private ScriptThread MainThread
-        {
-            get;
-            set;
-        }
+        private ScriptThread MainThread { get; set; }
 
         protected ScriptThread StartThread(Action action)
         {
@@ -67,8 +46,8 @@ namespace IceFlake.Client.Scripts
         private void StartInternal()
         {
             Print("Script starting");
-            OnStart();            
-            MainThread = new ScriptThread(new Action(OnTick));          
+            OnStart();
+            MainThread = new ScriptThread(OnTick);
             OnStarted();
         }
 
@@ -84,7 +63,7 @@ namespace IceFlake.Client.Scripts
             MainThread = null;
             ThreadPool.Clear();
             Print(message);
-            OnTerminated();            
+            OnTerminated();
         }
 
         internal void Tick()
@@ -98,7 +77,7 @@ namespace IceFlake.Client.Scripts
                 {
                     MainThread.Tick();
 
-                    foreach (var thread in ThreadPool)
+                    foreach (ScriptThread thread in ThreadPool)
                         thread.Tick();
 
                     ThreadPool.Where(t => !t.IsAlive).ToList().ForEach(t => ThreadPool.Remove(t));
@@ -112,7 +91,7 @@ namespace IceFlake.Client.Scripts
             }
             catch (Exception ex)
             {
-                TerminateInternal("Error: " + ex.ToString());
+                TerminateInternal("Error: " + ex);
             }
         }
 
@@ -126,11 +105,21 @@ namespace IceFlake.Client.Scripts
             throw new SleepException(ms);
         }
 
-        public virtual void OnStart() { }
-        public virtual void OnTick() { Stop(); }
-        public virtual void OnTerminate() { }
+        public virtual void OnStart()
+        {
+        }
+
+        public virtual void OnTick()
+        {
+            Stop();
+        }
+
+        public virtual void OnTerminate()
+        {
+        }
 
         public event EventHandler OnStartedEvent;
+
         private void OnStarted()
         {
             if (OnStartedEvent != null)
@@ -138,6 +127,7 @@ namespace IceFlake.Client.Scripts
         }
 
         public event EventHandler OnStoppedEvent;
+
         private void OnTerminated()
         {
             if (OnStoppedEvent != null)

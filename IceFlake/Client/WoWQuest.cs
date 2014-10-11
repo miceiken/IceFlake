@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using IceFlake.Client.Patchables;
 
 namespace IceFlake.Client
@@ -10,7 +7,7 @@ namespace IceFlake.Client
     {
         public WoWQuest(int id)
         {
-            this.ID = id;
+            ID = id;
             if (CachedEntry.Id == 0)
                 CachedEntry = Manager.LocalPlayer.GetQuestRecordFromId(id);
         }
@@ -18,41 +15,29 @@ namespace IceFlake.Client
         public WoWQuest(QuestLogEntry ql)
             : this(ql.ID)
         {
-            this.QuestLogEntry = ql;
+            QuestLogEntry = ql;
         }
 
         public WoWQuest(QuestCacheRecord qc)
             : this(qc.Id)
         {
-            this.CachedEntry = qc;
+            CachedEntry = qc;
         }
 
-        public int ID
-        {
-            get;
-            private set;
-        }
+        public int ID { get; private set; }
 
-        public QuestLogEntry QuestLogEntry
-        {
-            get;
-            private set;
-        }
+        public QuestLogEntry QuestLogEntry { get; private set; }
 
-        public QuestCacheRecord CachedEntry
-        {
-            get;
-            private set;
-        }
+        public QuestCacheRecord CachedEntry { get; private set; }
 
         public bool PlayerIsOnQuest
         {
-            get { return Manager.Quests.QuestLog.Count(x => x.ID == this.ID) > 0; }
+            get { return Manager.Quests.QuestLog.Count(x => x.ID == ID) > 0; }
         }
 
         public bool PlayerHasCompletedQuest
         {
-            get { return Manager.Quests.CompletedQuestIds.Count(x => x == this.ID) > 0; }
+            get { return Manager.Quests.CompletedQuestIds.Count(x => x == ID) > 0; }
         }
 
         public bool PlayerIsSuitableForQuest

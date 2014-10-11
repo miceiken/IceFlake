@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using IceFlake.Client.Objects;
+﻿using IceFlake.Client.Objects;
 
 namespace IceFlake.Client.Routines.Combat
 {
@@ -11,15 +7,8 @@ namespace IceFlake.Client.Routines.Combat
         public SpellRoutine(RoutineBrain brain, int priority, string spellName, float range = 5f)
             : base(brain, priority)
         {
-            this.SpellName = spellName;
-            this.Range = range;
-        }
-
-        public override void Execute()
-        {
-            Print("Casting {0}", SpellName);
-            Spell.Cast();
-            Sleep(1000);
+            SpellName = spellName;
+            Range = range;
         }
 
         public override bool IsWanted
@@ -37,16 +26,15 @@ namespace IceFlake.Client.Routines.Combat
             get { return Manager.Spellbook[SpellName]; }
         }
 
-        public virtual string SpellName
-        {
-            get;
-            private set;
-        }
+        public virtual string SpellName { get; private set; }
 
-        public virtual float Range
+        public virtual float Range { get; private set; }
+
+        public override void Execute()
         {
-            get;
-            private set;
+            Print("Casting {0}", SpellName);
+            Spell.Cast();
+            Sleep(1000);
         }
     }
 }

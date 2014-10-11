@@ -1,25 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using IceFlake.Client;
-using IceFlake.Client.API;
+﻿using IceFlake.Client.API;
 using IceFlake.Client.Scripts;
 
 namespace IceFlake.Scripts
 {
     public class LoginScript : Script
     {
-        public LoginScript()
-            : base("Login", "Uncatalogued")
-        { }
-
-        const string
+        private const string
             EMAIL = "E-Mail",
             PASSWORD = "Password",
             ACCOUNT = "WoW1",
             REALM = "Realm",
             CHARACTER = "Character";
+
+        public LoginScript()
+            : base("Login", "Uncatalogued")
+        {
+        }
 
         public override void OnTick()
         {

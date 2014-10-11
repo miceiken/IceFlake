@@ -40,7 +40,7 @@ namespace IceFlake.Client.API
         public void BuyAllAvailable()
         {
             WoWScript.ExecuteNoResults("SetTrainerServiceTypeFilter(\"available\", 1)");
-            foreach (var s in Services.Where(x => x.Available))
+            foreach (TrainerService s in Services.Where(x => x.Available))
                 s.Buy();
         }
 

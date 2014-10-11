@@ -9,7 +9,8 @@ namespace IceFlake.Client.API
     {
         public Loot()
             : base("LootFrame")
-        { }
+        {
+        }
 
         public bool IsFishingLoot
         {
@@ -36,7 +37,7 @@ namespace IceFlake.Client.API
     {
         public LootSlotInfo(int slot)
         {
-            this.Slot = slot;
+            Slot = slot;
         }
 
         public int Slot { get; private set; }
@@ -58,7 +59,7 @@ namespace IceFlake.Client.API
 
         public ItemQuality Quality
         {
-            get { return (ItemQuality)WoWScript.Execute<int>("GetLootSlotInfo(" + Slot + ")", 3); }
+            get { return (ItemQuality) WoWScript.Execute<int>("GetLootSlotInfo(" + Slot + ")", 3); }
         }
 
         public bool Locked
@@ -96,7 +97,7 @@ namespace IceFlake.Client.API
     {
         public LootRollItemInfo(int id)
         {
-            this.Id = id;
+            Id = id;
         }
 
         public int Id { get; private set; }
@@ -118,7 +119,7 @@ namespace IceFlake.Client.API
 
         public ItemQuality Quality
         {
-            get { return (ItemQuality)WoWScript.Execute<int>("GetLootRollItemInfo(" + Id + ")", 3); }
+            get { return (ItemQuality) WoWScript.Execute<int>("GetLootRollItemInfo(" + Id + ")", 3); }
         }
 
         public bool BindsOnPickup
@@ -151,7 +152,6 @@ namespace IceFlake.Client.API
         {
             WoWScript.ExecuteNoResults("ConfirmLootRoll(" + Id + ", " + roll.ToString().ToLower() + ")");
         }
-        
     }
 
     public enum LootType

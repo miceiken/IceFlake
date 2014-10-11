@@ -5,8 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
-using Microsoft.CSharp;
 using IceFlake.DirectX;
+using Microsoft.CSharp;
 
 namespace IceFlake.Client.Scripts
 {
@@ -20,27 +20,15 @@ namespace IceFlake.Client.Scripts
             CompileInternal();
         }
 
-        public string ScriptFolder
-        {
-            get;
-            private set;
-        }
+        public string ScriptFolder { get; private set; }
 
-        public List<Script> Scripts
-        {
-            get;
-            private set;
-        }
+        public List<Script> Scripts { get; private set; }
 
-        private Script CurrentScript
-        {
-            get;
-            set;
-        }
+        private Script CurrentScript { get; set; }
 
         public void Direct3D_EndScene()
         {
-            foreach (var script in Scripts)
+            foreach (Script script in Scripts)
             {
                 CurrentScript = script;
                 script.Tick();
@@ -51,7 +39,7 @@ namespace IceFlake.Client.Scripts
 
         public void CompileAsync()
         {
-            ThreadPool.QueueUserWorkItem((state) => CompileExternal());
+            ThreadPool.QueueUserWorkItem(state => CompileExternal());
         }
 
         private void CompileInternal()
@@ -60,10 +48,10 @@ namespace IceFlake.Client.Scripts
 
             Scripts.AddRange(
                 Assembly.GetExecutingAssembly().GetTypes()
-                    .Where(t => t.IsSubclassOf(typeof(Script)))
+                    .Where(t => t.IsSubclassOf(typeof (Script)))
                     .Select(s => Register(s))
                     .Where(s => s != null)
-                    );
+                );
 
             OnCompilerFinished();
         }
@@ -77,7 +65,7 @@ namespace IceFlake.Client.Scripts
                 string[] files = Directory.GetFiles(ScriptFolder, "*.cs", SearchOption.AllDirectories);
                 Log.WriteLine("Found {0} files in Scripts folder", files.Length);
 
-                var parameters = new CompilerParameters()
+                var parameters = new CompilerParameters
                 {
                     CompilerOptions = string.Format("/lib:\"{0}\"", AppDomain.CurrentDomain.BaseDirectory),
                     GenerateExecutable = false,
@@ -86,14 +74,15 @@ namespace IceFlake.Client.Scripts
                     OutputAssembly = "Scripts"
                 };
 
-                var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic).Select(a => a.Location);
+                IEnumerable<string> assemblies =
+                    AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic).Select(a => a.Location);
                 parameters.ReferencedAssemblies.AddRange(assemblies.ToArray());
                 parameters.ReferencedAssemblies.Add(Assembly.GetExecutingAssembly().Location);
 
-                var provider = new CSharpCodeProvider(new Dictionary<string, string>() { { "CompilerVersion", "v4.0" } });
-                var results = provider.CompileAssemblyFromFile(parameters, files);
+                var provider = new CSharpCodeProvider(new Dictionary<string, string> {{"CompilerVersion", "v4.0"}});
+                CompilerResults results = provider.CompileAssemblyFromFile(parameters, files);
 
-                var errors = results.Errors;
+                CompilerErrorCollection errors = results.Errors;
 
                 Log.WriteLine("Errors:");
                 foreach (CompilerError error in errors)
@@ -114,7 +103,6 @@ namespace IceFlake.Client.Scripts
                 }
 
                 AnalyzeAssembly(results.CompiledAssembly);
-
             }
             catch (Exception ex)
             {
@@ -130,12 +118,12 @@ namespace IceFlake.Client.Scripts
         {
             Log.WriteLine("Analyzing compiled assembly {0}", asm.FullName);
 
-            var types = asm.GetTypes();
+            Type[] types = asm.GetTypes();
 
             Log.WriteLine("Found {0} types", types.Length);
-            foreach (var type in types)
+            foreach (Type type in types)
             {
-                if (!type.IsClass || !type.IsSubclassOf(typeof(Script)))
+                if (!type.IsClass || !type.IsSubclassOf(typeof (Script)))
                 {
                     //Log.WriteLine("Ignoring {0}", type.Name);
                     continue;
@@ -149,11 +137,11 @@ namespace IceFlake.Client.Scripts
         {
             try
             {
-                var ctor = type.GetConstructor(new Type[] { });
+                ConstructorInfo ctor = type.GetConstructor(new Type[] {});
                 if (ctor == null)
                     throw new Exception("Constructor not found");
 
-                var script = (Script)ctor.Invoke(new object[] { });
+                var script = (Script) ctor.Invoke(new object[] {});
                 if (script == null)
                     throw new Exception("Unable to instantiate script");
 

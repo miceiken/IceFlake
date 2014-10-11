@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using GreyMagic.Internals;
 using IceFlake.Client.Patchables;
 using IceFlake.DirectX;
-using GreyMagic.Internals;
 using IceFlake.Runtime;
 
 namespace IceFlake.Client
@@ -13,10 +13,11 @@ namespace IceFlake.Client
         public WoWEvents()
         {
             var eventVictim = Manager.Memory.RegisterDelegate<LuaFunctionDelegate>(
-                (IntPtr)Pointers.Events.EventVictim);
+                (IntPtr) Pointers.Events.EventVictim);
             if (_eventDetour == null || !_eventDetour.IsApplied)
-                _eventDetour = Manager.Memory.Detours.CreateAndApply(eventVictim, new LuaFunctionDelegate(HandleVictimCall),
-                                                                     "EventVictim");
+                _eventDetour = Manager.Memory.Detours.CreateAndApply(eventVictim,
+                    new LuaFunctionDelegate(HandleVictimCall),
+                    "EventVictim");
         }
 
         private bool ListenerExists
@@ -44,7 +45,7 @@ namespace IceFlake.Client
             if (_eventHandler.ContainsKey(name))
                 _eventHandler[name].Add(handler);
             else
-                _eventHandler.Add(name, new List<EventHandler> { handler });
+                _eventHandler.Add(name, new List<EventHandler> {handler});
         }
 
         public void Remove(string name, EventHandler handler)
@@ -84,7 +85,7 @@ namespace IceFlake.Client
             }
             else
             {
-                return (int)_eventDetour.CallOriginal(luaState);
+                return (int) _eventDetour.CallOriginal(luaState);
             }
 
             return 0;

@@ -15,27 +15,34 @@ namespace IceFlake.Client.Objects
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         public delegate int ClickToMoveDelegate(
             IntPtr thisPointer, int clickType, ref ulong interactGuid, ref Location clickLocation, float precision);
+
         public static ClickToMoveDelegate ClickToMoveFunction;
 
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate bool IsClickMovingDelegate(IntPtr thisObj);
         private static IsClickMovingDelegate _isClickMoving;
 
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate void StopCTMDelegate(IntPtr thisObj);
         private static StopCTMDelegate _stopCTM;
 
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate void SetFacingDelegate(IntPtr thisObj, uint time, float facing);
         private static SetFacingDelegate _setFacing;
+
+        private static CanUseItemDelegate _canUseItem;
+
+        private static GetQuestInfoBlockByIdDelegate _getQuestInfoBlockById;
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         private delegate bool CanUseItemDelegate(IntPtr thisObj, IntPtr itemSparseRec, out GameError error);
-        private static CanUseItemDelegate _canUseItem;
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate IntPtr GetQuestInfoBlockByIdDelegate(IntPtr instance, int a2, ref int a3, int a4 = 0, int a5 = 0, int a6 = 0);
-        private static GetQuestInfoBlockByIdDelegate _getQuestInfoBlockById; 
+        private delegate IntPtr GetQuestInfoBlockByIdDelegate(
+            IntPtr instance, int a2, ref int a3, int a4 = 0, int a5 = 0, int a6 = 0);
+
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+        private delegate bool IsClickMovingDelegate(IntPtr thisObj);
+
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+        private delegate void SetFacingDelegate(IntPtr thisObj, uint time, float facing);
+
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+        private delegate void StopCTMDelegate(IntPtr thisObj);
 
         #endregion
 
@@ -47,8 +54,8 @@ namespace IceFlake.Client.Objects
             {
                 Log.WriteLine("LocalPlayer:");
                 Log.WriteLine("\tLevel {0} {1} {2}", Level, Race, Class);
-                Log.WriteLine("\tHealth: {0}/{1} ({2}%)", Health, MaxHealth, (int)HealthPercentage);
-                Log.WriteLine("\t{0}: {1}/{2} ({3}%)", PowerType, Power, MaxPower, (int)PowerPercentage);
+                Log.WriteLine("\tHealth: {0}/{1} ({2}%)", Health, MaxHealth, (int) HealthPercentage);
+                Log.WriteLine("\t{0}: {1}/{2} ({3}%)", PowerType, Power, MaxPower, (int) PowerPercentage);
                 Log.WriteLine("\tPosition: {0}", Location);
             }
 #endif
@@ -61,7 +68,7 @@ namespace IceFlake.Client.Objects
                 if (_isClickMoving == null)
                     _isClickMoving =
                         Manager.Memory.RegisterDelegate<IsClickMovingDelegate>(
-                            (IntPtr)Pointers.LocalPlayer.IsClickMoving);
+                            (IntPtr) Pointers.LocalPlayer.IsClickMoving);
 
                 return _isClickMoving(Pointer);
             }
@@ -69,7 +76,7 @@ namespace IceFlake.Client.Objects
 
         public Location Corpse
         {
-            get { return Manager.Memory.Read<Location>((IntPtr)Pointers.LocalPlayer.CorpsePosition); }
+            get { return Manager.Memory.Read<Location>((IntPtr) Pointers.LocalPlayer.CorpsePosition); }
         }
 
         public int UnusedTalentPoints
@@ -79,7 +86,7 @@ namespace IceFlake.Client.Objects
 
         public int Combopoints
         {
-            get { return Manager.Memory.Read<int>((IntPtr)Pointers.LocalPlayer.ComboPoints); }
+            get { return Manager.Memory.Read<int>((IntPtr) Pointers.LocalPlayer.ComboPoints); }
         }
 
         public IEnumerable<WoWUnit> Totems
@@ -98,16 +105,16 @@ namespace IceFlake.Client.Objects
         {
             if (ClickToMoveFunction == null)
                 ClickToMoveFunction =
-                    Manager.Memory.RegisterDelegate<ClickToMoveDelegate>((IntPtr)Pointers.LocalPlayer.ClickToMove);
+                    Manager.Memory.RegisterDelegate<ClickToMoveDelegate>((IntPtr) Pointers.LocalPlayer.ClickToMove);
 
             Helper.ResetHardwareAction();
-            ClickToMoveFunction(Pointer, (int)type, ref guid, ref target, 0.1f);
+            ClickToMoveFunction(Pointer, (int) type, ref guid, ref target, 0.1f);
         }
 
         public void StopCTM()
         {
             if (_stopCTM == null)
-                _stopCTM = Manager.Memory.RegisterDelegate<StopCTMDelegate>((IntPtr)Pointers.LocalPlayer.StopCTM);
+                _stopCTM = Manager.Memory.RegisterDelegate<StopCTMDelegate>((IntPtr) Pointers.LocalPlayer.StopCTM);
 
             _stopCTM(Pointer);
         }
@@ -122,9 +129,9 @@ namespace IceFlake.Client.Objects
         public void SetFacing(float angle)
         {
             if (_setFacing == null)
-                _setFacing = Manager.Memory.RegisterDelegate<SetFacingDelegate>((IntPtr)Pointers.LocalPlayer.SetFacing);
+                _setFacing = Manager.Memory.RegisterDelegate<SetFacingDelegate>((IntPtr) Pointers.LocalPlayer.SetFacing);
 
-            const float pi2 = (float)(Math.PI * 2);
+            const float pi2 = (float) (Math.PI*2);
             if (angle < 0.0f)
                 angle += pi2;
             if (angle > pi2)
@@ -136,7 +143,7 @@ namespace IceFlake.Client.Objects
 
         private uint RuneState
         {
-            get { return Manager.Memory.Read<uint>((IntPtr)Pointers.LocalPlayer.RuneState); }
+            get { return Manager.Memory.Read<uint>((IntPtr) Pointers.LocalPlayer.RuneState); }
         }
 
         public Dictionary<RuneType, int> RunesReady
@@ -144,10 +151,10 @@ namespace IceFlake.Client.Objects
             get
             {
                 var ret = new Dictionary<RuneType, int>();
-                for (var i = 0; i < 6; i++)
+                for (int i = 0; i < 6; i++)
                 {
-                    var runeType = Manager.Memory.Read<RuneType>(new IntPtr(Pointers.LocalPlayer.RuneType + i * 4));
-                    var runeReady = (RuneState & (1 << i)) > 0;
+                    var runeType = Manager.Memory.Read<RuneType>(new IntPtr(Pointers.LocalPlayer.RuneType + i*4));
+                    bool runeReady = (RuneState & (1 << i)) > 0;
                     if (runeReady)
                     {
                         if (ret.ContainsKey(runeType))
@@ -160,20 +167,35 @@ namespace IceFlake.Client.Objects
             }
         }
 
+        public int BloodRunesReady
+        {
+            get { return RunesReady[RuneType.Blood]; }
+        }
+
+        public int UnholyRunesReady
+        {
+            get { return RunesReady[RuneType.Unholy]; }
+        }
+
+        public int FrostRunesReady
+        {
+            get { return RunesReady[RuneType.Frost]; }
+        }
+
+        public int DeathRunesReady
+        {
+            get { return RunesReady[RuneType.Death]; }
+        }
+
         public bool IsRuneReady(RuneSlot slot)
         {
-            return (RuneState & (1 << (int)slot)) > 0;
+            return (RuneState & (1 << (int) slot)) > 0;
         }
 
         public int GetRuneCooldown(RuneSlot slot)
         {
-            return Manager.Memory.Read<int>(new IntPtr(Pointers.LocalPlayer.RuneCooldown + (int)slot * 4));
+            return Manager.Memory.Read<int>(new IntPtr(Pointers.LocalPlayer.RuneCooldown + (int) slot*4));
         }
-
-        public int BloodRunesReady { get { return RunesReady[RuneType.Blood]; } }
-        public int UnholyRunesReady { get { return RunesReady[RuneType.Unholy]; } }
-        public int FrostRunesReady { get { return RunesReady[RuneType.Frost]; } }
-        public int DeathRunesReady { get { return RunesReady[RuneType.Death]; } }
 
         #endregion
 
@@ -181,24 +203,24 @@ namespace IceFlake.Client.Objects
 
         public WoWItem GetBackpackItem(int slot)
         {
-            var guid = GetAbsoluteDescriptor<ulong>((int)WoWPlayerFields.PLAYER_FIELD_PACK_SLOT_1 * 4 + (slot * 8));
+            var guid = GetAbsoluteDescriptor<ulong>((int) WoWPlayerFields.PLAYER_FIELD_PACK_SLOT_1*4 + (slot*8));
             return Manager.ObjectManager.GetObjectByGuid(guid) as WoWItem;
         }
 
         public WoWItem GetBankedItem(int slot)
         {
-            var guid = GetAbsoluteDescriptor<ulong>((int)WoWPlayerFields.PLAYER_FIELD_BANK_SLOT_1 * 4 + (slot * 8));
+            var guid = GetAbsoluteDescriptor<ulong>((int) WoWPlayerFields.PLAYER_FIELD_BANK_SLOT_1*4 + (slot*8));
             return Manager.ObjectManager.GetObjectByGuid(guid) as WoWItem;
         }
 
         public WoWItem GetEquippedItem(EquipSlot slot)
         {
-            return GetEquippedItem((int)slot);
+            return GetEquippedItem((int) slot);
         }
 
         public WoWItem GetEquippedItem(int slot)
         {
-            var guid = GetAbsoluteDescriptor<ulong>((int)WoWPlayerFields.PLAYER_FIELD_INV_SLOT_HEAD * 4 + (slot * 8));
+            var guid = GetAbsoluteDescriptor<ulong>((int) WoWPlayerFields.PLAYER_FIELD_INV_SLOT_HEAD*4 + (slot*8));
             return Manager.ObjectManager.GetObjectByGuid(guid) as WoWItem;
         }
 
@@ -210,8 +232,8 @@ namespace IceFlake.Client.Objects
         public bool CanUseItem(IntPtr pointer, out GameError error)
         {
             if (_canUseItem == null)
-                _canUseItem = Manager.Memory.RegisterDelegate<CanUseItemDelegate>((IntPtr)Pointers.Item.CanUseItem);
-            return _canUseItem(this.Pointer, pointer, out error);
+                _canUseItem = Manager.Memory.RegisterDelegate<CanUseItemDelegate>((IntPtr) Pointers.Item.CanUseItem);
+            return _canUseItem(Pointer, pointer, out error);
         }
 
         #endregion
@@ -221,18 +243,22 @@ namespace IceFlake.Client.Objects
         public QuestCacheRecord GetQuestRecordFromId(int id)
         {
             if (_getQuestInfoBlockById == null)
-                _getQuestInfoBlockById = Manager.Memory.RegisterDelegate<GetQuestInfoBlockByIdDelegate>((IntPtr)Pointers.WDB.DbQuestCache_GetInfoBlockByID);
+                _getQuestInfoBlockById =
+                    Manager.Memory.RegisterDelegate<GetQuestInfoBlockByIdDelegate>(
+                        (IntPtr) Pointers.WDB.DbQuestCache_GetInfoBlockByID);
 
-            var recPtr = _getQuestInfoBlockById((IntPtr)Pointers.WDB.WdbQuestCache, id, ref id);
+            IntPtr recPtr = _getQuestInfoBlockById((IntPtr) Pointers.WDB.WdbQuestCache, id, ref id);
             return Manager.Memory.Read<QuestCacheRecord>(recPtr);
         }
 
         public QuestCache GetQuestRecord2FromId(int id)
         {
             if (_getQuestInfoBlockById == null)
-                _getQuestInfoBlockById = Manager.Memory.RegisterDelegate<GetQuestInfoBlockByIdDelegate>((IntPtr)Pointers.WDB.DbQuestCache_GetInfoBlockByID);
+                _getQuestInfoBlockById =
+                    Manager.Memory.RegisterDelegate<GetQuestInfoBlockByIdDelegate>(
+                        (IntPtr) Pointers.WDB.DbQuestCache_GetInfoBlockByID);
 
-            var recPtr = _getQuestInfoBlockById((IntPtr)Pointers.WDB.WdbQuestCache, id, ref id);
+            IntPtr recPtr = _getQuestInfoBlockById((IntPtr) Pointers.WDB.WdbQuestCache, id, ref id);
             return Manager.Memory.Read<QuestCache>(recPtr);
         }
 

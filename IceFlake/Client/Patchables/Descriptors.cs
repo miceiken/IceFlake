@@ -1,6 +1,5 @@
 ﻿namespace IceFlake.Client.Patchables
 {
-
     public enum WoWObjectFields
     {
         OBJECT_FIELD_GUID = 0x0000, // Size: 2, Type: LONG, Flags: PUBLIC
@@ -90,8 +89,10 @@
         UNIT_FIELD_MAXPOWER5 = WoWObjectFields.OBJECT_END + 0x001F, // Size: 1, Type: INT, Flags: PUBLIC
         UNIT_FIELD_MAXPOWER6 = WoWObjectFields.OBJECT_END + 0x0020, // Size: 1, Type: INT, Flags: PUBLIC
         UNIT_FIELD_MAXPOWER7 = WoWObjectFields.OBJECT_END + 0x0021, // Size: 1, Type: INT, Flags: PUBLIC
-        UNIT_FIELD_POWER_REGEN_FLAT_MODIFIER = WoWObjectFields.OBJECT_END + 0x0022, // Size: 7, Type: FLOAT, Flags: PRIVATE, OWNER
-        UNIT_FIELD_POWER_REGEN_INTERRUPTED_FLAT_MODIFIER = WoWObjectFields.OBJECT_END + 0x0029, // Size: 7, Type: FLOAT, Flags: PRIVATE, OWNER
+        UNIT_FIELD_POWER_REGEN_FLAT_MODIFIER = WoWObjectFields.OBJECT_END + 0x0022,
+        // Size: 7, Type: FLOAT, Flags: PRIVATE, OWNER
+        UNIT_FIELD_POWER_REGEN_INTERRUPTED_FLAT_MODIFIER = WoWObjectFields.OBJECT_END + 0x0029,
+        // Size: 7, Type: FLOAT, Flags: PRIVATE, OWNER
         UNIT_FIELD_LEVEL = WoWObjectFields.OBJECT_END + 0x0030, // Size: 1, Type: INT, Flags: PUBLIC
         UNIT_FIELD_FACTIONTEMPLATE = WoWObjectFields.OBJECT_END + 0x0031, // Size: 1, Type: INT, Flags: PUBLIC
         UNIT_VIRTUAL_ITEM_SLOT_ID = WoWObjectFields.OBJECT_END + 0x0032, // Size: 3, Type: INT, Flags: PUBLIC
@@ -105,10 +106,14 @@
         UNIT_FIELD_DISPLAYID = WoWObjectFields.OBJECT_END + 0x003D, // Size: 1, Type: INT, Flags: PUBLIC
         UNIT_FIELD_NATIVEDISPLAYID = WoWObjectFields.OBJECT_END + 0x003E, // Size: 1, Type: INT, Flags: PUBLIC
         UNIT_FIELD_MOUNTDISPLAYID = WoWObjectFields.OBJECT_END + 0x003F, // Size: 1, Type: INT, Flags: PUBLIC
-        UNIT_FIELD_MINDAMAGE = WoWObjectFields.OBJECT_END + 0x0040, // Size: 1, Type: FLOAT, Flags: PRIVATE, OWNER, PARTY_LEADER
-        UNIT_FIELD_MAXDAMAGE = WoWObjectFields.OBJECT_END + 0x0041, // Size: 1, Type: FLOAT, Flags: PRIVATE, OWNER, PARTY_LEADER
-        UNIT_FIELD_MINOFFHANDDAMAGE = WoWObjectFields.OBJECT_END + 0x0042, // Size: 1, Type: FLOAT, Flags: PRIVATE, OWNER, PARTY_LEADER
-        UNIT_FIELD_MAXOFFHANDDAMAGE = WoWObjectFields.OBJECT_END + 0x0043, // Size: 1, Type: FLOAT, Flags: PRIVATE, OWNER, PARTY_LEADER
+        UNIT_FIELD_MINDAMAGE = WoWObjectFields.OBJECT_END + 0x0040,
+        // Size: 1, Type: FLOAT, Flags: PRIVATE, OWNER, PARTY_LEADER
+        UNIT_FIELD_MAXDAMAGE = WoWObjectFields.OBJECT_END + 0x0041,
+        // Size: 1, Type: FLOAT, Flags: PRIVATE, OWNER, PARTY_LEADER
+        UNIT_FIELD_MINOFFHANDDAMAGE = WoWObjectFields.OBJECT_END + 0x0042,
+        // Size: 1, Type: FLOAT, Flags: PRIVATE, OWNER, PARTY_LEADER
+        UNIT_FIELD_MAXOFFHANDDAMAGE = WoWObjectFields.OBJECT_END + 0x0043,
+        // Size: 1, Type: FLOAT, Flags: PRIVATE, OWNER, PARTY_LEADER
         UNIT_FIELD_BYTES_1 = WoWObjectFields.OBJECT_END + 0x0044, // Size: 1, Type: BYTES, Flags: PUBLIC
         UNIT_FIELD_PETNUMBER = WoWObjectFields.OBJECT_END + 0x0045, // Size: 1, Type: INT, Flags: PUBLIC
         UNIT_FIELD_PET_NAME_TIMESTAMP = WoWObjectFields.OBJECT_END + 0x0046, // Size: 1, Type: INT, Flags: PUBLIC
@@ -134,23 +139,34 @@
         UNIT_FIELD_NEGSTAT2 = WoWObjectFields.OBJECT_END + 0x005A, // Size: 1, Type: INT, Flags: PRIVATE, OWNER
         UNIT_FIELD_NEGSTAT3 = WoWObjectFields.OBJECT_END + 0x005B, // Size: 1, Type: INT, Flags: PRIVATE, OWNER
         UNIT_FIELD_NEGSTAT4 = WoWObjectFields.OBJECT_END + 0x005C, // Size: 1, Type: INT, Flags: PRIVATE, OWNER
-        UNIT_FIELD_RESISTANCES = WoWObjectFields.OBJECT_END + 0x005D, // Size: 7, Type: INT, Flags: PRIVATE, OWNER, PARTY_LEADER
-        UNIT_FIELD_RESISTANCEBUFFMODSPOSITIVE = WoWObjectFields.OBJECT_END + 0x0064, // Size: 7, Type: INT, Flags: PRIVATE, OWNER
-        UNIT_FIELD_RESISTANCEBUFFMODSNEGATIVE = WoWObjectFields.OBJECT_END + 0x006B, // Size: 7, Type: INT, Flags: PRIVATE, OWNER
+        UNIT_FIELD_RESISTANCES = WoWObjectFields.OBJECT_END + 0x005D,
+        // Size: 7, Type: INT, Flags: PRIVATE, OWNER, PARTY_LEADER
+        UNIT_FIELD_RESISTANCEBUFFMODSPOSITIVE = WoWObjectFields.OBJECT_END + 0x0064,
+        // Size: 7, Type: INT, Flags: PRIVATE, OWNER
+        UNIT_FIELD_RESISTANCEBUFFMODSNEGATIVE = WoWObjectFields.OBJECT_END + 0x006B,
+        // Size: 7, Type: INT, Flags: PRIVATE, OWNER
         UNIT_FIELD_BASE_MANA = WoWObjectFields.OBJECT_END + 0x0072, // Size: 1, Type: INT, Flags: PUBLIC
         UNIT_FIELD_BASE_HEALTH = WoWObjectFields.OBJECT_END + 0x0073, // Size: 1, Type: INT, Flags: PRIVATE, OWNER
         UNIT_FIELD_BYTES_2 = WoWObjectFields.OBJECT_END + 0x0074, // Size: 1, Type: BYTES, Flags: PUBLIC
         UNIT_FIELD_ATTACK_POWER = WoWObjectFields.OBJECT_END + 0x0075, // Size: 1, Type: INT, Flags: PRIVATE, OWNER
-        UNIT_FIELD_ATTACK_POWER_MODS = WoWObjectFields.OBJECT_END + 0x0076, // Size: 1, Type: TWO_SHORT, Flags: PRIVATE, OWNER
-        UNIT_FIELD_ATTACK_POWER_MULTIPLIER = WoWObjectFields.OBJECT_END + 0x0077, // Size: 1, Type: FLOAT, Flags: PRIVATE, OWNER
-        UNIT_FIELD_RANGED_ATTACK_POWER = WoWObjectFields.OBJECT_END + 0x0078, // Size: 1, Type: INT, Flags: PRIVATE, OWNER
-        UNIT_FIELD_RANGED_ATTACK_POWER_MODS = WoWObjectFields.OBJECT_END + 0x0079, // Size: 1, Type: TWO_SHORT, Flags: PRIVATE, OWNER
-        UNIT_FIELD_RANGED_ATTACK_POWER_MULTIPLIER = WoWObjectFields.OBJECT_END + 0x007A, // Size: 1, Type: FLOAT, Flags: PRIVATE, OWNER
+        UNIT_FIELD_ATTACK_POWER_MODS = WoWObjectFields.OBJECT_END + 0x0076,
+        // Size: 1, Type: TWO_SHORT, Flags: PRIVATE, OWNER
+        UNIT_FIELD_ATTACK_POWER_MULTIPLIER = WoWObjectFields.OBJECT_END + 0x0077,
+        // Size: 1, Type: FLOAT, Flags: PRIVATE, OWNER
+        UNIT_FIELD_RANGED_ATTACK_POWER = WoWObjectFields.OBJECT_END + 0x0078,
+        // Size: 1, Type: INT, Flags: PRIVATE, OWNER
+        UNIT_FIELD_RANGED_ATTACK_POWER_MODS = WoWObjectFields.OBJECT_END + 0x0079,
+        // Size: 1, Type: TWO_SHORT, Flags: PRIVATE, OWNER
+        UNIT_FIELD_RANGED_ATTACK_POWER_MULTIPLIER = WoWObjectFields.OBJECT_END + 0x007A,
+        // Size: 1, Type: FLOAT, Flags: PRIVATE, OWNER
         UNIT_FIELD_MINRANGEDDAMAGE = WoWObjectFields.OBJECT_END + 0x007B, // Size: 1, Type: FLOAT, Flags: PRIVATE, OWNER
         UNIT_FIELD_MAXRANGEDDAMAGE = WoWObjectFields.OBJECT_END + 0x007C, // Size: 1, Type: FLOAT, Flags: PRIVATE, OWNER
-        UNIT_FIELD_POWER_COST_MODIFIER = WoWObjectFields.OBJECT_END + 0x007D, // Size: 7, Type: INT, Flags: PRIVATE, OWNER
-        UNIT_FIELD_POWER_COST_MULTIPLIER = WoWObjectFields.OBJECT_END + 0x0084, // Size: 7, Type: FLOAT, Flags: PRIVATE, OWNER
-        UNIT_FIELD_MAXHEALTHMODIFIER = WoWObjectFields.OBJECT_END + 0x008B, // Size: 1, Type: FLOAT, Flags: PRIVATE, OWNER
+        UNIT_FIELD_POWER_COST_MODIFIER = WoWObjectFields.OBJECT_END + 0x007D,
+        // Size: 7, Type: INT, Flags: PRIVATE, OWNER
+        UNIT_FIELD_POWER_COST_MULTIPLIER = WoWObjectFields.OBJECT_END + 0x0084,
+        // Size: 7, Type: FLOAT, Flags: PRIVATE, OWNER
+        UNIT_FIELD_MAXHEALTHMODIFIER = WoWObjectFields.OBJECT_END + 0x008B,
+        // Size: 1, Type: FLOAT, Flags: PRIVATE, OWNER
         UNIT_FIELD_HOVERHEIGHT = WoWObjectFields.OBJECT_END + 0x008C, // Size: 1, Type: FLOAT, Flags: PUBLIC
         UNIT_FIELD_PADDING = WoWObjectFields.OBJECT_END + 0x008D, // Size: 1, Type: INT, Flags: NONE
         UNIT_END = WoWObjectFields.OBJECT_END + 0x008E,
@@ -348,7 +364,8 @@
         PLAYER_FIELD_MOD_HEALING_PCT = WoWUnitFields.UNIT_END + 0x0415, // Size: 1, Type: FLOAT, Flags: PRIVATE
         PLAYER_FIELD_MOD_HEALING_DONE_PCT = WoWUnitFields.UNIT_END + 0x0416, // Size: 1, Type: FLOAT, Flags: PRIVATE
         PLAYER_FIELD_MOD_TARGET_RESISTANCE = WoWUnitFields.UNIT_END + 0x0417, // Size: 1, Type: INT, Flags: PRIVATE
-        PLAYER_FIELD_MOD_TARGET_PHYSICAL_RESISTANCE = WoWUnitFields.UNIT_END + 0x0418, // Size: 1, Type: INT, Flags: PRIVATE
+        PLAYER_FIELD_MOD_TARGET_PHYSICAL_RESISTANCE = WoWUnitFields.UNIT_END + 0x0418,
+        // Size: 1, Type: INT, Flags: PRIVATE
         PLAYER_FIELD_BYTES = WoWUnitFields.UNIT_END + 0x0419, // Size: 1, Type: BYTES, Flags: PRIVATE
         PLAYER_AMMO_ID = WoWUnitFields.UNIT_END + 0x041A, // Size: 1, Type: INT, Flags: PRIVATE
         PLAYER_SELF_RES_SPELL = WoWUnitFields.UNIT_END + 0x041B, // Size: 1, Type: INT, Flags: PRIVATE

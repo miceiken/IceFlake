@@ -27,11 +27,16 @@ namespace IceFlake.Client
             {
                 for (int i = 0; i < 4; i++)
                 {
-                    var unit = GetPartyMember(i);
+                    WoWPlayer unit = GetPartyMember(i);
                     if (unit != null && unit.IsValid)
                         yield return unit;
                 }
             }
+        }
+
+        public static DungeonDifficulty Difficulty
+        {
+            get { return (DungeonDifficulty) Manager.Memory.Read<int>((IntPtr) Pointers.Party.DungeonDifficulty); }
         }
 
         public static WoWPlayer GetPartyMember(int index)
@@ -42,11 +47,6 @@ namespace IceFlake.Client
         public static ulong GetPartyMemberGuid(int index)
         {
             return Manager.Memory.Read<ulong>(new IntPtr(Pointers.Party.PartyArray + index));
-        }
-
-        public static DungeonDifficulty Difficulty
-        {
-            get { return (DungeonDifficulty)Manager.Memory.Read<int>((IntPtr)Pointers.Party.DungeonDifficulty); }
         }
     }
 }

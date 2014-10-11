@@ -78,7 +78,7 @@ namespace IceFlake.Client.Objects
 
         public WoWObjectType Type
         {
-            get { return (WoWObjectType)GetDescriptor<uint>(WoWObjectFields.OBJECT_FIELD_TYPE); }
+            get { return (WoWObjectType) GetDescriptor<uint>(WoWObjectFields.OBJECT_FIELD_TYPE); }
         }
 
         public ulong Guid
@@ -98,7 +98,7 @@ namespace IceFlake.Client.Objects
                 WoWLocalPlayer local = Manager.ObjectManager.LocalPlayer;
                 if (local == null || !local.IsValid)
                     return float.NaN;
-                return (float)local.Location.DistanceTo(Location);
+                return (float) local.Location.DistanceTo(Location);
             }
         }
 
@@ -149,7 +149,7 @@ namespace IceFlake.Client.Objects
         {
             if (_selectObject == null)
                 _selectObject =
-                    Manager.Memory.RegisterDelegate<SelectObjectDelegate>((IntPtr)Pointers.Object.SelectObject);
+                    Manager.Memory.RegisterDelegate<SelectObjectDelegate>((IntPtr) Pointers.Object.SelectObject);
 
             _selectObject(Guid);
         }
@@ -172,7 +172,7 @@ namespace IceFlake.Client.Objects
 
         internal T GetDescriptor<T>(int idx) where T : struct
         {
-            return GetAbsoluteDescriptor<T>(idx * 0x4);
+            return GetAbsoluteDescriptor<T>(idx*0x4);
         }
 
         internal T GetAbsoluteDescriptor<T>(int offset) where T : struct
@@ -183,18 +183,18 @@ namespace IceFlake.Client.Objects
 
         internal void SetDescriptor<T>(Enum idx, T value) where T : struct
         {
-            SetDescriptor<T>(Convert.ToInt32(idx), value);
+            SetDescriptor(Convert.ToInt32(idx), value);
         }
 
         internal void SetDescriptor<T>(int idx, T value) where T : struct
         {
-            SetAbsoluteDescriptor<T>(idx * 0x4, value);
+            SetAbsoluteDescriptor(idx*0x4, value);
         }
 
         internal void SetAbsoluteDescriptor<T>(int offset, T value) where T : struct
         {
             var descriptorArray = Manager.Memory.Read<uint>(new IntPtr(Pointer.ToInt64() + 0x8));
-            Manager.Memory.Write<T>(new IntPtr(descriptorArray + offset), value);
+            Manager.Memory.Write(new IntPtr(descriptorArray + offset), value);
         }
 
         protected bool HasFlag(Enum idx, Enum flag)
@@ -205,7 +205,7 @@ namespace IceFlake.Client.Objects
 
         public override string ToString()
         {
-            return "[\"" + Name + "\", Distance = " + (int)Distance + ", Type = " + Type + "]";
+            return "[\"" + Name + "\", Distance = " + (int) Distance + ", Type = " + Type + "]";
         }
 
         public static implicit operator IntPtr(WoWObject obj)

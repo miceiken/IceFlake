@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using IceFlake.Client.Objects;
-using IceFlake.Client.Collections;
 using IceFlake.Client.Patchables;
 
 namespace IceFlake.Client
 {
     public class WoWInventory
     {
-        private WoWLocalPlayer Me { get { return Manager.ObjectManager.LocalPlayer; } }
-
-        public WoWInventory()
-        { }
+        private WoWLocalPlayer Me
+        {
+            get { return Manager.ObjectManager.LocalPlayer; }
+        }
 
         #region Items
 
@@ -30,7 +27,13 @@ namespace IceFlake.Client
 
         public IEnumerable<WoWItem> BackpackItems
         {
-            get { return Enumerable.Range(0, 16).Select(i => Me.GetBackpackItem(i)).Where(item => item != null && item.IsValid); }
+            get
+            {
+                return
+                    Enumerable.Range(0, 16)
+                        .Select(i => Me.GetBackpackItem(i))
+                        .Where(item => item != null && item.IsValid);
+            }
         }
 
         public IEnumerable<WoWItem> InventoryItems
@@ -42,14 +45,21 @@ namespace IceFlake.Client
         {
             get
             {
-                var bankItems = Enumerable.Range(0, 28).Select(i => Me.GetBankedItem(i)).Where(item => item != null && item.IsValid);
+                IEnumerable<WoWItem> bankItems =
+                    Enumerable.Range(0, 28).Select(i => Me.GetBankedItem(i)).Where(item => item != null && item.IsValid);
                 return bankItems.Concat(BankContainers.SelectMany(container => container.Items));
             }
         }
 
         public IEnumerable<WoWItem> EquippedItems
         {
-            get { return Enumerable.Range((int)EquipSlot.Start, (int)EquipSlot.End + 1).Select(eq => Me.GetEquippedItem(eq)).Where(item => item != null && item.IsValid); }
+            get
+            {
+                return
+                    Enumerable.Range((int) EquipSlot.Start, (int) EquipSlot.End + 1)
+                        .Select(eq => Me.GetEquippedItem(eq))
+                        .Where(item => item != null && item.IsValid);
+            }
         }
 
         #endregion
@@ -61,7 +71,8 @@ namespace IceFlake.Client
             get
             {
                 return
-                    Enumerable.Range((int)BagSlot.Bag1, (int)BagSlot.Bag4 + 1).Select(bs => WoWContainer.GetBagByIndex(bs))
+                    Enumerable.Range((int) BagSlot.Bag1, (int) BagSlot.Bag4 + 1)
+                        .Select(bs => WoWContainer.GetBagByIndex(bs))
                         .Where(container => container != null && container.IsValid);
             }
         }
@@ -71,7 +82,7 @@ namespace IceFlake.Client
             get
             {
                 return
-                    Enumerable.Range((int)BagSlot.Bank1, (int)BagSlot.Bank7 + 1).Select(
+                    Enumerable.Range((int) BagSlot.Bank1, (int) BagSlot.Bank7 + 1).Select(
                         bs => WoWContainer.GetBagByIndex(bs)).Where(container => container != null && container.IsValid);
             }
         }
@@ -81,7 +92,7 @@ namespace IceFlake.Client
             get
             {
                 return
-                    Enumerable.Range((int)BagSlot.Bag1, (int)BagSlot.Bank7 + 1).Select(
+                    Enumerable.Range((int) BagSlot.Bag1, (int) BagSlot.Bank7 + 1).Select(
                         bs => WoWContainer.GetBagByIndex(bs)).Where(container => container != null && container.IsValid);
             }
         }

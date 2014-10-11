@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using IceFlake.Client;
-using IceFlake.Client.Objects;
+﻿using IceFlake.Client.Objects;
 using IceFlake.Client.Routines;
 using IceFlake.Client.Routines.Combat;
 
@@ -28,11 +23,11 @@ namespace IceFlake.Routines
 
         protected void CheckForAndApplyBuff(WoWUnit target, string name, bool sleep = true)
         {
-            var buff = target.Auras[name];
+            WoWAura buff = target.Auras[name];
             if (buff != null && buff.IsValid)
                 return;
 
-            var spell = Manager.Spellbook[name];
+            WoWSpell spell = Manager.Spellbook[name];
             if (spell == null || !spell.IsValid)
                 return;
 

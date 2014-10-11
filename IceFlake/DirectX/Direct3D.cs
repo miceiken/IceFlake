@@ -1,14 +1,11 @@
-﻿using GreyMagic.Internals;
-using IceFlake.Runtime;
-#if SLIMDX
+﻿#if SLIMDX
 using SlimDX;
 using SlimDX.Direct3D9;
 #endif
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.Threading;
-using System.Windows.Forms;
+using GreyMagic.Internals;
 
 namespace IceFlake.DirectX
 {
@@ -54,7 +51,7 @@ namespace IceFlake.DirectX
 
                     PrepareRenderState();
 
-                    foreach (var pulsable in _pulsables)
+                    foreach (IPulsable pulsable in _pulsables)
                         pulsable.Direct3D_EndScene();
                 }
             }
@@ -66,7 +63,7 @@ namespace IceFlake.DirectX
             if (FrameCount != -1)
                 FrameCount += 1;
 
-            return (int)_endSceneHook.CallOriginal(device);
+            return (int) _endSceneHook.CallOriginal(device);
         }
 
         private static int ResetHook(IntPtr device, Direct3DAPI.PresentParameters pp)
@@ -74,16 +71,17 @@ namespace IceFlake.DirectX
 #if SLIMDX
             Device = null;
 #endif
-            return (int)_resetHook.CallOriginal(device, pp);
+            return (int) _resetHook.CallOriginal(device, pp);
         }
 
         public static void Initialize()
         {
             FrameQueueFinalized = new ManualResetEventSlim(false);
 
-            var endScenePointer = GetEndScenePointer();
-            _endSceneDelegate = Manager.Memory.RegisterDelegate<Direct3DAPI.Direct3D9EndScene>(endScenePointer);            
-            _endSceneHook = Manager.Memory.Detours.CreateAndApply(_endSceneDelegate, new Direct3DAPI.Direct3D9EndScene(EndSceneHook), "EndScene");
+            IntPtr endScenePointer = GetEndScenePointer();
+            _endSceneDelegate = Manager.Memory.RegisterDelegate<Direct3DAPI.Direct3D9EndScene>(endScenePointer);
+            _endSceneHook = Manager.Memory.Detours.CreateAndApply(_endSceneDelegate,
+                new Direct3DAPI.Direct3D9EndScene(EndSceneHook), "EndScene");
 
             Log.WriteLine("Direct3D9x:");
             Log.WriteLine("\tEndScene: 0x{0:X}", endScenePointer);
@@ -136,7 +134,8 @@ namespace IceFlake.DirectX
 #endif
         }
 
-        private static LinkedList<IPulsable> _pulsables = new LinkedList<IPulsable>();
+        private static readonly LinkedList<IPulsable> _pulsables = new LinkedList<IPulsable>();
+
         public static void RegisterCallback(IPulsable pulsable)
         {
             _pulsables.AddLast(pulsable);
@@ -144,7 +143,7 @@ namespace IceFlake.DirectX
 
         public static void RegisterCallbacks(params IPulsable[] pulsables)
         {
-            foreach (var pulsable in pulsables)
+            foreach (IPulsable pulsable in pulsables)
                 RegisterCallback(pulsable);
         }
 
@@ -154,10 +153,10 @@ namespace IceFlake.DirectX
                 _pulsables.Remove(pulsable);
         }
 
-        private unsafe static IntPtr GetEndScenePointer()
+        private static IntPtr GetEndScenePointer()
         {
             // Device
-            IntPtr ptr = Manager.Memory.Read<IntPtr>((IntPtr)0xC5DF88);
+            var ptr = Manager.Memory.Read<IntPtr>((IntPtr) 0xC5DF88);
             ptr = Manager.Memory.Read<IntPtr>(IntPtr.Add(ptr, 0x397C));
 
             // Scene

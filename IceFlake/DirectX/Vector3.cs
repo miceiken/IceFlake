@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.InteropServices;
 
 namespace IceFlake.DirectX
@@ -11,16 +8,18 @@ namespace IceFlake.DirectX
     {
         public unsafe Vector3(IntPtr pVector)
         {
-            x = *(float*)pVector;
-            y = *((float*)pVector + 1);
-            z = *((float*)pVector + 2);
+            x = *(float*) pVector;
+            y = *((float*) pVector + 1);
+            z = *((float*) pVector + 2);
         }
+
         public unsafe Vector3(float* pVector)
         {
             x = *pVector;
             y = *(pVector + 1);
             z = *(pVector + 2);
         }
+
         public Vector3(float x, float y, float z)
         {
             this.x = x;
@@ -36,55 +35,60 @@ namespace IceFlake.DirectX
         {
             return GetDistance(location.x, location.y, location.z);
         }
+
         public float GetDistance(float x, float y, float z)
         {
             float dx = this.x - x;
             float dy = this.y - y;
             float dz = this.z - z;
 
-            return (float)Math.Sqrt((dx * dx) + (dy * dy) + (dz * dz));
+            return (float) Math.Sqrt((dx*dx) + (dy*dy) + (dz*dz));
         }
 
         public float GetXRotation(Vector3 location)
         {
             return GetXRotation(location.y, location.z);
         }
+
         public float GetXRotation(float y, float z)
         {
             float dy = y - this.y;
             float dz = z - this.z;
 
-            return (float)Math.Atan2(dz, dy);
+            return (float) Math.Atan2(dz, dy);
         }
 
         public float GetYRotation(Vector3 location)
         {
             return GetYRotation(location.x, location.z);
         }
+
         public float GetYRotation(float x, float z)
         {
             float dx = x - this.x;
             float dz = z - this.z;
 
-            return (float)Math.Atan2(dz, dx);
+            return (float) Math.Atan2(dz, dx);
         }
 
         public float GetZRotation(Vector3 location)
         {
             return GetZRotation(location.x, location.y);
         }
+
         public float GetZRotation(float x, float y)
         {
             float dx = x - this.x;
             float dy = y - this.y;
 
-            return (float)Math.Atan2(dy, dx);
+            return (float) Math.Atan2(dy, dx);
         }
 
         public float GetHorizontalAngle(Vector3 location)
         {
             return GetZRotation(location.x, location.y);
         }
+
         public float GetHorizontalAngle(float x, float y)
         {
             return GetZRotation(x, y);
@@ -94,6 +98,7 @@ namespace IceFlake.DirectX
         {
             return GetVerticalAngle(location.x, location.y, location.z);
         }
+
         public float GetVerticalAngle(float x, float y, float z)
         {
             x = this.x - x;
@@ -103,31 +108,31 @@ namespace IceFlake.DirectX
             double a = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
             double b = z;
 
-            double result = -Math.Atan(b / a);
+            double result = -Math.Atan(b/a);
 
-            if (result < -Math.PI / 2)
-                result += (Math.PI * 2);
+            if (result < -Math.PI/2)
+                result += (Math.PI*2);
 
-            return (float)result;
+            return (float) result;
         }
 
         public Vector3 Cross(Vector3 vector)
         {
-            Vector3 result = new Vector3();
+            var result = new Vector3();
 
-            result.x = y * vector.Z - z * vector.Y;
-            result.y = z * vector.X - x * vector.Z;
-            result.z = x * vector.Y - y * vector.X;
+            result.x = y*vector.Z - z*vector.Y;
+            result.y = z*vector.X - x*vector.Z;
+            result.z = x*vector.Y - y*vector.X;
 
             return result;
         }
 
         public float Dot(Vector3 vector)
         {
-            if (this.Length <= 0 || vector.Length <= 0)
+            if (Length <= 0 || vector.Length <= 0)
                 return 0.0f;
 
-            return (x) * (vector.X) + (y) * (vector.Y) + (z) * (vector.Z);
+            return (x)*(vector.X) + (y)*(vector.Y) + (z)*(vector.Z);
         }
 
         public override int GetHashCode()
@@ -137,7 +142,7 @@ namespace IceFlake.DirectX
 
         public override bool Equals(object obj)
         {
-            return obj is Vector3 && (Vector3)obj == this;
+            return obj is Vector3 && (Vector3) obj == this;
         }
 
         public override string ToString()
@@ -149,10 +154,7 @@ namespace IceFlake.DirectX
 
         public float Length
         {
-            get
-            {
-                return (float)Math.Sqrt(x * x + y * y + z * z);
-            }
+            get { return (float) Math.Sqrt(x*x + y*y + z*z); }
         }
 
         public Vector3 Normal
@@ -161,9 +163,9 @@ namespace IceFlake.DirectX
             {
                 float length = Length;
                 if (length == 0)
-                    return Vector3.Zero;
+                    return Zero;
 
-                return new Vector3(x / length, y / length, z / length);
+                return new Vector3(x/length, y/length, z/length);
             }
         }
 
@@ -198,12 +200,12 @@ namespace IceFlake.DirectX
 
         public static Vector3 operator *(Vector3 v1, float value)
         {
-            return new Vector3(v1.x * value, v1.y * value, v1.z * value);
+            return new Vector3(v1.x*value, v1.y*value, v1.z*value);
         }
 
         public static Vector3 operator /(Vector3 v1, float value)
         {
-            return new Vector3(v1.x / value, v1.y / value, v1.z / value);
+            return new Vector3(v1.x/value, v1.y/value, v1.z/value);
         }
 
         public static bool operator ==(Vector3 v1, Vector3 v2)

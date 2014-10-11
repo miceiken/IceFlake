@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using IceFlake.Runtime;
-using IceFlake.Client.Objects;
 using IceFlake.DirectX;
+
 //using meshPather;
 
 namespace IceFlake.Client
 {
     public class Movement : IPulsable
     {
+        public Queue<Location> generatedPath;
+
         public Movement()
         {
             if (!Manager.ObjectManager.IsInGame)
@@ -20,11 +19,7 @@ namespace IceFlake.Client
             //PatherInstance = new Pather(CurrentMap);
         }
 
-        private string CurrentMap
-        {
-            get;
-            set;
-        }
+        private string CurrentMap { get; set; }
 
         //public Pather PatherInstance
         //{
@@ -32,22 +27,37 @@ namespace IceFlake.Client
         //    set;
         //}
 
-        private DateTime SleepTime
-        {
-            get;
-            set;
-        }
+        private DateTime SleepTime { get; set; }
 
-        public Location Destination
-        {
-            get;
-            private set;
-        }
+        public Location Destination { get; private set; }
 
-        public Location CurrentLocation
+        public Location CurrentLocation { get; private set; }
+
+        public void Direct3D_EndScene()
         {
-            get;
-            private set;
+            if (!Manager.ObjectManager.IsInGame)
+                return;
+
+            if (generatedPath == null)
+                return;
+
+            if (generatedPath.Count == 0)
+            {
+                generatedPath = null;
+                return;
+            }
+
+            if (SleepTime >= DateTime.Now)
+                return;
+
+            while (generatedPath.Count > 0 &&
+                   (CurrentLocation == default(Location) ||
+                    Manager.LocalPlayer.Location.DistanceTo(CurrentLocation) < 3f))
+                CurrentLocation = generatedPath.Dequeue();
+
+            MoveTo(CurrentLocation, 3f);
+
+            SleepTime = DateTime.Now + TimeSpan.FromMilliseconds(100);
         }
 
         public bool PathTo(Location pos)
@@ -78,13 +88,12 @@ namespace IceFlake.Client
             return true;
         }
 
-        public Queue<Location> generatedPath;
         public void FollowPath(IEnumerable<Location> Path)
         {
             generatedPath = new Queue<Location>();
-            foreach (var spot in Path)
+            foreach (Location spot in Path)
                 Log.WriteLine("\t{0}", spot);
-                //generatedPath.Enqueue(spot);
+            //generatedPath.Enqueue(spot);
         }
 
         public void Stop()
@@ -92,31 +101,6 @@ namespace IceFlake.Client
             generatedPath.Clear();
             Destination = default(Location);
             Manager.LocalPlayer.StopCTM();
-        }
-
-        public void Direct3D_EndScene()
-        {
-            if (!Manager.ObjectManager.IsInGame)
-                return;
-
-            if (generatedPath == null)
-                return;
-
-            if (generatedPath.Count == 0)
-            {
-                generatedPath = null;
-                return;
-            }
-
-            if (SleepTime >= DateTime.Now)
-                return;
-
-            while (generatedPath.Count > 0 && (CurrentLocation == default(Location) || Manager.LocalPlayer.Location.DistanceTo(CurrentLocation) < 3f))
-                CurrentLocation = generatedPath.Dequeue();
-
-            MoveTo(CurrentLocation, 3f);
-
-            SleepTime = DateTime.Now + TimeSpan.FromMilliseconds(100);
         }
 
         public bool MoveTo(Location loc, double tolerance = 5)

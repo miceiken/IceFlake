@@ -1,26 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using IceFlake.Client;
-using IceFlake.Client.API;
-using IceFlake.Client.Patchables;
-using IceFlake.Client.Objects;
-using IceFlake.Client.Scripts;
+﻿using IceFlake.Client.Patchables;
 using IceFlake.Client.Routines;
+using IceFlake.Client.Scripts;
 using IceFlake.Routines;
 
 namespace IceFlake.Scripts
 {
     public class StarterMageRoutineScript : Script
     {
+        private readonly RoutineBrain routine;
+
         public StarterMageRoutineScript()
             : base("Starter Mage", "Routine")
         {
             routine = new StarterMageRoutine();
         }
-
-        private RoutineBrain routine;
 
         public override void OnStart()
         {
@@ -41,13 +34,13 @@ namespace IceFlake.Scripts
 
     public class ElementalShamanRoutineScript : Script
     {
+        private readonly RoutineBrain routine;
+
         public ElementalShamanRoutineScript()
             : base("Elemental Shaman", "Routine")
         {
             routine = new ElementalShamanRoutine();
         }
-
-        private RoutineBrain routine;
 
         public override void OnStart()
         {

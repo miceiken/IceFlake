@@ -15,7 +15,7 @@ namespace IceFlake.DirectX
         {
             get
             {
-                switch (row * 4 + column)
+                switch (row*4 + column)
                 {
                     case 0:
                         return _11;
@@ -71,7 +71,7 @@ namespace IceFlake.DirectX
             }
             set
             {
-                switch (row * 4 + column)
+                switch (row*4 + column)
                 {
                     case 0:
                         _11 = value;
@@ -147,18 +147,19 @@ namespace IceFlake.DirectX
 
         public static Matrix operator *(Matrix matrix1, Matrix matrix2)
         {
-            Matrix result = new Matrix();
+            var result = new Matrix();
 
             for (int i = 0; i < 4; i++)
                 for (int j = 0; j < 4; j++)
-                    result[i, j] = matrix2[i, 0] * matrix1[0, j] + matrix2[i, 1] * matrix1[1, j] + matrix2[i, 2] * matrix1[2, j] + matrix2[i, 3] * matrix1[3, j];
+                    result[i, j] = matrix2[i, 0]*matrix1[0, j] + matrix2[i, 1]*matrix1[1, j] +
+                                   matrix2[i, 2]*matrix1[2, j] + matrix2[i, 3]*matrix1[3, j];
 
             return result;
         }
 
         public static Matrix Identity()
         {
-            Matrix result = new Matrix();
+            var result = new Matrix();
 
             result[0, 0] = 1f;
             result[1, 1] = 1f;
@@ -172,9 +173,10 @@ namespace IceFlake.DirectX
         {
             return Translation(vector.X, vector.Y, vector.Z);
         }
+
         public static Matrix Translation(float x, float y, float z)
         {
-            Matrix result = Matrix.Identity();
+            Matrix result = Identity();
 
             result[3, 0] = x;
             result[3, 1] = y;
@@ -185,7 +187,7 @@ namespace IceFlake.DirectX
 
         public static Matrix LookAtLH(Vector3 eye, Vector3 at, Vector3 up)
         {
-            Matrix result = new Matrix();
+            var result = new Matrix();
 
             Vector3 vectorNormal = (at - eye).Normal;
             Vector3 right = up.Cross(vectorNormal);
@@ -214,7 +216,7 @@ namespace IceFlake.DirectX
 
         public static Matrix LookAtRH(Vector3 eye, Vector3 at, Vector3 up)
         {
-            Matrix result = new Matrix();
+            var result = new Matrix();
 
             Vector3 vectorNormal = (at - eye).Normal;
             Vector3 right = up.Cross(vectorNormal);
@@ -243,13 +245,13 @@ namespace IceFlake.DirectX
 
         public static Matrix PerspectiveFovLH(float fieldOfViewY, float aspectRatio, float zNearPlane, float zFarPlane)
         {
-            Matrix result = Matrix.Identity();
+            Matrix result = Identity();
 
-            result[0, 0] = 1.0f / (aspectRatio * (float)Math.Tan(fieldOfViewY / 2.0f));
-            result[1, 1] = 1.0f / (float)Math.Tan(fieldOfViewY / 2.0f);
-            result[2, 2] = zFarPlane / (zFarPlane - zNearPlane);
+            result[0, 0] = 1.0f/(aspectRatio*(float) Math.Tan(fieldOfViewY/2.0f));
+            result[1, 1] = 1.0f/(float) Math.Tan(fieldOfViewY/2.0f);
+            result[2, 2] = zFarPlane/(zFarPlane - zNearPlane);
             result[2, 3] = 1.0f;
-            result[3, 2] = (zFarPlane * zNearPlane) / (zNearPlane - zFarPlane);
+            result[3, 2] = (zFarPlane*zNearPlane)/(zNearPlane - zFarPlane);
             result[3, 3] = 0.0f;
 
             return result;
@@ -257,13 +259,13 @@ namespace IceFlake.DirectX
 
         public static Matrix PerspectiveFovRH(float fovy, float aspect, float zn, float zf)
         {
-            Matrix result = Matrix.Identity();
+            Matrix result = Identity();
 
-            result[0, 0] = 1.0f / (aspect * (float)Math.Tan(fovy / 2.0f));
-            result[1, 1] = 1.0f / (float)Math.Tan(fovy / 2.0f);
-            result[2, 2] = zf / (zn - zf);
+            result[0, 0] = 1.0f/(aspect*(float) Math.Tan(fovy/2.0f));
+            result[1, 1] = 1.0f/(float) Math.Tan(fovy/2.0f);
+            result[2, 2] = zf/(zn - zf);
             result[2, 3] = -1.0f;
-            result[3, 2] = (zf * zn) / (zn - zf);
+            result[3, 2] = (zf*zn)/(zn - zf);
             result[3, 3] = 0.0f;
 
             return result;
@@ -271,36 +273,36 @@ namespace IceFlake.DirectX
 
         public static Matrix RotationX(float angle)
         {
-            Matrix result = Matrix.Identity();
+            Matrix result = Identity();
 
-            result[1, 1] = (float)Math.Cos(angle);
-            result[2, 2] = (float)Math.Cos(angle);
-            result[1, 2] = (float)Math.Sin(angle);
-            result[2, 1] = -(float)Math.Sin(angle);
+            result[1, 1] = (float) Math.Cos(angle);
+            result[2, 2] = (float) Math.Cos(angle);
+            result[1, 2] = (float) Math.Sin(angle);
+            result[2, 1] = -(float) Math.Sin(angle);
 
             return result;
         }
 
         public static Matrix RotationY(float angle)
         {
-            Matrix result = Matrix.Identity();
+            Matrix result = Identity();
 
-            result[0, 0] = (float)Math.Cos(angle);
-            result[2, 2] = (float)Math.Cos(angle);
-            result[0, 2] = -(float)Math.Sin(angle);
-            result[2, 0] = (float)Math.Sin(angle);
+            result[0, 0] = (float) Math.Cos(angle);
+            result[2, 2] = (float) Math.Cos(angle);
+            result[0, 2] = -(float) Math.Sin(angle);
+            result[2, 0] = (float) Math.Sin(angle);
 
             return result;
         }
 
         public static Matrix RotationZ(float angle)
         {
-            Matrix result = Matrix.Identity();
+            Matrix result = Identity();
 
-            result[0, 0] = (float)Math.Cos(angle);
-            result[1, 1] = (float)Math.Cos(angle);
-            result[0, 1] = (float)Math.Sin(angle);
-            result[1, 0] = -(float)Math.Sin(angle);
+            result[0, 0] = (float) Math.Cos(angle);
+            result[1, 1] = (float) Math.Cos(angle);
+            result[0, 1] = (float) Math.Sin(angle);
+            result[1, 0] = -(float) Math.Sin(angle);
 
             return result;
         }
@@ -311,13 +313,13 @@ namespace IceFlake.DirectX
             Matrix temp;
 
             temp = RotationZ(yaw);
-            result = result * temp;
+            result = result*temp;
 
             temp = RotationY(pitch);
-            result = result * temp;
+            result = result*temp;
 
             temp = RotationX(roll);
-            result = result * temp;
+            result = result*temp;
 
             return result;
         }

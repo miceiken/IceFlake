@@ -10,7 +10,9 @@ namespace IceFlake
         public FileLogger()
         {
             Directory.CreateDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs"));
-            sw = new StreamWriter(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs", string.Format("log-{0:yyyy-MM-dd_hh-mm-ss}.txt", DateTime.Now)));
+            sw =
+                new StreamWriter(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs",
+                    string.Format("log-{0:yyyy-MM-dd_hh-mm-ss}.txt", DateTime.Now)));
             sw.AutoFlush = true;
 
             Log.AddReader(this);

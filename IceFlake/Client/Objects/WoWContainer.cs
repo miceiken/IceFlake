@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using IceFlake.Client.Patchables;
-using System.Linq;
 
 namespace IceFlake.Client.Objects
 {
@@ -11,11 +10,12 @@ namespace IceFlake.Client.Objects
     {
         #region Typedefs & Delegates
 
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        private delegate ulong GetBagAtIndexDelegate(int index);
         private static GetBagAtIndexDelegate GetBagAtIndex;
 
-        #endregion        
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate ulong GetBagAtIndexDelegate(int index);
+
+        #endregion
 
         public WoWContainer(IntPtr pointer)
             : base(pointer)
@@ -27,11 +27,19 @@ namespace IceFlake.Client.Objects
             get { return GetDescriptor<int>(WoWContainerFields.CONTAINER_FIELD_NUM_SLOTS); }
         }
 
+        public List<WoWItem> Items
+        {
+            get
+            {
+                return Enumerable.Range(0, Slots).Select(i => GetItem(i)).Where(i => i != null && i.IsValid).ToList();
+            }
+        }
+
         public static WoWContainer GetBagByIndex(int slot)
         {
             if (GetBagAtIndex == null)
                 GetBagAtIndex =
-                    Manager.Memory.RegisterDelegate<GetBagAtIndexDelegate>((IntPtr)Pointers.Container.GetBagAtIndex);
+                    Manager.Memory.RegisterDelegate<GetBagAtIndexDelegate>((IntPtr) Pointers.Container.GetBagAtIndex);
             return Manager.ObjectManager.GetObjectByGuid(GetBagAtIndex(slot)) as WoWContainer;
         }
 
@@ -40,17 +48,12 @@ namespace IceFlake.Client.Objects
             if (index > 35 || index > Slots || index < 0)
                 return 0;
 
-            return GetAbsoluteDescriptor<ulong>((int)WoWContainerFields.CONTAINER_FIELD_SLOT_1 * 0x4 + (index * 8));
+            return GetAbsoluteDescriptor<ulong>((int) WoWContainerFields.CONTAINER_FIELD_SLOT_1*0x4 + (index*8));
         }
 
         public WoWItem GetItem(int index)
         {
             return Manager.ObjectManager.GetObjectByGuid(GetItemGuid(index)) as WoWItem;
-        }
-
-        public List<WoWItem> Items
-        {
-            get { return Enumerable.Range(0, Slots).Select(i => GetItem(i)).Where(i => i != null && i.IsValid).ToList(); }
         }
     }
 }

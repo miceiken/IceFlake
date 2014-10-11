@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using IceFlake.Client.Objects;
+﻿using IceFlake.Client.Objects;
 
 namespace IceFlake.Client.Routines.Combat
 {
@@ -10,7 +6,17 @@ namespace IceFlake.Client.Routines.Combat
     {
         public HarmfulSpellRoutine(RoutineBrain brain, int priority, string spellName, float range)
             : base(brain, priority, spellName, range)
-        { }
+        {
+        }
+
+        public override bool IsWanted
+        {
+            get
+            {
+                return base.IsWanted && (Brain.HarmfulTarget != null && Brain.HarmfulTarget.IsValid) &&
+                       Brain.HarmfulTarget.InLoS;
+            }
+        }
 
         public override void Execute()
         {
@@ -23,11 +29,6 @@ namespace IceFlake.Client.Routines.Combat
             Manager.LocalPlayer.LookAt(unit.Location);
             Spell.Cast(unit);
             Sleep(1000);
-        }
-
-        public override bool IsWanted
-        {
-            get { return base.IsWanted && (Brain.HarmfulTarget != null && Brain.HarmfulTarget.IsValid) && Brain.HarmfulTarget.InLoS; }
         }
     }
 }

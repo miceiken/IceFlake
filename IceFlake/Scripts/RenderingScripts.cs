@@ -1,4 +1,5 @@
-﻿#if SLIMDX
+﻿
+#if SLIMDX
 using IceFlake.Client;
 using IceFlake.Client.Objects;
 using IceFlake.Client.Scripts;

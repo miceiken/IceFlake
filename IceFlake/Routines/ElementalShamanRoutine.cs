@@ -1,13 +1,16 @@
-﻿using IceFlake.Client;
+﻿using System.Linq;
+using IceFlake.Client;
+using IceFlake.Client.Objects;
 using IceFlake.Client.Patchables;
 using IceFlake.Client.Routines;
 using IceFlake.Client.Routines.Combat;
-using System.Linq;
 
 namespace IceFlake.Routines
 {
     public class ElementalShamanRoutine : RoutineBrain
     {
+        private bool _totemsSet;
+
         public ElementalShamanRoutine()
         {
             AddAction(new Thunderstorm(this, 11));
@@ -18,7 +21,6 @@ namespace IceFlake.Routines
             AddAction(new HarmfulSpellRoutine(this, 6, "Lightning Bolt", 30));
         }
 
-        private bool _totemsSet = false;
         protected override void OnBeforeAction(RoutineAction action)
         {
             if (!_totemsSet)
@@ -52,7 +54,7 @@ namespace IceFlake.Routines
                 var haction = action as HarmfulSpellRoutine;
                 if (haction.SpellName == "Lava Burst")
                 {
-                    var cd = Manager.Spellbook["Elemental Mastery"];
+                    WoWSpell cd = Manager.Spellbook["Elemental Mastery"];
                     if (cd != null && cd.IsValid && cd.IsReady)
                     {
                         Log.WriteLine("Popping Elemental Mastery for instant Lava Burst");
@@ -73,16 +75,12 @@ namespace IceFlake.Routines
             }
         }
 
-        protected class Thunderstorm : HarmfulSpellRoutine
+        protected void SetTotems()
         {
-            public Thunderstorm(RoutineBrain brain, int priority)
-                : base(brain, priority, "Thunderstorm", 12)
-            { }
-
-            public override bool IsWanted
-            {
-                get { return base.IsWanted && (Manager.LocalPlayer.PowerPercentage < 70 || Brain.HarmfulTargets.Count(x => x.Distance < 8) > 2); }
-            }
+            TotemHelper.SetTotemSlot(MultiCastSlot.ElementsEarth, Totem.Stoneskin);
+            TotemHelper.SetTotemSlot(MultiCastSlot.ElementsFire, Totem.Searing); // totem of wrath?
+            TotemHelper.SetTotemSlot(MultiCastSlot.ElementsWater, Totem.HealingStream);
+            TotemHelper.SetTotemSlot(MultiCastSlot.ElementsAir, Totem.WrathOfAir);
         }
 
         // Proc it!
@@ -90,7 +88,8 @@ namespace IceFlake.Routines
         {
             public EarthShock(RoutineBrain brain, int priority)
                 : base(brain, priority, "Earth Shock", 25)
-            { }
+            {
+            }
 
             public override bool IsWanted
             {
@@ -102,12 +101,19 @@ namespace IceFlake.Routines
         {
             public FlameShock(RoutineBrain brain, int priority)
                 : base(brain, priority, "Flame Shock", 25)
-            { }
+            {
+            }
 
             // TODO: Fix the aura issue where CasterGuid gives "Arithmetic operation resulted in an overflow."
             public override bool IsWanted
             {
-                get { return base.IsWanted && Brain.HarmfulTarget.Auras.Where(x => x.IsValid && x.Name == "Flame Shock" && x.CasterGuid == Manager.LocalPlayer.Guid).Count() == 0; }
+                get
+                {
+                    return base.IsWanted &&
+                           Brain.HarmfulTarget.Auras.Where(
+                               x => x.IsValid && x.Name == "Flame Shock" && x.CasterGuid == Manager.LocalPlayer.Guid)
+                               .Count() == 0;
+                }
             }
         }
 
@@ -116,7 +122,8 @@ namespace IceFlake.Routines
         {
             public Shield(RoutineBrain brain, int priority)
                 : base(brain, priority, "Lightning Shield", 6)
-            { }
+            {
+            }
 
             public override bool IsWanted
             {
@@ -129,12 +136,22 @@ namespace IceFlake.Routines
             }
         }
 
-        protected void SetTotems()
+        protected class Thunderstorm : HarmfulSpellRoutine
         {
-            TotemHelper.SetTotemSlot(MultiCastSlot.ElementsEarth, Totem.Stoneskin);
-            TotemHelper.SetTotemSlot(MultiCastSlot.ElementsFire, Totem.Searing); // totem of wrath?
-            TotemHelper.SetTotemSlot(MultiCastSlot.ElementsWater, Totem.HealingStream);
-            TotemHelper.SetTotemSlot(MultiCastSlot.ElementsAir, Totem.WrathOfAir);
+            public Thunderstorm(RoutineBrain brain, int priority)
+                : base(brain, priority, "Thunderstorm", 12)
+            {
+            }
+
+            public override bool IsWanted
+            {
+                get
+                {
+                    return base.IsWanted &&
+                           (Manager.LocalPlayer.PowerPercentage < 70 ||
+                            Brain.HarmfulTargets.Count(x => x.Distance < 8) > 2);
+                }
+            }
         }
     }
 }

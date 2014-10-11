@@ -23,15 +23,15 @@ namespace IceFlake.Client.API
                 List<string> ret = WoWScript.Execute("GetGossipOptions()");
                 if (ret.Count > 0)
                 {
-                    for (int i = 0; i < ret.Count / 2; i++)
+                    for (int i = 0; i < ret.Count/2; i++)
                     {
-                        int idx = i * 2;
+                        int idx = i*2;
                         yield return new GossipOption
-                                      {
-                                          Index = i + 1,
-                                          Title = ret[idx],
-                                          Gossip = (GossipType)Enum.Parse(typeof(GossipType), ret[idx + 1], true)
-                                      };
+                        {
+                            Index = i + 1,
+                            Title = ret[idx],
+                            Gossip = (GossipType) Enum.Parse(typeof (GossipType), ret[idx + 1], true)
+                        };
                     }
                 }
             }
@@ -49,18 +49,18 @@ namespace IceFlake.Client.API
                 List<string> ret = WoWScript.Execute("GetGossipAvailableQuests()");
                 if (ret.Count > 0)
                 {
-                    for (int i = 0; i < ret.Count / 5; i++)
+                    for (int i = 0; i < ret.Count/5; i++)
                     {
-                        int idx = i * 5;
+                        int idx = i*5;
                         yield return new GossipAvailableQuest
-                                      {
-                                          Index = i + 1,
-                                          Title = ret[idx],
-                                          Level = int.Parse(ret[idx + 1]),
-                                          IsLowLevel = !(ret[idx + 2] == "0" || ret[idx + 2] == "nil"),
-                                          IsDaily = !(ret[idx + 3] == "0" || ret[idx + 3] == "nil"),
-                                          IsRepeatable = !(ret[idx + 4] == "0" || ret[idx + 4] == "nil"),
-                                      };
+                        {
+                            Index = i + 1,
+                            Title = ret[idx],
+                            Level = int.Parse(ret[idx + 1]),
+                            IsLowLevel = !(ret[idx + 2] == "0" || ret[idx + 2] == "nil"),
+                            IsDaily = !(ret[idx + 3] == "0" || ret[idx + 3] == "nil"),
+                            IsRepeatable = !(ret[idx + 4] == "0" || ret[idx + 4] == "nil"),
+                        };
                     }
                 }
             }
@@ -78,17 +78,17 @@ namespace IceFlake.Client.API
                 List<string> ret = WoWScript.Execute("GetGossipActiveQuests()");
                 if (ret.Count > 0)
                 {
-                    for (int i = 0; i < ret.Count / 4; i++)
+                    for (int i = 0; i < ret.Count/4; i++)
                     {
-                        int idx = i * 4;
+                        int idx = i*4;
                         yield return new GossipActiveQuest
-                                      {
-                                          Index = i + 1,
-                                          Title = ret[idx],
-                                          Level = int.Parse(ret[idx + 1]),
-                                          IsLowLevel = !(ret[idx + 2] == "0" || ret[idx + 2] == "nil"),
-                                          IsComplete = !(ret[idx + 3] == "0" || ret[idx + 3] == "nil"),
-                                      };
+                        {
+                            Index = i + 1,
+                            Title = ret[idx],
+                            Level = int.Parse(ret[idx + 1]),
+                            IsLowLevel = !(ret[idx + 2] == "0" || ret[idx + 2] == "nil"),
+                            IsComplete = !(ret[idx + 3] == "0" || ret[idx + 3] == "nil"),
+                        };
                     }
                 }
             }

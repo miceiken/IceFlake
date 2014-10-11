@@ -1,24 +1,23 @@
 ﻿using System;
-using IceFlake.Client;
 using IceFlake.Client.Objects;
 using IceFlake.Client.Patchables;
 using IceFlake.Client.Scripts;
-using System.Linq;
 
 namespace IceFlake.Scripts
 {
+
     #region SpeedHackScript
 
     public class SpeedHackScript : Script
     {
-        public SpeedHackScript()
-            : base("Speed Hack", "Hack")
-        { }
-
-        private readonly IntPtr POINTER = new IntPtr(0x6F14A8);
-
         private const uint START_SPEED = 0x9000E6C1;
         private const uint SPEED_MODIFIER = 3; // 1-4
+        private readonly IntPtr POINTER = new IntPtr(0x6F14A8);
+
+        public SpeedHackScript()
+            : base("Speed Hack", "Hack")
+        {
+        }
 
         public override void OnStart()
         {
@@ -26,7 +25,7 @@ namespace IceFlake.Scripts
                 return;
 
             Manager.Memory.WriteBytes(POINTER, BitConverter.GetBytes(START_SPEED));
-            Manager.Memory.WriteBytes(POINTER, BitConverter.GetBytes(START_SPEED + ((0x10000 * SPEED_MODIFIER) + 0x1000)));
+            Manager.Memory.WriteBytes(POINTER, BitConverter.GetBytes(START_SPEED + ((0x10000*SPEED_MODIFIER) + 0x1000)));
             Print("Applying speed hack");
         }
 
@@ -47,24 +46,25 @@ namespace IceFlake.Scripts
 
     public class MorphScaleScript : Script
     {
-        public MorphScaleScript()
-            : base("Morph & Scale", "Hack")
-        { }
-
         private const bool CHANGE_DISPLAYID = false;
         private const uint MORPH_DISPLAYID = 69;
-        private uint DefaultDisplayID = 0;
 
         private const bool CHANGE_SCALE = false;
         private const float MORPH_SCALE = 1.0f;
-        private float DefaultScale = 0f;
+        private uint DefaultDisplayID;
+        private float DefaultScale;
+
+        public MorphScaleScript()
+            : base("Morph & Scale", "Hack")
+        {
+        }
 
         public override void OnStart()
         {
             if (!Manager.ObjectManager.IsInGame)
                 return;
 
-            var lp = Manager.LocalPlayer;
+            WoWLocalPlayer lp = Manager.LocalPlayer;
 
             if (CHANGE_DISPLAYID)
             {
@@ -89,7 +89,7 @@ namespace IceFlake.Scripts
 
         public override void OnTerminate()
         {
-            var lp = Manager.LocalPlayer;
+            WoWLocalPlayer lp = Manager.LocalPlayer;
 
             if (CHANGE_DISPLAYID)
                 lp.SetDescriptor<uint>(WoWUnitFields.UNIT_FIELD_DISPLAYID, DefaultDisplayID);

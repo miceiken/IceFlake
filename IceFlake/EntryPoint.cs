@@ -1,19 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
-using System.Diagnostics;
 using IceFlake.DirectX;
 
 namespace IceFlake
 {
     public static class EntryPoint
     {
-        internal static IceForm AppForm
-        {
-            get;
-            set;
-        }
+        internal static IceForm AppForm { get; set; }
 
         [STAThread]
         public static void Main(string[] args)

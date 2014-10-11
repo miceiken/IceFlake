@@ -16,7 +16,7 @@ namespace IceFlake.Client
                 if (_performanceCounter == null)
                     _performanceCounter =
                         Manager.Memory.RegisterDelegate<PerformanceCounterDelegate>(
-                            (IntPtr)Pointers.Other.PerformanceCounter);
+                            (IntPtr) Pointers.Other.PerformanceCounter);
 
                 return _performanceCounter();
             }
@@ -30,7 +30,7 @@ namespace IceFlake.Client
 
         public static void ResetHardwareAction()
         {
-            Manager.Memory.Write((IntPtr)Pointers.Other.LastHardwareAction, PerformanceCount);
+            Manager.Memory.Write((IntPtr) Pointers.Other.LastHardwareAction, PerformanceCount);
         }
 
         private static void SetInCombat(string ev, List<string> args)
@@ -45,7 +45,7 @@ namespace IceFlake.Client
 
         public static string ToWowCurrency(this ulong amount)
         {
-            return String.Format("{0}g {1}s {2}c", amount / 10000, amount / 100 % 100, amount % 100);
+            return String.Format("{0}g {1}s {2}c", amount/10000, amount/100%100, amount%100);
         }
 
         #region Properties

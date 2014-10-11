@@ -102,7 +102,8 @@
             internal static uint CastSpell = 0x0080DA40;
             internal static uint GetSpellCooldown = 0x00809000;
 
-            internal static uint FirstActionBarSpellId = 0x00C1E358; // Don't really need this unless we want to auto-set up actionbars?
+            internal static uint FirstActionBarSpellId = 0x00C1E358;
+                // Don't really need this unless we want to auto-set up actionbars?
         }
 
         #endregion

@@ -4,7 +4,10 @@
     {
         public bool AccountSelectVisible
         {
-            get { return WoWScript.Execute<bool>("WoWAccountSelectDialog ~= nil and WoWAccountSelectDialog:IsShown()"); }
+            get
+            {
+                return WoWScript.Execute<bool>("WoWAccountSelectDialog ~= nil and WoWAccountSelectDialog:IsShown()");
+            }
         }
 
         public bool LoginScreenVisible

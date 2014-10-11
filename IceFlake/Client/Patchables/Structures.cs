@@ -1,10 +1,12 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using System.Collections.Generic;
-using IceFlake.Client.Collections;
+using System.Runtime.InteropServices;
+using IceFlake.Client.Objects;
+using IceFlake.DirectX;
 
 namespace IceFlake.Client.Patchables
 {
+
     #region SpellBookRec
 
     public struct SpellBookRec
@@ -86,71 +88,79 @@ namespace IceFlake.Client.Patchables
         public float speed;
         public uint modalNextSpell;
         public uint StackAmount;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2, ArraySubType = UnmanagedType.U4)]
-        public uint[] Totem;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8, ArraySubType = UnmanagedType.I4)]
-        public int[] Reagent;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8, ArraySubType = UnmanagedType.U4)]
-        public uint[] ReagentCount;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2, ArraySubType = UnmanagedType.U4)] public uint[] Totem;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8, ArraySubType = UnmanagedType.I4)] public int[] Reagent;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8, ArraySubType = UnmanagedType.U4)] public uint[] ReagentCount;
         public int EquippedItemClass;
         public int EquippedItemSubClassMask;
         public int EquippedItemInventoryTypeMask;
 
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.U4)]
-        public int[] Effect;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.I4)]
-        public int[] EffectDieSides;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.U4)] public int[] Effect;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.I4)] public int[]
+            EffectDieSides;
+
         //[MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.I4)]
         //public int[] EffectBaseDice;
         //[MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.R4)]
         //public float[] EffectDicePerLevel;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.R4)]
-        public float[] EffectRealPointsPerLevel;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.I4)]
-        public int[] EffectBasePoints;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.U4)]
-        public uint[] EffectMechanic;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.U4)]
-        public uint[] EffectImplicitTargetA;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.U4)]
-        public uint[] EffectImplicitTargetB;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.U4)]
-        public uint[] EffectRadiusIndex;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.U4)]
-        public uint[] EffectApplyAuraName;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.U4)]
-        public uint[] EffectAmplitude;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.R4)]
-        public float[] EffectMultipleValue;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.U4)]
-        public uint[] EffectChainTarget;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.U4)]
-        public uint[] EffectItemType;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.I4)]
-        public int[] EffectMiscValue;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.I4)]
-        public int[] EffectMiscValueB;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.U4)]
-        public uint[] EffectTriggerSpell;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.R4)]
-        public float[] EffectPointsPerComboPoint;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.Struct)]
-        public Flag96[] EffectSpellClassMask;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.R4)] public float[]
+            EffectRealPointsPerLevel;
 
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2, ArraySubType = UnmanagedType.U4)]
-        public uint[] SpellVisual;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.I4)] public int[]
+            EffectBasePoints;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.U4)] public uint[]
+            EffectMechanic;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.U4)] public uint[]
+            EffectImplicitTargetA;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.U4)] public uint[]
+            EffectImplicitTargetB;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.U4)] public uint[]
+            EffectRadiusIndex;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.U4)] public uint[]
+            EffectApplyAuraName;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.U4)] public uint[]
+            EffectAmplitude;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.R4)] public float[]
+            EffectMultipleValue;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.U4)] public uint[]
+            EffectChainTarget;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.U4)] public uint[]
+            EffectItemType;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.I4)] public int[]
+            EffectMiscValue;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.I4)] public int[]
+            EffectMiscValueB;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.U4)] public uint[]
+            EffectTriggerSpell;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.R4)] public float[]
+            EffectPointsPerComboPoint;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.Struct)] public Flag96[]
+            EffectSpellClassMask;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2, ArraySubType = UnmanagedType.U4)] public uint[] SpellVisual;
         public uint SpellIconID;
         public uint activeIconID;
         public uint spellPriority;
 
-        [MarshalAs(UnmanagedType.LPStr)]
-        public string SpellName;
-        [MarshalAs(UnmanagedType.LPStr)]
-        public string Rank;
-        [MarshalAs(UnmanagedType.LPStr)]
-        public string Description;
-        [MarshalAs(UnmanagedType.LPStr)]
-        public string ToolTip;
+        [MarshalAs(UnmanagedType.LPStr)] public string SpellName;
+        [MarshalAs(UnmanagedType.LPStr)] public string Rank;
+        [MarshalAs(UnmanagedType.LPStr)] public string Description;
+        [MarshalAs(UnmanagedType.LPStr)] public string ToolTip;
 
         public uint ManaCostPercentage;
         public uint StartRecoveryCategory;
@@ -162,20 +172,23 @@ namespace IceFlake.Client.Patchables
         public uint DmgClass;
         public uint PreventionType;
         public uint StanceBarOrder;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.R4)]
-        public float[] DmgMultiplier;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.R4)] public float[]
+            DmgMultiplier;
+
         public uint MinFactionId;
         public uint MinReputation;
         public uint RequiredAuraVision;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2, ArraySubType = UnmanagedType.U4)]
-        public uint[] TotemCategory;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2, ArraySubType = UnmanagedType.U4)] public uint[]
+            TotemCategory;
+
         public int AreaGroupId;
         public int SchoolMask;
         public uint runeCostID;
         public uint spellMissileID;
         public uint PowerDisplayId;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.R4)]
-        public float[] unk_320_4;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.R4)] public float[] unk_320_4;
         public uint spellDescriptionVariableID;
         public uint SpellDifficultyId;
     }
@@ -253,10 +266,8 @@ namespace IceFlake.Client.Patchables
         public uint m_factionGroup; // 3
         public uint m_friendGroup; // 4
         public uint m_enemyGroup; // 5
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public uint[] m_enemies; // 6-9
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public uint[] m_friend; // 10-13
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public uint[] m_enemies; // 6-9
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public uint[] m_friend; // 10-13
     }
 
     #endregion
@@ -277,10 +288,9 @@ namespace IceFlake.Client.Patchables
         public uint m_ZoneMusic; // 8
         public uint m_IntroSound; // 9
         public uint m_ExplorationLevel; // 10
-        private IntPtr m_AreaName_lang; // 11
+        private readonly IntPtr m_AreaName_lang; // 11
         public uint m_factionGroupMask; // 12
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public uint[] m_liquidTypeID; // 13-16
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public uint[] m_liquidTypeID; // 13-16
         public float m_minElevation; // 17
         public float m_ambient_multiplier; // 18
         public uint m_lightid; // 19
@@ -329,18 +339,12 @@ namespace IceFlake.Client.Patchables
         public int MaxStackSize;
         public int BagSlots;
         public int NumberOfStats;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 10, ArraySubType = UnmanagedType.I4)]
-        public int[] StatTypes;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 10, ArraySubType = UnmanagedType.I4)]
-        public int[] StatValues;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2, ArraySubType = UnmanagedType.I4)]
-        public int[] Unk1;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2, ArraySubType = UnmanagedType.R4)]
-        public float[] DamageMin;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2, ArraySubType = UnmanagedType.R4)]
-        public float[] DamageMax;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2, ArraySubType = UnmanagedType.I4)]
-        public int[] DamageType;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 10, ArraySubType = UnmanagedType.I4)] public int[] StatTypes;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 10, ArraySubType = UnmanagedType.I4)] public int[] StatValues;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2, ArraySubType = UnmanagedType.I4)] public int[] Unk1;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2, ArraySubType = UnmanagedType.R4)] public float[] DamageMin;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2, ArraySubType = UnmanagedType.R4)] public float[] DamageMax;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2, ArraySubType = UnmanagedType.I4)] public int[] DamageType;
         public int ResistPhysical_Armor;
         public int ResistHoly;
         public int ResistFire;
@@ -351,21 +355,20 @@ namespace IceFlake.Client.Patchables
         public int WeaponDelay;
         public int AmmoType;
         public float RangeModifier;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5, ArraySubType = UnmanagedType.I4)]
-        public int[] SpellId;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5, ArraySubType = UnmanagedType.I4)]
-        public int[] SpellTriggerId;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5, ArraySubType = UnmanagedType.I4)]
-        public int[] SpellCharges;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5, ArraySubType = UnmanagedType.I4)]
-        public int[] SpellCooldown;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5, ArraySubType = UnmanagedType.I4)]
-        public int[] SpellCategory;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5, ArraySubType = UnmanagedType.I4)]
-        public int[] SpellCategoryCooldown;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5, ArraySubType = UnmanagedType.I4)] public int[] SpellId;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5, ArraySubType = UnmanagedType.I4)] public int[]
+            SpellTriggerId;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5, ArraySubType = UnmanagedType.I4)] public int[] SpellCharges;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5, ArraySubType = UnmanagedType.I4)] public int[] SpellCooldown;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5, ArraySubType = UnmanagedType.I4)] public int[] SpellCategory;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5, ArraySubType = UnmanagedType.I4)] public int[]
+            SpellCategoryCooldown;
+
         public ItemBondType Bonding;
-        [MarshalAs(UnmanagedType.LPStr)]
-        public string Description;
+        [MarshalAs(UnmanagedType.LPStr)] public string Description;
         public int BookTextId;
         public int BookPages;
         public int BookStationaryId;
@@ -382,10 +385,8 @@ namespace IceFlake.Client.Patchables
         public int ItemMapId;
         public int BagFamily;
         public int totemCategory;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.I4)]
-        public int[] SocketColor;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.I4)]
-        public int[] SocketContent;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.I4)] public int[] SocketColor;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3, ArraySubType = UnmanagedType.I4)] public int[] SocketContent;
         public int SocketBonus;
         public int GemProperties;
         public int DisenchantSkillLevel;
@@ -393,31 +394,29 @@ namespace IceFlake.Client.Patchables
         public int ItemExtendedCost;
         public int ItemLimitId;
         public int Unk2;
-        [MarshalAs(UnmanagedType.LPStr)]
-        public string Name;
+        [MarshalAs(UnmanagedType.LPStr)] public string Name;
 
         public ItemArmorClass ArmorClass
         {
-            get { return (ItemArmorClass)SubClassId; }
+            get { return (ItemArmorClass) SubClassId; }
         }
 
         public ItemWeaponClass WeaponClass
         {
-            get { return (ItemWeaponClass)SubClassId; }
+            get { return (ItemWeaponClass) SubClassId; }
         }
 
         public ItemGemClass GemClass
         {
-            get { return (ItemGemClass)SubClassId; }
+            get { return (ItemGemClass) SubClassId; }
         }
 
         public bool IsFoodDrink
         {
             get
             {
-
                 return Class == ItemClass.Consumable &&
-                       (ItemSubclassConsumable)SubClassId == ItemSubclassConsumable.FoodDrink;
+                       (ItemSubclassConsumable) SubClassId == ItemSubclassConsumable.FoodDrink;
             }
         }
 
@@ -559,7 +558,7 @@ namespace IceFlake.Client.Patchables
                 for (int i = 0; i < 10; i++)
                 {
                     if (StatTypes[i] == 0 || StatValues[i] == 0) continue;
-                    stats.Add((ItemStatType)StatTypes[i], StatValues[i]);
+                    stats.Add((ItemStatType) StatTypes[i], StatValues[i]);
                 }
                 return stats;
             }
@@ -573,10 +572,11 @@ namespace IceFlake.Client.Patchables
                     return null;
 
                 var sieEntries = new List<SpellItemEnchantmentRec>();
-                var sieStorage = Manager.DBC[ClientDB.SpellItemEnchantment];
+                WoWDB.DbTable sieStorage = Manager.DBC[ClientDB.SpellItemEnchantment];
                 if (RandomPropertyId > 0)
-                { // ItemRandomProperty
-                    var irp = Manager.DBC[ClientDB.ItemRandomProperties].GetRow(RandomPropertyId);
+                {
+                    // ItemRandomProperty
+                    WoWDB.DbTable.Row irp = Manager.DBC[ClientDB.ItemRandomProperties].GetRow(RandomPropertyId);
                     for (uint i = 2; i < 6; i++)
                     {
                         var sieRef = irp.GetField<int>(i);
@@ -585,8 +585,9 @@ namespace IceFlake.Client.Patchables
                     }
                 }
                 else
-                { // ItemRandomSuffix
-                    var irs = Manager.DBC[ClientDB.ItemRandomSuffix].GetRow(RandomSuffixId);
+                {
+                    // ItemRandomSuffix
+                    WoWDB.DbTable.Row irs = Manager.DBC[ClientDB.ItemRandomSuffix].GetRow(RandomSuffixId);
                     for (uint i = 3; i < 7; i++)
                     {
                         var sieRef = irs.GetField<int>(i);
@@ -596,16 +597,16 @@ namespace IceFlake.Client.Patchables
                 }
 
                 var stats = new Dictionary<ItemStatType, int>();
-                foreach (var sie in sieEntries)
+                foreach (SpellItemEnchantmentRec sie in sieEntries)
                 {
-                    for (var i = 0; i < 3; i++)
+                    for (int i = 0; i < 3; i++)
                     {
                         if (sie.EffectID[i] == 0
                             || (sie.EffectValueMin[i] == 0 && sie.EffectValueMax[i] == 0))
                             continue;
 
-                        var stat = (ItemStatType)sie.EffectID[i];
-                        var value = (sie.EffectValueMin[i] + sie.EffectValueMax[i]) / 2; // get average
+                        var stat = (ItemStatType) sie.EffectID[i];
+                        int value = (sie.EffectValueMin[i] + sie.EffectValueMax[i])/2; // get average
                         if (stats.ContainsKey(stat))
                             stats[stat] += value;
                         else
@@ -625,7 +626,7 @@ namespace IceFlake.Client.Patchables
                 for (int i = 0; i < 3; i++)
                 {
                     if (SocketColor[i] == 0) continue;
-                    ret.Add((SocketColor)SocketColor[i], SocketContent[i]);
+                    ret.Add((SocketColor) SocketColor[i], SocketContent[i]);
                 }
                 return ret;
             }
@@ -640,7 +641,7 @@ namespace IceFlake.Client.Patchables
                 if (!IsFoodDrink)
                     return false;
 
-                for (var i = 0; i < MAX_SPELL_EFFECTS; i++)
+                for (int i = 0; i < MAX_SPELL_EFFECTS; i++)
                 {
                     //var effect = SpellCollection.GetSpellEffectRecord(SpellId[0], i);
                     //var auraType = (AuraType)effect.EffectAura;
@@ -658,7 +659,7 @@ namespace IceFlake.Client.Patchables
                 if (!IsFoodDrink)
                     return false;
 
-                for (var i = 0; i < MAX_SPELL_EFFECTS; i++)
+                for (int i = 0; i < MAX_SPELL_EFFECTS; i++)
                 {
                     //var effect = WoWSpellCollection.GetSpellEffectRecord(SpellId[0], i);
                     //var auraType = (AuraType)effect.EffectAura;
@@ -675,14 +676,10 @@ namespace IceFlake.Client.Patchables
     {
         public uint ID;
         public uint Charges;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
-        public uint[] EffectID;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
-        public int[] EffectValueMin;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
-        public int[] EffectValueMax;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5)]
-        public int[] EffectArg;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)] public uint[] EffectID;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)] public int[] EffectValueMin;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)] public int[] EffectValueMax;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5)] public int[] EffectArg;
         private readonly IntPtr _Name;
 
         public string Name
@@ -704,13 +701,17 @@ namespace IceFlake.Client.Patchables
 
         public SpellItemEnchantmentRec SpellItemEnchantment
         {
-            get { return Manager.DBC[ClientDB.SpellItemEnchantment].GetLocalizedRow(Id).GetStruct<SpellItemEnchantmentRec>(); }
+            get
+            {
+                return
+                    Manager.DBC[ClientDB.SpellItemEnchantment].GetLocalizedRow(Id).GetStruct<SpellItemEnchantmentRec>();
+            }
         }
     }
 
     #endregion
 
-    enum EnchantmentSlot : int
+    internal enum EnchantmentSlot
     {
         PERM_ENCHANTMENT_SLOT = 0,
         TEMP_ENCHANTMENT_SLOT = 1,
@@ -782,11 +783,10 @@ namespace IceFlake.Client.Patchables
     [StructLayout(LayoutKind.Sequential)]
     public struct AuctionEntry
     {
-        private uint unk0;
+        private readonly uint unk0;
         public uint Id;
         public uint Entry;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 10)]
-        public ItemEnchantment[] Enchants;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 10)] public ItemEnchantment[] Enchants;
         public uint RandomProperty;
         public uint RandomSuffix;
         public uint StackSize;
@@ -810,7 +810,7 @@ namespace IceFlake.Client.Patchables
 
         public ItemCacheRecord ItemInfo
         {
-            get { return IceFlake.Client.Objects.WoWItem.GetItemRecordFromId(Id); }
+            get { return WoWItem.GetItemRecordFromId(Id); }
         }
 
         public string BuyoutPriceInCurrency
@@ -818,7 +818,7 @@ namespace IceFlake.Client.Patchables
             get { return BuyoutPrice.ToWowCurrency(); }
         }
 
-        public static readonly int Size = Marshal.SizeOf(typeof(AuctionEntry));
+        public static readonly int Size = Marshal.SizeOf(typeof (AuctionEntry));
     }
 
     #endregion
@@ -830,13 +830,12 @@ namespace IceFlake.Client.Patchables
     {
         public int ID;
         public QuestState State;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public short[] Objectives;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public short[] Objectives;
         public int Time;
 
         public WoWQuest AsWoWQuest()
         {
-            return new WoWQuest(this.ID);
+            return new WoWQuest(ID);
         }
     }
 
@@ -864,47 +863,38 @@ namespace IceFlake.Client.Patchables
         public float RewardHonorBonus;
         public int StartingItemId;
         public int Flags;
-        public fixed int RewardItem[4];
-        public fixed int RewardItemCount[4];
-        public fixed int RewardChoiceItem[6];
-        public fixed int RewardChoiceItemCount[6];
+        public fixed int RewardItem [4];
+        public fixed int RewardItemCount [4];
+        public fixed int RewardChoiceItem [6];
+        public fixed int RewardChoiceItemCount [6];
         public int PointMapID;
         public float PointX;
         public float PointY;
         public int PointOptional;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 512)]
-        public string Name;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 3000)]
-        public string ObjectiveText;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 3000)]
-        public string Description;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 512)]
-        public string EndText;
-        public fixed int ObjectiveId[4];
-        public fixed int ObjectiveRequiredCount[4];
-        public fixed int CollectItemId[6];
-        public fixed int CollectItemCount[6];
-        public fixed int IntermediateItemId[4];
-        public fixed int IntermediateItemCount[4];
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 512)] public string Name;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 3000)] public string ObjectiveText;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 3000)] public string Description;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 512)] public string EndText;
+        public fixed int ObjectiveId [4];
+        public fixed int ObjectiveRequiredCount [4];
+        public fixed int CollectItemId [6];
+        public fixed int CollectItemCount [6];
+        public fixed int IntermediateItemId [4];
+        public fixed int IntermediateItemCount [4];
         //[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
         //public fixed byte OverrideObjectiveText[4][256]; // 4 * 256
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
-        public string OverrideObjectiveText1;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
-        public string OverrideObjectiveText2;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
-        public string OverrideObjectiveText3;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
-        public string OverrideObjectiveText4;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)] public string OverrideObjectiveText1;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)] public string OverrideObjectiveText2;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)] public string OverrideObjectiveText3;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)] public string OverrideObjectiveText4;
         public int RewardTitleId;
         public int RequiredPlayersKilled;
         public int RewardTalentPoints;
         public int RewardArenaPoints;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 2048)]
-        public string CompletionText;
-        public fixed int RewardReputationFaction[5];
-        public fixed int FactionRewardID[5];
-        public fixed int RewardReputationOverride[5];
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 2048)] public string CompletionText;
+        public fixed int RewardReputationFaction [5];
+        public fixed int FactionRewardID [5];
+        public fixed int RewardReputationOverride [5];
         public int Unk17;
     }
 
@@ -917,123 +907,105 @@ namespace IceFlake.Client.Patchables
 
     public struct QuestCache
     {
+        public int BonusArenaPoints;
+        public int BonusTalents;
+        public uint CharTitleId;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 512)] public string Description;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 512)] public string EndText;
         public uint Id;
         public uint Method;
-        public int QuestLevel;
         public uint MinLevel;
-        public int ZoneOrSort;
-        public uint Type;
-        public int SuggestedPlayers;
-        public uint RepObjectiveFaction1;
-        public int RepObjectiveValue1;
-        public uint RepObjectiveFaction2;
-        public int RepObjectiveValue2;
         public uint NextQuestInChain;
-        public int RewardXpId;
-        public uint RewardMoneyMaxLevel;
-        public uint RewardSpell;
-        public uint RewardSpellCast;
-        public uint RewardHonorAddition;
-        public float RewardHonorMultiplier;
-        public uint SourceItemId;
-        public uint QuestFlags;
-        public uint CharTitleId;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 512)] public string Objectives;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)] public string OverrideObjectiveText1;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)] public string OverrideObjectiveText2;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)] public string OverrideObjectiveText3;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)] public string OverrideObjectiveText4;
         public int PlayersSlain;
-        public int BonusTalents;
-        public int BonusArenaPoints;
-        public int Unk2;
-
-        public uint RewardItemId1;
-        public uint RewardItemCount1;
-        public uint RewardItemId2;
-        public uint RewardItemCount2;
-        public uint RewardItemId3;
-        public uint RewardItemCount3;
-        public uint RewardItemId4;
-        public uint RewardItemCount4;
-
-        public uint RewardChoiceItemId1;
-        public uint RewardChoiceItemCount1;
-        public uint RewardChoiceItemId2;
-        public uint RewardChoiceItemCount2;
-        public uint RewardChoiceItemId3;
-        public uint RewardChoiceItemCount3;
-        public uint RewardChoiceItemId4;
-        public uint RewardChoiceItemCount4;
-        public uint RewardChoiceItemId5;
-        public uint RewardChoiceItemCount5;
-        public uint RewardChoiceItemId6;
-        public uint RewardChoiceItemCount6;
-
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5)]
-        public uint[] RewardReputationFactions;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5)]
-        public int[] RewardReputationFactionsValue;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5)]
-        public uint[] RewardReputationValue;
 
         public uint PointMapId;
         public float PointX;
         public float PointY;
-        public int Unk3;
-
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 512)]
-        public string Title;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 512)]
-        public string Objectives;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 512)]
-        public string Description;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 512)]
-        public string ToDoText;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 512)]
-        public string EndText;
+        public uint QuestFlags;
+        public int QuestLevel;
+        public uint RepObjectiveFaction1;
+        public uint RepObjectiveFaction2;
+        public int RepObjectiveValue1;
+        public int RepObjectiveValue2;
 
         public int ReqCreatureOrGOId1;
-        public int ReqCreatureOrGoCount1;
-        public int ReqSourceId1;
-        public int ReqSourceIdMaxCount1;
 
         public int ReqCreatureOrGOId2;
-        public int ReqCreatureOrGoCount2;
-        public int ReqSourceId2;
-        public int ReqSourceIdMaxCount2;
 
         public int ReqCreatureOrGOId3;
-        public int ReqCreatureOrGoCount3;
-        public int ReqSourceId3;
-        public int ReqSourceIdMaxCount3;
 
         public int ReqCreatureOrGOId4;
+        public int ReqCreatureOrGoCount1;
+        public int ReqCreatureOrGoCount2;
+        public int ReqCreatureOrGoCount3;
         public int ReqCreatureOrGoCount4;
-        public int ReqSourceId4;
-        public int ReqSourceIdMaxCount4;
-
-        public int ReqItemId1;
         public int ReqItemCount1;
 
-        public int ReqItemId2;
         public int ReqItemCount2;
 
-        public int ReqItemId3;
         public int ReqItemCount3;
 
-        public int ReqItemId4;
         public int ReqItemCount4;
 
-        public int ReqItemId5;
         public int ReqItemCount5;
 
-        public int ReqItemId6;
         public int ReqItemCount6;
-
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
-        public string OverrideObjectiveText1;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
-        public string OverrideObjectiveText2;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
-        public string OverrideObjectiveText3;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
-        public string OverrideObjectiveText4;
+        public int ReqItemId1;
+        public int ReqItemId2;
+        public int ReqItemId3;
+        public int ReqItemId4;
+        public int ReqItemId5;
+        public int ReqItemId6;
+        public int ReqSourceId1;
+        public int ReqSourceId2;
+        public int ReqSourceId3;
+        public int ReqSourceId4;
+        public int ReqSourceIdMaxCount1;
+        public int ReqSourceIdMaxCount2;
+        public int ReqSourceIdMaxCount3;
+        public int ReqSourceIdMaxCount4;
+        public uint RewardChoiceItemCount1;
+        public uint RewardChoiceItemCount2;
+        public uint RewardChoiceItemCount3;
+        public uint RewardChoiceItemCount4;
+        public uint RewardChoiceItemCount5;
+        public uint RewardChoiceItemCount6;
+        public uint RewardChoiceItemId1;
+        public uint RewardChoiceItemId2;
+        public uint RewardChoiceItemId3;
+        public uint RewardChoiceItemId4;
+        public uint RewardChoiceItemId5;
+        public uint RewardChoiceItemId6;
+        public uint RewardHonorAddition;
+        public float RewardHonorMultiplier;
+        public uint RewardItemCount1;
+        public uint RewardItemCount2;
+        public uint RewardItemCount3;
+        public uint RewardItemCount4;
+        public uint RewardItemId1;
+        public uint RewardItemId2;
+        public uint RewardItemId3;
+        public uint RewardItemId4;
+        public uint RewardMoneyMaxLevel;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5)] public uint[] RewardReputationFactions;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5)] public int[] RewardReputationFactionsValue;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5)] public uint[] RewardReputationValue;
+        public uint RewardSpell;
+        public uint RewardSpellCast;
+        public int RewardXpId;
+        public uint SourceItemId;
+        public int SuggestedPlayers;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 512)] public string Title;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 512)] public string ToDoText;
+        public uint Type;
+        public int Unk2;
+        public int Unk3;
+        public int ZoneOrSort;
     }
 
     #endregion
@@ -1045,8 +1017,7 @@ namespace IceFlake.Client.Patchables
     {
         public ulong GUID;
         public Location Position;
-        [MarshalAs(UnmanagedType.U4)]
-        public MouseButton Button;
+        [MarshalAs(UnmanagedType.U4)] public MouseButton Button;
     }
 
     [Flags]
@@ -1096,13 +1067,13 @@ namespace IceFlake.Client.Patchables
 
     public unsafe struct CameraInfo
     {
-        fixed int unk0[2];
+        private fixed int unk0 [2];
 #if SLIMDX
         public SlimDX.Vector3 Position;
 #else
-        public IceFlake.DirectX.Vector3 Position;
+        public Vector3 Position;
 #endif
-        public fixed float Facing[9];
+        public fixed float Facing [9];
         public float NearPlane;
         public float FarPlane;
         public float FieldOfView;
