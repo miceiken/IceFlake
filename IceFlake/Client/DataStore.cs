@@ -162,14 +162,14 @@ namespace IceFlake.Client
         public void PutString(string value)
         {
             if (_putString == null)
-                _putString = Manager.Memory.RegisterDelegate<PutStringDelegate>(Pointers.Packets.PutFloat.ToPointer());
+                _putString = Manager.Memory.RegisterDelegate<PutStringDelegate>(Pointers.Packets.PutString.ToPointer());
             _putString(Pointer, value);
         }
 
         public void PutBytes(byte[] value, uint size)
         {
             if (_putBytes == null)
-                _putBytes = Manager.Memory.RegisterDelegate<PutBytesDelegate>(Pointers.Packets.PutFloat.ToPointer());
+                _putBytes = Manager.Memory.RegisterDelegate<PutBytesDelegate>(Pointers.Packets.PutBytes.ToPointer());
             _putBytes(Pointer, value, size);
         }
 
@@ -231,35 +231,39 @@ namespace IceFlake.Client
         public string GetString(int length)
         {
             if (_getString == null)
-                _getString = Manager.Memory.RegisterDelegate<GetStringDelegate>(Pointers.Packets.GetFloat.ToPointer());
+                _getString = Manager.Memory.RegisterDelegate<GetStringDelegate>(Pointers.Packets.GetString.ToPointer());
 
-            var strPtr = 0u;
-            _getString(Pointer, ref strPtr, length);
-            return Manager.Memory.ReadString(strPtr.ToPointer(), maxLength: length);
+            var strPtr = Marshal.AllocHGlobal(length);
+            _getString(Pointer, strPtr, length);
+            var value = Manager.Memory.ReadString(strPtr, maxLength: length);
+            Marshal.FreeHGlobal(strPtr);
+
+            return value;
         }
 
         public byte[] GetBytes(int count)
         {
             if (_getBytes == null)
-                _getBytes = Manager.Memory.RegisterDelegate<GetBytesDelegate>(Pointers.Packets.GetFloat.ToPointer());
+                _getBytes = Manager.Memory.RegisterDelegate<GetBytesDelegate>(Pointers.Packets.GetBytes.ToPointer());
 
-            var bufferPtr = 0u;
-            _getBytes(Pointer, ref bufferPtr, count);
-            return Manager.Memory.ReadBytes(bufferPtr.ToPointer(), count);
+            var bufferPtr = Marshal.AllocHGlobal(count);
+            _getBytes(Pointer, bufferPtr, count);
+            return Manager.Memory.ReadBytes(bufferPtr, count);
         }
 
         public void Finalize()
         {
             if (_finalize == null)
-                _finalize = Manager.Memory.RegisterDelegate<FinalizeDelegate>(Pointers.Packets.Initialize.ToPointer());
+                _finalize = Manager.Memory.RegisterDelegate<FinalizeDelegate>(Pointers.Packets.Finalize.ToPointer());
             _finalize(Pointer);
         }
 
-        private void Destroy()
+        public void Destroy()
         {
             if (_destroy == null)
-                _destroy = Manager.Memory.RegisterDelegate<DestroyDelegate>(Pointers.Packets.Initialize.ToPointer());
+                _destroy = Manager.Memory.RegisterDelegate<DestroyDelegate>(Pointers.Packets.Destroy.ToPointer());
             _destroy(Pointer);
+            Marshal.FreeHGlobal(Pointer);
         }
 
         #endregion
@@ -321,11 +325,11 @@ namespace IceFlake.Client
         private static GetFloatDelegate _getFloat;
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate IntPtr GetStringDelegate(IntPtr dataStorePtr, ref uint stringPtr, int maxChars);
+        private delegate IntPtr GetStringDelegate(IntPtr dataStorePtr, IntPtr sb, int maxChars);
         private static GetStringDelegate _getString;
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate IntPtr GetBytesDelegate(IntPtr dataStorePtr, ref uint bufferPtr, int numBytes);
+        private delegate IntPtr GetBytesDelegate(IntPtr dataStorePtr, IntPtr bufferPtr, int numBytes);
         private static GetBytesDelegate _getBytes;
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]

@@ -5,7 +5,7 @@ using IceFlake.Runtime;
 
 namespace IceFlake.Client
 {
-    public delegate bool PacketHandler(IntPtr param, ClientServices.NetMessage msgId, uint time, IntPtr pData);
+    public delegate int PacketHandler(IntPtr param, ClientServices.NetMessage msgId, uint time, IntPtr pData);
     public class ClientServices
     {
         #region Delegates
@@ -23,7 +23,7 @@ namespace IceFlake.Client
         private static GetCurrentDelegate _getCurrent;
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        private delegate void SetMessageHandlerDelegate(NetMessage msgId, PacketHandler handler, IntPtr param);
+        private delegate void SetMessageHandlerDelegate(NetMessage msgId, IntPtr handler, IntPtr param);
         private static SetMessageHandlerDelegate _setMessageHandler;
 
         
@@ -36,6 +36,7 @@ namespace IceFlake.Client
                 _sendPacket =
                     Manager.Memory.RegisterDelegate<SendPacketDelegate>(Pointers.ClientServices.SendPacket.ToPointer());
             _sendPacket(pData.Pointer);
+            pData.Destroy(); // do we do this?
         }
 
         public void SendPacket(DataStore pData)
@@ -45,6 +46,7 @@ namespace IceFlake.Client
                 _sendPacket2 =
                     Manager.Memory.RegisterDelegate<SendPacket2Delegate>(Pointers.ClientServices.SendPacket2.ToPointer());
             _sendPacket2(GetCurrent(), pData.Pointer);
+            pData.Destroy(); // do we do this?
         }
 
         public IntPtr GetCurrent()
@@ -61,7 +63,7 @@ namespace IceFlake.Client
                 _setMessageHandler =
                     Manager.Memory.RegisterDelegate<SetMessageHandlerDelegate>(
                         Pointers.ClientServices.SetMessageHandler.ToPointer());
-            _setMessageHandler(msgId, handler, param);
+            _setMessageHandler(msgId, Marshal.GetFunctionPointerForDelegate(handler), param);
         }
 
         #region NetMessage

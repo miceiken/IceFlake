@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using IceFlake.Client;
@@ -22,22 +23,24 @@ namespace IceFlake.Scripts
                 _cs = new ClientServices();
 
             _cs.SetMessageHandler(ClientServices.NetMessage.SMSG_MESSAGECHAT, OnChatMessage, IntPtr.Zero);
+            _cs.SetMessageHandler(ClientServices.NetMessage.SMSG_DBLOOKUP, LookupResultHandler, IntPtr.Zero);
 
-            var message = "Hello, world!";
-            var data = new DataStore(ClientServices.NetMessage.CMSG_MESSAGECHAT);
-            data.Write<byte>(1); // CHAT_MSG_SAY
-            data.Write<int>(0); // LANG_UNIVERSAL
-            data.Write<long>(0); // Sender GUID
-            data.Write<int>(0); // unk
-            data.Write<long>(0); // GUID 2
-            data.Write<long>(message.Length + 1); // Message length
-            data.PutString(message);
-            data.Write<byte>(0); // AFK tag
-            _cs.SendPacket(data);
+            //var data = new DataStore();
+            //data.PutString("Test 0");
+            //_cs.SendPacket(data);
+        }
+
+        private int LookupResultHandler(IntPtr param, ClientServices.NetMessage msgId, uint time, IntPtr pData)
+        {
+            var data = new DataStore(pData);
+            var received = data.GetString(256);
+            Log.WriteLine("LookupResultHandler: param {0:8X}, time {1}, received {2}", param, time, received);
+
+            return 1;
         }
 
         // https://github.com/cmangos/mangos-wotlk/blob/master/src/game/Chat.cpp#L3512
-        private bool OnChatMessage(IntPtr param, ClientServices.NetMessage msgId, uint time, IntPtr pData)
+        private int OnChatMessage(IntPtr param, ClientServices.NetMessage msgId, uint time, IntPtr pData)
         {
             var data = new DataStore(pData);
             /*
@@ -48,13 +51,14 @@ namespace IceFlake.Scripts
                 CHAT_TAG_COM = 0x08, // Commentator
                 CHAT_TAG_DEV = 0x10, // Developer
              */
+            var sb = new StringBuilder();
+            var type = (ChatMsgType) data.Read<byte>();
+            sb.AppendFormat("[T:{0}] ", type);
+            sb.AppendFormat("[L:{0}] ", data.Read<int>());
+            sb.AppendFormat("[SG:{0}] ", data.Read<long>());
+            data.Read<int>();
 
-            var type = data.Read<byte>();             // msgType
-            var lang = data.Read<int>();             // chatTag
-            var sGuid = data.Read<long>();             // senderGuid
-            var unk = data.Read<int>();
-
-            switch ((ChatMsgType)type)
+            switch (type)
             {
                 case ChatMsgType.CHAT_MSG_MONSTER_SAY:
                 case ChatMsgType.CHAT_MSG_MONSTER_PARTY:
@@ -65,39 +69,38 @@ namespace IceFlake.Scripts
                 case ChatMsgType.CHAT_MSG_RAID_BOSS_EMOTE:
                 case ChatMsgType.CHAT_MSG_BATTLENET:
                 case ChatMsgType.CHAT_MSG_WHISPER_FOREIGN:
-                    var sLen = data.Read<int>();
-                    var sName = data.GetString(sLen);
-                    var tGuid = data.Read<long>();
+                    sb.AppendFormat("[SN:{0}] ", data.GetString(data.Read<int>()));
+                    sb.AppendFormat("[TG:{0}] ", data.Read<long>());
                     break;
 
                 case ChatMsgType.CHAT_MSG_BG_SYSTEM_NEUTRAL:
                 case ChatMsgType.CHAT_MSG_BG_SYSTEM_ALLIANCE:
                 case ChatMsgType.CHAT_MSG_BG_SYSTEM_HORDE:
-                    var tBGGuid = data.Read<long>();
-                    var sBGLen = data.Read<int>();
-                    var sBGName = data.GetString(sBGLen);
+                    sb.AppendFormat("[TG:{0}] ", data.Read<long>());
+                    sb.AppendFormat("[SN:{0}] ", data.GetString(data.Read<int>()));
                     break;
 
                 case ChatMsgType.CHAT_MSG_ACHIEVEMENT:
                 case ChatMsgType.CHAT_MSG_GUILD_ACHIEVEMENT:
-                    var tAGuid = data.Read<long>();
+                    sb.AppendFormat("[TG:{0}] ", data.Read<long>());
                     break;
 
-                case  ChatMsgType.CHAT_MSG_CHANNEL:
-                    var cName = data.GetString(64);
-                    var tCGuid = data.Read<long>();
+                case ChatMsgType.CHAT_MSG_CHANNEL:
+                    sb.AppendFormat("[CN:{0}] ", data.GetString(64));
+                    sb.AppendFormat("[TG:{0}] ", data.Read<long>());
                     break;
 
                 default:
-                    var tDGuid = data.Read<long>();
+                    sb.AppendFormat("[TG:{0}] ", data.Read<long>());
                     break;
             }
 
-            var mLen = data.Read<int>();
-            var message = data.GetString(mLen);
-            var tag = data.Read<byte>();
+            sb.AppendFormat("[M:{0}] ", data.GetString(data.Read<int>()));
+            sb.AppendFormat("[T:{0}] ", data.Read<byte>());
 
-            return true;
+            Log.WriteLine(sb.ToString());
+
+            return 1;
         }
 
         public enum ChatMsgType : byte

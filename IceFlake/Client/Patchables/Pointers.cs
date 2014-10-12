@@ -262,8 +262,8 @@
 
         #region Nested type: Packets
 
-        // 3.3.5a: 12340
         // https://github.com/tomrus88/WowAddin/blob/master/WowAddin/CDataStore.cpp
+        // 3.3.5a: 12340
         internal class Packets
         {
             internal static uint Initialize = 0x00401050;
