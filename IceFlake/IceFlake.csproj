@@ -67,6 +67,7 @@
     <Compile Include="Client\API\Taxi.cs" />
     <Compile Include="Client\API\TradeSkill.cs" />
     <Compile Include="Client\API\Trainer.cs" />
+    <Compile Include="Client\DataStore.cs" />
     <Compile Include="Client\Pather.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -139,7 +140,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Runtime\Extensions.cs" />
     <Compile Include="Scripts\ChatScript.cs" />
+    <Compile Include="Scripts\ConsoleScript.cs" />
     <Compile Include="Scripts\DebugScript.cs" />
+    <Compile Include="Scripts\PacketScript.cs" />
     <Compile Include="Scripts\QuestHelperScript.cs" />
     <Compile Include="Scripts\RenderingScripts.cs" />
     <Compile Include="Scripts\DumpersScripts.cs" />

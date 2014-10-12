@@ -2,6 +2,17 @@
 {
     internal static class Pointers
     {
+        #region Nested type: DirectX
+
+        internal class DirectX
+        {
+            internal uint DirectXBase = 0xC5DF88;
+            internal uint Device = 0x397C;
+            internal uint EndScene = 0xA8;
+        }
+
+        #endregion
+
         #region Nested type: ObjectManager
 
         // 3.3.5a: 12340
@@ -245,6 +256,49 @@
             internal static uint WriteA = 0x00765360;
             internal static uint RegisterCommand = 0x00769100;
             internal static uint UnregisterCommand = 0x007689E0;
+        }
+
+        #endregion
+
+        #region Nested type: Packets
+
+        // 3.3.5a: 12340
+        // https://github.com/tomrus88/WowAddin/blob/master/WowAddin/CDataStore.cpp
+        internal class Packets
+        {
+            internal static uint Initialize = 0x00401050;
+
+            internal static uint PutInt8 = 0x0047AFE0;
+            internal static uint PutInt16 = 0x0047B040;
+            internal static uint PutInt32 = 0x0047B0A0;
+            internal static uint PutInt64 = 0x0047B100;
+            internal static uint PutFloat = 0x0047B160;
+            internal static uint PutString = 0x0047B300;
+            internal static uint PutBytes = 0x0047B1C0;
+
+            internal static uint GetInt8 = 0x0047B340;
+            internal static uint GetInt16 = 0x0047B380;
+            internal static uint GetInt32 = 0x0047B3C0;
+            internal static uint GetInt64 = 0x0047B400;
+            internal static uint GetFloat = 0x0047B440;
+            internal static uint GetString = 0x0047B480;
+            internal static uint GetBytes = 0x0047B560;
+
+            internal static uint Finalize = 0x00401130;
+            internal static uint Destroy = 0x00403880;
+        }
+
+        #endregion
+
+        #region Nested type: ClientServices
+
+        // 3.3.5a: 12340
+        internal class ClientServices
+        {
+            internal static uint SendPacket = 0x00406F40;
+            internal static uint SendPacket2 = 0x00632B50;
+            internal static uint GetCurrent = 0x006B0970;
+            internal static uint SetMessageHandler = 0x006B0B80;
         }
 
         #endregion
