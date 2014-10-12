@@ -303,17 +303,5 @@ namespace GreyMagic
             var vftable = Read<IntPtr>(address);
             return Read<IntPtr>(vftable + (index * 4));
         }
-
-        public IntPtr Allocate(int size,
-            MemoryProtectionType protectionType = MemoryProtectionType.PAGE_EXECUTE_READWRITE,
-            MemoryAllocationType allocationType = MemoryAllocationType.MEM_COMMIT)
-        {
-            return Imports.VirtualAllocEx(ProcessHandle, 0, size, allocationType, protectionType);
-        }
-
-        public void Free(IntPtr address)
-        {
-            Imports.VirtualFreeEx(ProcessHandle, address, 0, MemoryFreeType.MEM_RELEASE);
-        }
     }
 }

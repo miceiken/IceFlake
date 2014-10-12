@@ -4,7 +4,7 @@ using System.Security;
 
 namespace GreyMagic.Native
 {
-    public static class Imports
+    internal static class Imports
     {
         /// <summary>
         /// Frees the loaded dynamic-link library (DLL) module and, if necessary, decrements its reference count. 
