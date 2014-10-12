@@ -57,16 +57,63 @@ namespace IceFlake.Client
         }
 
         // Read position, -1 when not finalized
-        public uint Read
+        public uint BytesRead
         {
             get { return Manager.Memory.Read<uint>(Pointer + 0x14); }
         }
 
-        public bool IsFinal { get { return Read != 0; } }
+        public bool IsFinal { get { return BytesRead != 0; } }
 
         #endregion
 
         #region Methods
+
+        public T Read<T>() where T : struct
+        {
+            object ret = null;
+            switch (Type.GetTypeCode(typeof(T)))
+            {
+                case TypeCode.Byte:
+                    ret = (byte)GetInt8();
+                    break;
+                case TypeCode.Int16:
+                    ret = (short)GetInt16();
+                    break;
+                case TypeCode.Int32:
+                    ret = (int)GetInt32();
+                    break;
+                case TypeCode.Int64:
+                    ret = (long) GetInt64();
+                    break;
+                case TypeCode.Single:
+                    ret = (float) GetFloat();
+                    break;
+            }
+
+            return (T) ret;
+        }
+
+        public void Write<T>(T value) where T : struct
+        {
+            switch (Type.GetTypeCode(typeof(T)))
+            {
+                case TypeCode.Byte:
+                    PutInt8(Convert.ToByte(value));
+                    break;
+                case TypeCode.Int16:
+                    PutInt16(Convert.ToInt16(value));
+                    break;
+                case TypeCode.Int32:
+                    PutInt32(Convert.ToInt32(value));
+                    break;
+                case TypeCode.Int64:
+                    PutInt64(Convert.ToInt64(value));
+                    break;
+                case TypeCode.Single:
+                    PutFloat(Convert.ToSingle(value));
+                    break;
+            }
+        }
 
         private void Initialize()
         {
@@ -77,35 +124,35 @@ namespace IceFlake.Client
             Pointer = _initialize(dataPtr);
         }
 
-        public void PutInt8(byte value)
+        private void PutInt8(byte value)
         {
             if (_putInt8 == null)
                 _putInt8 = Manager.Memory.RegisterDelegate<PutInt8Delegate>(Pointers.Packets.PutInt8.ToPointer());
             _putInt8(Pointer, value);
         }
 
-        public void PutInt16(short value)
+        private void PutInt16(short value)
         {
             if (_putInt16 == null)
                 _putInt16 = Manager.Memory.RegisterDelegate<PutInt16Delegate>(Pointers.Packets.PutInt16.ToPointer());
             _putInt16(Pointer, value);
         }
 
-        public void PutInt32(int value)
+        private void PutInt32(int value)
         {
             if (_putInt32 == null)
                 _putInt32 = Manager.Memory.RegisterDelegate<PutInt32Delegate>(Pointers.Packets.PutInt32.ToPointer());
             _putInt32(Pointer, value);
         }
 
-        public void PutInt64(long value)
+        private void PutInt64(long value)
         {
             if (_putInt64 == null)
                 _putInt64 = Manager.Memory.RegisterDelegate<PutInt64Delegate>(Pointers.Packets.PutInt64.ToPointer());
             _putInt64(Pointer, value);
         }
 
-        public void PutFloat(float value)
+        private void PutFloat(float value)
         {
             if (_putFloat == null)
                 _putFloat = Manager.Memory.RegisterDelegate<PutFloatDelegate>(Pointers.Packets.PutFloat.ToPointer());
@@ -131,7 +178,7 @@ namespace IceFlake.Client
             PutBytes(value, (uint)value.Length);
         }
 
-        public byte GetInt8()
+        private byte GetInt8()
         {
             if (_getInt8 == null)
                 _getInt8 = Manager.Memory.RegisterDelegate<GetInt8Delegate>(Pointers.Packets.GetInt8.ToPointer());
@@ -141,7 +188,7 @@ namespace IceFlake.Client
             return value;
         }
 
-        public short GetInt16()
+        private short GetInt16()
         {
             if (_getInt16 == null)
                 _getInt16 = Manager.Memory.RegisterDelegate<GetInt16Delegate>(Pointers.Packets.GetInt16.ToPointer());
@@ -151,7 +198,7 @@ namespace IceFlake.Client
             return value;
         }
 
-        public int GetInt32()
+        private int GetInt32()
         {
             if (_getInt32 == null)
                 _getInt32 = Manager.Memory.RegisterDelegate<GetInt32Delegate>(Pointers.Packets.GetInt32.ToPointer());
@@ -161,7 +208,7 @@ namespace IceFlake.Client
             return value;
         }
 
-        public long GetInt64()
+        private long GetInt64()
         {
             if (_getInt64 == null)
                 _getInt64 = Manager.Memory.RegisterDelegate<GetInt64Delegate>(Pointers.Packets.GetInt64.ToPointer());
@@ -171,7 +218,7 @@ namespace IceFlake.Client
             return value;
         }
 
-        public float GetFloat()
+        private float GetFloat()
         {
             if (_getFloat == null)
                 _getFloat = Manager.Memory.RegisterDelegate<GetFloatDelegate>(Pointers.Packets.GetFloat.ToPointer());
@@ -181,24 +228,24 @@ namespace IceFlake.Client
             return value;
         }
 
-        public string GetString(uint maxChars)
+        public string GetString(int length)
         {
             if (_getString == null)
                 _getString = Manager.Memory.RegisterDelegate<GetStringDelegate>(Pointers.Packets.GetFloat.ToPointer());
 
-            var strPtr = IntPtr.Zero;
-            _getString(Pointer, ref strPtr, maxChars);
-            return Manager.Memory.ReadString(strPtr);
+            var strPtr = 0u;
+            _getString(Pointer, ref strPtr, length);
+            return Manager.Memory.ReadString(strPtr.ToPointer(), maxLength: length);
         }
 
-        public byte[] GetBytes(uint numBytes)
+        public byte[] GetBytes(int count)
         {
             if (_getBytes == null)
                 _getBytes = Manager.Memory.RegisterDelegate<GetBytesDelegate>(Pointers.Packets.GetFloat.ToPointer());
 
-            var bufferPtr = IntPtr.Zero;
-            _getBytes(Pointer, ref bufferPtr, numBytes);
-            return Manager.Memory.ReadBytes(bufferPtr, (int)numBytes);
+            var bufferPtr = 0u;
+            _getBytes(Pointer, ref bufferPtr, count);
+            return Manager.Memory.ReadBytes(bufferPtr.ToPointer(), count);
         }
 
         public void Finalize()
@@ -274,11 +321,11 @@ namespace IceFlake.Client
         private static GetFloatDelegate _getFloat;
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate IntPtr GetStringDelegate(IntPtr dataStorePtr, ref IntPtr stringPtr, uint maxChars);
+        private delegate IntPtr GetStringDelegate(IntPtr dataStorePtr, ref uint stringPtr, int maxChars);
         private static GetStringDelegate _getString;
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate IntPtr GetBytesDelegate(IntPtr dataStorePtr, ref IntPtr bufferPtr, uint numBytes);
+        private delegate IntPtr GetBytesDelegate(IntPtr dataStorePtr, ref uint bufferPtr, int numBytes);
         private static GetBytesDelegate _getBytes;
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]

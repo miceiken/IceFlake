@@ -1381,38 +1381,5 @@ namespace IceFlake.Client
             NUM_MSG_TYPES = 0x51F
         };
         #endregion
-
-        //#region CDataStore
-        //[StructLayout(LayoutKind.Explicit, Size = 0x18)]
-        //public struct DataStore
-        //{
-        //    [FieldOffset(0x0)]
-        //    public int ptrDataStore; // pDataStore1,pDataStore2
-        //    [FieldOffset(0x4)]
-        //    public int ptrPacketData; //pointer to packet data
-        //    [FieldOffset(0x8)]
-        //    public int UnKnown1; //always 0
-        //    [FieldOffset(0xC)]
-        //    public int MayType; // 0x100 for normal, 0x300 for warden
-        //    [FieldOffset(0x10)]
-        //    public int PacketLen; //data length
-        //    [FieldOffset(0x14)]
-        //    public int UnKnown3; //always 0
-        //}
-
-        //public struct Packet
-        //{
-        //    public int OpCode;
-        //    public byte[] PacketData;
-        //}
-
-        //public enum MayType : int
-        //{
-        //    Normal = 0x100,
-        //    Warden = 0x300,
-        //}
-        //#endregion
-
-
     }
 }
