@@ -67,7 +67,7 @@
     <Compile Include="Client\API\Taxi.cs" />
     <Compile Include="Client\API\TradeSkill.cs" />
     <Compile Include="Client\API\Trainer.cs" />
-    <Compile Include="Client\DataStore.cs" />
+    <Compile Include="Client\CDataStore.cs" />
     <Compile Include="Client\Pather.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -77,7 +77,7 @@
     <Compile Include="Client\Routines\RoutineAction.cs" />
     <Compile Include="Client\Routines\RoutineBrain.cs" />
     <Compile Include="Client\WoWCamera.cs" />
-    <Compile Include="Client\ClientServices.cs" />
+    <Compile Include="Client\WoWClientServices.cs" />
     <Compile Include="Client\Collections\AuraCollection.cs" />
     <Compile Include="Client\Collections\SpellCollection.cs" />
     <Compile Include="Client\WoWConsole.cs" />

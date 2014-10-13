@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Windows.Forms;
 using GreyMagic;
 using IceFlake.Client;
 using IceFlake.Client.Collections;
 using IceFlake.Client.Objects;
+using IceFlake.Client.Patchables;
 using IceFlake.Client.Scripts;
 using IceFlake.DirectX;
 
@@ -22,6 +24,8 @@ namespace IceFlake
         public static WoWCamera Camera { get; private set; }
         public static WoWEvents Events { get; private set; }
         public static ScriptManager Scripts { get; private set; }
+        public static WoWConsole Console { get; private set; }
+        public static WoWClientServices ClientServices { get; private set; }
 
         public static WoWLocalPlayer LocalPlayer
         {
@@ -51,10 +55,13 @@ namespace IceFlake
                 );
 
             Helper.Initialize();
+            Helper.FixInvalidPtrCheck();
             DBC = new WoWDB();
             Quests = new QuestCollection();
             Inventory = new WoWInventory();
             Camera = new WoWCamera();
+            Console = new WoWConsole();
+            ClientServices = new WoWClientServices();
 
             sw.Stop();
             Log.WriteLine(LogType.Good, "Initialization took {0} ms", sw.ElapsedMilliseconds);

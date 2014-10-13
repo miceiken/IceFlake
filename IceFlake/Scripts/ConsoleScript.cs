@@ -16,19 +16,15 @@ namespace IceFlake.Scripts
         }
 
         private readonly string _consoleKey = "z";
-        private WoWConsole _console;
 
         public override void OnStart()
         {
-            if (_console == null)
-            {
-                _console = new WoWConsole();
-                _console.SetConsoleKey(_consoleKey);
-                Print("Console is bound to key '{0}'", _consoleKey);
-            }
-            _console.RegisterCommand("test", TestCommand, CommandCategory.Debug, "Test help string");
-            _console.RegisterCommand("dance", DanceCommand, CommandCategory.Debug, "Dance");
-            _console.Write("Hello from ConsoleScript!", WoWConsoleColor.Echo);
+            Manager.Console.SetConsoleKey(_consoleKey);
+            Print("Console is bound to key '{0}'", _consoleKey);
+
+            Manager.Console.RegisterCommand("test", TestCommand, CommandCategory.Debug, "Test help string");
+            Manager.Console.RegisterCommand("dance", DanceCommand, CommandCategory.Debug, "Dance");
+            Manager.Console.Write("Hello from ConsoleScript!", WoWConsoleColor.Echo);
         }
 
         public override void OnTick()
@@ -37,24 +33,25 @@ namespace IceFlake.Scripts
 
         public override void OnTerminate()
         {
-            _console.UnregisterCommand("test");
-            _console.UnregisterCommand("dance");
-            _console.Write("Good-bye!", WoWConsoleColor.Echo);
+            Manager.Console.UnregisterCommand("test");
+            Manager.Console.UnregisterCommand("dance");
+            Manager.Console.Write("Good-bye!", WoWConsoleColor.Echo);
         }
 
-        private bool TestCommand(string cmd, string args)
+        private int TestCommand(string cmd, string args)
         {
-            _console.Write("Hello from TestCommand: cmd '%s', args '%s'", WoWConsoleColor.Input, cmd, args);
-
-            return true;
+            // This crashes, probably because of params string[] args
+            //Manager.Console.Write("Hello from TestCommand: cmd '%s', args '%s'", WoWConsoleColor.Input, cmd, args);
+            Manager.Console.Write(string.Format("Hello from TestCommand: cmd '{0}', args '{1}'", cmd, args), WoWConsoleColor.Input);
+            return 1;
         }
 
-        private bool DanceCommand(string cmd, string args)
+        private int DanceCommand(string cmd, string args)
         {
-            _console.Write("Let's dance!", WoWConsoleColor.Highlight);
+            Manager.Console.Write("Let's dance!", WoWConsoleColor.Highlight);
             WoWScript.ExecuteNoResults("DoEmote(\"dance\")");
 
-            return true;
+            return 1;
         }
     }
 }

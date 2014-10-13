@@ -3,63 +3,85 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using GreyMagic.Native;
 using IceFlake.Client.Patchables;
 using IceFlake.Runtime;
-using Microsoft.Xna.Framework;
 
 namespace IceFlake.Client
 {
     // https://github.com/tomrus88/WowAddin/blob/master/WowAddin/CDataStore.h
-    public class DataStore
+    public class CDataStore
     {
-        public DataStore()
+        private readonly bool _deallocate;
+
+        public CDataStore()
         {
             Initialize();
+            _deallocate = true;
         }
 
-        public DataStore(IntPtr ptr)
+        public CDataStore(WoWClientServices.NetMessage msg)
+            : this()
+        {
+            PutInt32((int)msg);
+        }
+
+        public CDataStore(IntPtr ptr)
         {
             Pointer = ptr;
+            _deallocate = false;
         }
 
-        public DataStore(ClientServices.NetMessage msg)
+        ~CDataStore()
         {
-            Initialize();
-            PutInt32((int)msg);
+            if (_deallocate)
+            {
+                Destroy();
+                Marshal.FreeHGlobal(Pointer);
+                Pointer = IntPtr.Zero;
+            }
         }
 
         public IntPtr Pointer { get; private set; }
 
         #region Properties
 
-        public IntPtr Buffer
+        public IntPtr Data
         {
             get { return Manager.Memory.Read<IntPtr>(Pointer + 0x4); }
+            set { Manager.Memory.Write<IntPtr>(Pointer + 0x4, value); }
         }
 
         // Base Offset
         public uint Base
         {
             get { return Manager.Memory.Read<uint>(Pointer + 0x8); }
+            set { Manager.Memory.Write<uint>(Pointer + 0x8, value); }
         }
 
         // Amount of space allocated
-        public uint Alloc
+        public uint Capacity
         {
             get { return Manager.Memory.Read<uint>(Pointer + 0xC); }
+            set { Manager.Memory.Write<uint>(Pointer + 0xC, value); }
         }
 
         // Total written data (write position)
-        public uint Size
+        public uint BytesWritten
         {
             get { return Manager.Memory.Read<uint>(Pointer + 0x10); }
+            set { Manager.Memory.Write<uint>(Pointer + 0x10, value); }
         }
 
         // Read position, -1 when not finalized
         public uint BytesRead
         {
             get { return Manager.Memory.Read<uint>(Pointer + 0x14); }
+            set { Manager.Memory.Write<uint>(Pointer + 0x14, value); }
+        }
+
+        public WoWClientServices.NetMessage OpCode
+        {
+            get { return (WoWClientServices.NetMessage)Manager.Memory.Read<uint>(Data); }
         }
 
         public bool IsFinal { get { return BytesRead != 0; } }
@@ -83,14 +105,14 @@ namespace IceFlake.Client
                     ret = (int)GetInt32();
                     break;
                 case TypeCode.Int64:
-                    ret = (long) GetInt64();
+                    ret = (long)GetInt64();
                     break;
                 case TypeCode.Single:
-                    ret = (float) GetFloat();
+                    ret = (float)GetFloat();
                     break;
             }
 
-            return (T) ret;
+            return (T)ret;
         }
 
         public void Write<T>(T value) where T : struct
@@ -251,7 +273,8 @@ namespace IceFlake.Client
             return Manager.Memory.ReadBytes(bufferPtr, count);
         }
 
-        public void Finalize()
+        // Can't name this Finalize because it will overload the destructor
+        public void Prepare()
         {
             if (_finalize == null)
                 _finalize = Manager.Memory.RegisterDelegate<FinalizeDelegate>(Pointers.Packets.Finalize.ToPointer());
@@ -263,7 +286,6 @@ namespace IceFlake.Client
             if (_destroy == null)
                 _destroy = Manager.Memory.RegisterDelegate<DestroyDelegate>(Pointers.Packets.Destroy.ToPointer());
             _destroy(Pointer);
-            Marshal.FreeHGlobal(Pointer);
         }
 
         #endregion

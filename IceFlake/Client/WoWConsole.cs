@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 using IceFlake.Client.Patchables;
+using IceFlake.Runtime;
 
 namespace IceFlake.Client
 {
@@ -33,7 +34,9 @@ namespace IceFlake.Client
     }
 
     // https://github.com/tomrus88/WowAddin/blob/master/WowAddin/Console.h
-    public delegate bool CommandHandler(string cmd, string args);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate int CommandHandler(string cmd, string args);
+
     public class WoWConsole
     {
         public WoWConsole()
@@ -41,7 +44,14 @@ namespace IceFlake.Client
             Toggle(true);
         }
 
-        private Dictionary<string, KeyValuePair<IntPtr, IntPtr>> _stringPointers = new Dictionary<string, KeyValuePair<IntPtr, IntPtr>>(); 
+        ~WoWConsole()
+        {
+            foreach (var strPtr in _stringPointers.Values)
+                Release(strPtr);
+            _stringPointers.Clear();
+        }
+
+        private readonly Dictionary<string, KeyValuePair<IntPtr, IntPtr>> _stringPointers = new Dictionary<string, KeyValuePair<IntPtr, IntPtr>>();
 
         public void Toggle(bool enable)
         {
@@ -67,7 +77,7 @@ namespace IceFlake.Client
                 Manager.Memory.RegisterDelegate<ConsoleRegisterCommandDelegate>(
                     (IntPtr)Pointers.Console.RegisterCommand);
 
-            if (_stringPointers.ContainsKey(command))
+            if (_stringPointers.ContainsKey(command)) // Commmand by that name already registered
                 return false;
 
             var cmdPtr = Marshal.AllocHGlobal(command.Length + 1);
@@ -87,18 +97,21 @@ namespace IceFlake.Client
                 _unregisterCommand =
                 Manager.Memory.RegisterDelegate<ConsoleUnregisterCommandDelegate>(
                     (IntPtr)Pointers.Console.UnregisterCommand);
-            
-            if (!_stringPointers.ContainsKey(command))
+
+            if (!_stringPointers.ContainsKey(command)) // Commmand by that name is not registered
                 return;
 
-            var cmdPtr = _stringPointers[command];
-            _unregisterCommand(cmdPtr.Key);
+            var strPtr = _stringPointers[command];
+            _unregisterCommand(strPtr.Key);
             _stringPointers.Remove(command);
-
-            Marshal.FreeHGlobal(cmdPtr.Key);
-            Marshal.FreeHGlobal(cmdPtr.Value);
+            Release(strPtr);
         }
 
+        private void Release(KeyValuePair<IntPtr, IntPtr> ptr)
+        {
+            Marshal.FreeHGlobal(ptr.Key);
+            Marshal.FreeHGlobal(ptr.Value);
+        }
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate bool ConsoleRegisterCommandDelegate(IntPtr commandPtr, IntPtr handler, CommandCategory category, IntPtr helpPtr);

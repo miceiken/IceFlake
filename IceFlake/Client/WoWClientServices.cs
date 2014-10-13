@@ -5,8 +5,10 @@ using IceFlake.Runtime;
 
 namespace IceFlake.Client
 {
-    public delegate int PacketHandler(IntPtr param, ClientServices.NetMessage msgId, uint time, IntPtr pData);
-    public class ClientServices
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate int PacketHandler(IntPtr param, WoWClientServices.NetMessage msgId, uint time, IntPtr pData);
+
+    public class WoWClientServices
     {
         #region Delegates
 
@@ -25,28 +27,25 @@ namespace IceFlake.Client
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate void SetMessageHandlerDelegate(NetMessage msgId, IntPtr handler, IntPtr param);
         private static SetMessageHandlerDelegate _setMessageHandler;
-
         
         #endregion
 
-        public void SendGamePacket(DataStore pData)
+        public void SendGamePacket(CDataStore pData)
         {
-            pData.Finalize();
+            pData.Prepare();
             if (_sendPacket == null)
                 _sendPacket =
                     Manager.Memory.RegisterDelegate<SendPacketDelegate>(Pointers.ClientServices.SendPacket.ToPointer());
             _sendPacket(pData.Pointer);
-            pData.Destroy(); // do we do this?
         }
 
-        public void SendPacket(DataStore pData)
+        public void SendPacket(CDataStore pData)
         {
-            pData.Finalize();
+            pData.Prepare();
             if (_sendPacket2 == null)
                 _sendPacket2 =
                     Manager.Memory.RegisterDelegate<SendPacket2Delegate>(Pointers.ClientServices.SendPacket2.ToPointer());
             _sendPacket2(GetCurrent(), pData.Pointer);
-            pData.Destroy(); // do we do this?
         }
 
         public IntPtr GetCurrent()

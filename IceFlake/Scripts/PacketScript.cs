@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using IceFlake.Client;
 using IceFlake.Client.Scripts;
@@ -10,29 +11,24 @@ namespace IceFlake.Scripts
 {
     public class PacketScript : Script
     {
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate int Packet_SMSG_MESSAGECHATHandler(IntPtr param, uint msgId, uint time, IntPtr pData);
+        private static Packet_SMSG_MESSAGECHATHandler _chatMessageHandler;
+
         public PacketScript()
             : base("Packet", "Test")
         {
         }
 
-        private ClientServices _cs;
-
         public override void OnStart()
         {
-            if (_cs == null)
-                _cs = new ClientServices();
-
-            _cs.SetMessageHandler(ClientServices.NetMessage.SMSG_MESSAGECHAT, OnChatMessage, IntPtr.Zero);
-            _cs.SetMessageHandler(ClientServices.NetMessage.SMSG_DBLOOKUP, LookupResultHandler, IntPtr.Zero);
-
-            //var data = new DataStore();
-            //data.PutString("Test 0");
-            //_cs.SendPacket(data);
+            Manager.ClientServices.SetMessageHandler(WoWClientServices.NetMessage.SMSG_MESSAGECHAT, OnChatMessage, IntPtr.Zero);
+            Manager.ClientServices.SetMessageHandler(WoWClientServices.NetMessage.SMSG_DBLOOKUP, LookupResultHandler, IntPtr.Zero);
         }
 
-        private int LookupResultHandler(IntPtr param, ClientServices.NetMessage msgId, uint time, IntPtr pData)
+        private int LookupResultHandler(IntPtr param, WoWClientServices.NetMessage msgId, uint time, IntPtr pData)
         {
-            var data = new DataStore(pData);
+            var data = new CDataStore(pData);
             var received = data.GetString(256);
             Log.WriteLine("LookupResultHandler: param {0:8X}, time {1}, received {2}", param, time, received);
 
@@ -40,19 +36,12 @@ namespace IceFlake.Scripts
         }
 
         // https://github.com/cmangos/mangos-wotlk/blob/master/src/game/Chat.cpp#L3512
-        private int OnChatMessage(IntPtr param, ClientServices.NetMessage msgId, uint time, IntPtr pData)
+        private int OnChatMessage(IntPtr param, WoWClientServices.NetMessage msgId, uint time, IntPtr pData)
         {
-            var data = new DataStore(pData);
-            /*
-                CHAT_TAG_NONE = 0x00,
-                CHAT_TAG_AFK = 0x01,
-                CHAT_TAG_DND = 0x02,
-                CHAT_TAG_GM = 0x04,
-                CHAT_TAG_COM = 0x08, // Commentator
-                CHAT_TAG_DEV = 0x10, // Developer
-             */
+            var data = new CDataStore(pData);
+
             var sb = new StringBuilder();
-            var type = (ChatMsgType) data.Read<byte>();
+            var type = (ChatMsgType)data.Read<byte>();
             sb.AppendFormat("[T:{0}] ", type);
             sb.AppendFormat("[L:{0}] ", data.Read<int>());
             sb.AppendFormat("[SG:{0}] ", data.Read<long>());
@@ -100,7 +89,23 @@ namespace IceFlake.Scripts
 
             Log.WriteLine(sb.ToString());
 
-            return 1;
+            // Call the WoW's internal chat message handler.
+            if (_chatMessageHandler == null)
+                _chatMessageHandler =
+                    Manager.Memory.RegisterDelegate<Packet_SMSG_MESSAGECHATHandler>((IntPtr)0x0050EBA0);
+            
+            data.Prepare();
+            return _chatMessageHandler(param, (uint)msgId, time, pData);
+        }
+
+        public enum ChatTag : byte
+        {
+            CHAT_TAG_NONE = 0x00,
+            CHAT_TAG_AFK = 0x01,
+            CHAT_TAG_DND = 0x02,
+            CHAT_TAG_GM = 0x04,
+            CHAT_TAG_COM = 0x08, // Commentator
+            CHAT_TAG_DEV = 0x10, // Developer
         }
 
         public enum ChatMsgType : byte

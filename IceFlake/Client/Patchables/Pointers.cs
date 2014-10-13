@@ -256,6 +256,7 @@
             internal static uint WriteA = 0x00765360;
             internal static uint RegisterCommand = 0x00769100;
             internal static uint UnregisterCommand = 0x007689E0;
+            internal static uint InvalidPtrCheck = 0x00D415B8;
         }
 
         #endregion
