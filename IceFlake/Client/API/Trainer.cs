@@ -20,13 +20,20 @@ namespace IceFlake.Client.API
             get { return WoWScript.Execute<int>("GetNumTrainerServices()"); }
         }
 
+        public void SetFilter(bool available = true, bool? unavailable = false, bool? used = false)
+        {
+            WoWScript.ExecuteNoResults(string.Format("SetTrainerServiceTypeFilter(\"available\", {0})", available ? 1 : 0));
+            if (unavailable.HasValue)
+                WoWScript.ExecuteNoResults(string.Format("SetTrainerServiceTypeFilter(\"unavailable\", {0})", unavailable.Value ? 1 : 0));
+            if (used.HasValue)
+                WoWScript.ExecuteNoResults(string.Format("SetTrainerServiceTypeFilter(\"used\", {0})", used.Value ? 1 : 0));
+        }
+
         public IEnumerable<TrainerService> Services
         {
             get
             {
-                WoWScript.ExecuteNoResults("SetTrainerServiceTypeFilter(\"available\", 1)");
-                WoWScript.ExecuteNoResults("SetTrainerServiceTypeFilter(\"unavailable\", 0)");
-                WoWScript.ExecuteNoResults("SetTrainerServiceTypeFilter(\"used\", 0)");
+                SetFilter(true, false, false);
                 for (int i = 1; i <= NumServices; i++)
                     yield return GetServiceInfo(i);
             }
@@ -39,7 +46,7 @@ namespace IceFlake.Client.API
 
         public void BuyAllAvailable()
         {
-            WoWScript.ExecuteNoResults("SetTrainerServiceTypeFilter(\"available\", 1)");
+            SetFilter(true);
             foreach (TrainerService s in Services.Where(x => x.Available))
                 s.Buy();
         }

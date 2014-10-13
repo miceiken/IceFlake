@@ -5,16 +5,13 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using IceFlake.Client;
+using IceFlake.Client.Patchables;
 using IceFlake.Client.Scripts;
 
 namespace IceFlake.Scripts
 {
     public class PacketScript : Script
     {
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        private delegate int Packet_SMSG_MESSAGECHATHandler(IntPtr param, uint msgId, uint time, IntPtr pData);
-        private static Packet_SMSG_MESSAGECHATHandler _chatMessageHandler;
-
         public PacketScript()
             : base("Packet", "Test")
         {
@@ -22,11 +19,40 @@ namespace IceFlake.Scripts
 
         public override void OnStart()
         {
-            Manager.ClientServices.SetMessageHandler(WoWClientServices.NetMessage.SMSG_MESSAGECHAT, OnChatMessage, IntPtr.Zero);
+            RegisterChatHandler();
+            RegisterLookupHandler();
+        }
+
+        public override void OnTick()
+        {
+        }
+
+        public override void OnTerminate()
+        {
+            ResetChatHandler();
+            ResetLookupHandler();
+        }
+
+        #region Lookup Packets
+
+        private void RegisterLookupHandler()
+        {
             Manager.ClientServices.SetMessageHandler(WoWClientServices.NetMessage.SMSG_DBLOOKUP, LookupResultHandler, IntPtr.Zero);
         }
 
-        private int LookupResultHandler(IntPtr param, WoWClientServices.NetMessage msgId, uint time, IntPtr pData)
+        private void ResetLookupHandler()
+        {
+            
+        }
+
+        private void SendLookupPacket()
+        {
+            var data = new CDataStore(WoWClientServices.NetMessage.CMSG_DBLOOKUP);
+            data.PutString("Test 0");
+            Manager.ClientServices.SendPacket(data);
+        }
+
+        private static int LookupResultHandler(IntPtr param, WoWClientServices.NetMessage msgId, uint time, IntPtr pData)
         {
             var data = new CDataStore(pData);
             var received = data.GetString(256);
@@ -35,8 +61,27 @@ namespace IceFlake.Scripts
             return 1;
         }
 
+        #endregion
+
+        #region Chat Packets
+
+        private static PacketHandler _chatMessageHandler;
+        private static readonly IntPtr ChatMessageHandlerPtr = (IntPtr)0x0050EBA0;
+
+        private void RegisterChatHandler()
+        {
+            _chatMessageHandler = Manager.Memory.RegisterDelegate<PacketHandler>(ChatMessageHandlerPtr);
+            Manager.ClientServices.SetMessageHandler(WoWClientServices.NetMessage.SMSG_MESSAGECHAT, OnChatMessage, IntPtr.Zero);
+        }
+
+        private void ResetChatHandler()
+        {
+            // Set the message handler back to default.
+            Manager.ClientServices.SetMessageHandler(WoWClientServices.NetMessage.SMSG_MESSAGECHAT, ChatMessageHandlerPtr, IntPtr.Zero);
+        }
+
         // https://github.com/cmangos/mangos-wotlk/blob/master/src/game/Chat.cpp#L3512
-        private int OnChatMessage(IntPtr param, WoWClientServices.NetMessage msgId, uint time, IntPtr pData)
+        private static int OnChatMessage(IntPtr param, WoWClientServices.NetMessage msgId, uint time, IntPtr pData)
         {
             var data = new CDataStore(pData);
 
@@ -58,44 +103,61 @@ namespace IceFlake.Scripts
                 case ChatMsgType.CHAT_MSG_RAID_BOSS_EMOTE:
                 case ChatMsgType.CHAT_MSG_BATTLENET:
                 case ChatMsgType.CHAT_MSG_WHISPER_FOREIGN:
+                    // Sender length, name and target GUID
                     sb.AppendFormat("[SN:{0}] ", data.GetString(data.Read<int>()));
                     sb.AppendFormat("[TG:{0}] ", data.Read<long>());
+                    /*
+                    if (targetGuid && !targetGuid.IsPlayer() && !targetGuid.IsPet() && (msgtype != CHAT_MSG_WHISPER_FOREIGN))
+                    {
+                        data << uint32(strlen(targetName) + 1); // target name length
+                        data << targetName; // target name
+                    }
+                    */
                     break;
 
                 case ChatMsgType.CHAT_MSG_BG_SYSTEM_NEUTRAL:
                 case ChatMsgType.CHAT_MSG_BG_SYSTEM_ALLIANCE:
                 case ChatMsgType.CHAT_MSG_BG_SYSTEM_HORDE:
+                    // Target guid, sender length and name
                     sb.AppendFormat("[TG:{0}] ", data.Read<long>());
-                    sb.AppendFormat("[SN:{0}] ", data.GetString(data.Read<int>()));
+                    /*
+                    if (targetGuid && !targetGuid.IsPlayer())
+                    {
+                        MANGOS_ASSERT(targetName);
+                        data << uint32(strlen(targetName) + 1); // target name length
+                        data << targetName; // target name
+                    }
+                    */ 
+                    //sb.AppendFormat("[SN:{0}] ", data.GetString(data.Read<int>()));
                     break;
 
                 case ChatMsgType.CHAT_MSG_ACHIEVEMENT:
                 case ChatMsgType.CHAT_MSG_GUILD_ACHIEVEMENT:
+                    // Target GUID
                     sb.AppendFormat("[TG:{0}] ", data.Read<long>());
                     break;
 
                 case ChatMsgType.CHAT_MSG_CHANNEL:
-                    sb.AppendFormat("[CN:{0}] ", data.GetString(64));
+                    // Channel name, and target GUID
+                    sb.AppendFormat("[CN:{0}] ", data.GetString(64)); // verify length of channel name
                     sb.AppendFormat("[TG:{0}] ", data.Read<long>());
                     break;
 
                 default:
+                    // Target GUID
                     sb.AppendFormat("[TG:{0}] ", data.Read<long>());
                     break;
             }
 
+            // Message length and content, tag
             sb.AppendFormat("[M:{0}] ", data.GetString(data.Read<int>()));
-            sb.AppendFormat("[T:{0}] ", data.Read<byte>());
+            sb.AppendFormat("[T:{0}] ", (ChatTag)data.Read<byte>());
 
             Log.WriteLine(sb.ToString());
 
             // Call the WoW's internal chat message handler.
-            if (_chatMessageHandler == null)
-                _chatMessageHandler =
-                    Manager.Memory.RegisterDelegate<Packet_SMSG_MESSAGECHATHandler>((IntPtr)0x0050EBA0);
-            
             data.Prepare();
-            return _chatMessageHandler(param, (uint)msgId, time, pData);
+            return _chatMessageHandler(param, msgId, time, pData);
         }
 
         public enum ChatTag : byte
@@ -164,5 +226,7 @@ namespace IceFlake.Scripts
             CHAT_MSG_ARENA_POINTS = 0x32,
             CHAT_MSG_PARTY_LEADER = 0x33
         }
+
+        #endregion
     }
 }

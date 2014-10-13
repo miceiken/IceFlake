@@ -58,11 +58,16 @@ namespace IceFlake.Client
 
         public void SetMessageHandler(NetMessage msgId, PacketHandler handler, IntPtr param)
         {
+            SetMessageHandler(msgId, Marshal.GetFunctionPointerForDelegate(handler), param);
+        }
+
+        public void SetMessageHandler(NetMessage msgId, IntPtr handler, IntPtr param)
+        {
             if (_setMessageHandler == null)
                 _setMessageHandler =
                     Manager.Memory.RegisterDelegate<SetMessageHandlerDelegate>(
                         Pointers.ClientServices.SetMessageHandler.ToPointer());
-            _setMessageHandler(msgId, Marshal.GetFunctionPointerForDelegate(handler), param);
+            _setMessageHandler(msgId, handler, param);
         }
 
         #region NetMessage
