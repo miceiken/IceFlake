@@ -86,7 +86,19 @@ namespace IceFlake.Client.Objects
 
         public int Combopoints
         {
-            get { return Manager.Memory.Read<int>((IntPtr) Pointers.LocalPlayer.ComboPoints); }
+            get { return (int)Manager.Memory.Read<byte>((IntPtr) Pointers.LocalPlayer.ComboPoints); }
+        }
+        
+        public int ComboPointsOnTarget(WoWUnit u) {
+            return (u?.Guid == ComboPointsTargetGuid) ? ComboPoints : 0;
+        }
+
+        public WoWUnit ComboPointsTarget {
+            get { return Manager.ObjectManager.GetObjectByGuid(ComboPointsTargetGuid) as WoWUnit; }
+        }
+
+        public ulong ComboPointsTargetGuid {
+            get { return Manager.Memory.Read<ulong>((IntPtr)Pointers.LocalPlayer.ComboPointsTarget); }
         }
 
         public IEnumerable<WoWUnit> Totems

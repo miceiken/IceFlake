@@ -94,6 +94,7 @@
             internal static uint StopCTM = 0x0072B3A0;
             internal static uint CorpsePosition = 0x0051F430;
             internal static uint ComboPoints = 0x00BD084D;
+            internal static uint ComboPointsTarget = 0x00BD08A8; // ulong, guid
             internal static uint CompletedQuests = 0x00ACFDF4;
 
             internal static uint RuneState = 0xC24388;
