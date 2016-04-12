@@ -114,6 +114,8 @@
     <Compile Include="DirectX\Direct3DAPI.cs" />
     <Compile Include="DirectX\IPulsable.cs" />
     <Compile Include="DirectX\Matrix.cs" />
+    <Compile Include="DirectX\Ray.cs" />
+    <Compile Include="DirectX\Vector2.cs" />
     <Compile Include="DirectX\Vector3.cs" />
     <Compile Include="Routines\ElementalShamanRoutine.cs" />
     <Compile Include="Routines\StarterMageRoutine.cs" />

@@ -58,7 +58,7 @@ namespace IceFlake.Client.Objects
             }
         }
 
-        public float Facing
+        public virtual float Facing
         {
             get
             {

@@ -31,6 +31,22 @@ namespace IceFlake.Client.Patchables
 
     #endregion
 
+    #region LuaSpellInfo
+
+    public class LuaSpellInfo {
+        public int PowerCost;
+
+        public bool IsFunnel;
+
+        public uint CastTime;
+
+        public float MinRange;
+
+        public float MaxRange;
+    }
+
+    #endregion
+
     #region SpellRec
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
