@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using IceFlake.Client.Collections;
 using IceFlake.Client.Patchables;
+using IceFlake.DirectX;
 
 namespace IceFlake.Client.Objects
 {
@@ -69,6 +70,35 @@ namespace IceFlake.Client.Objects
                         Manager.Memory.RegisterDelegate<UnitReactionDelegate>((IntPtr) Pointers.Unit.UnitReaction);
                 return (UnitReaction) _unitReaction(Pointer, Manager.LocalPlayer.Pointer);
             }
+        }
+
+        public override float Facing {
+            get {
+                return Manager.Memory.Read<float>(Pointer + 0xA94);
+            }
+        }
+
+        public float GetMeleeRangeOf(WoWUnit unit) {
+            if (unit == null) throw new ArgumentNullException("unit");
+            return (float)Math.Max(5.0, this.CombatReach + unit.CombatReach + (4 / 3));
+        }
+
+        public bool IsWithinMeleeRangeOf(WoWUnit unit) {
+            if (unit == null) throw new ArgumentNullException("unit");
+            float range = GetMeleeRangeOf(unit);
+            return Location.DistanceToSqr(unit.Location) < range * range;
+        }
+
+        public bool IsFacing(WoWUnit o) {
+            var left = Location.FlattenZf() + Vector2.UnitY.RotateAround(Vector2.Origo, (float)(Facing));
+            var ray = new Ray2(Location.FlattenZf(), left);
+            return ray.IsOnRightSide(o.Location.FlattenZf());
+        }
+
+        public bool IsBehind(WoWUnit o) {
+            var left = o.Location.FlattenZf() + Vector2.UnitY.RotateAround(Vector2.Origo, (float)(o.Facing));
+            var ray = new Ray2(o.Location.FlattenZf(), left);
+            return ray.IsOnLeftSide(Location.FlattenZf());
         }
 
         public bool IsFriendly

@@ -39,6 +39,10 @@ namespace IceFlake.Client
             return Math.Sqrt(Math.Pow(X - loc.X, 2) + Math.Pow(Y - loc.Y, 2) + Math.Pow(Z - loc.Z, 2));
         }
 
+        public double DistanceToSqr(Location loc) {
+            return Math.Pow(X - loc.X, 2) + Math.Pow(Y - loc.Y, 2) + Math.Pow(Z - loc.Z, 2);
+        }
+
         public double Distance2D(Location loc)
         {
             return Math.Sqrt(Math.Pow(X - loc.X, 2) + Math.Pow(Y - loc.Y, 2));
@@ -53,6 +57,10 @@ namespace IceFlake.Client
         {
             double len = Length;
             return new Location((float) (X/len), (float) (Y/len), (float) (Z/len));
+        }
+
+        public Vector2 FlattenZf() {
+            return new Vector2(X, Y);
         }
 
         public Vector3 ToVector3()

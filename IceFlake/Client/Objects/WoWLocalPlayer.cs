@@ -23,6 +23,7 @@ namespace IceFlake.Client.Objects
         private static StopCTMDelegate _stopCTM;
 
         private static SetFacingDelegate _setFacing;
+        private static SetTargetDelegate _setTarget;
 
         private static CanUseItemDelegate _canUseItem;
 
@@ -40,6 +41,9 @@ namespace IceFlake.Client.Objects
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         private delegate void SetFacingDelegate(IntPtr thisObj, uint time, float facing);
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        private delegate void SetTargetDelegate(ulong guid);
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         private delegate void StopCTMDelegate(IntPtr thisObj);
@@ -149,6 +153,16 @@ namespace IceFlake.Client.Objects
             if (angle > pi2)
                 angle -= pi2;
             _setFacing(Pointer, Helper.PerformanceCount, angle);
+        }
+
+        public void SetTarget(WoWUnit unit) {
+            SetTarget(unit.Guid);
+        }
+
+        private void SetTarget(ulong guid) {
+            if (_setTarget == null)
+                _setTarget = Manager.Memory.RegisterDelegate<SetTargetDelegate>((IntPtr)Pointers.LocalPlayer.SetTarget);
+            _setTarget(guid);
         }
 
         #region Class specific
